@@ -112,7 +112,16 @@ function ExchangeRequest(aArgument, aCbOk, aCbError, aListener)
 
 	this.timeZones = Cc["@1st-setup.nl/exchange/timezones;1"]
 				.getService(Ci.mivExchangeTimeZones);
-				
+
+	// ADO : will replace prePassword
+	this.loginInfo = Cc["@mozilla.org/login-manager/loginInfo;1"]
+                        .createInstance(Ci.nsILoginInfo);
+
+	this.loginManager = Cc["@mozilla.org/login-manager;1"]
+                        .getService(Ci.nsILoginManager);
+
+	this.loginPrompter = Cc["@mozilla.org/login-manager/prompter;1"]
+                        .getService(Ci.nsILoginManagerPrompter);
 	this.xml2json = false;
 
 }
@@ -191,6 +200,7 @@ ExchangeRequest.prototype = {
 	set user(aValue)
 	{
 		this.argument.user = aValue;
+		this.logInfo.user = aValue;
 	},
 
 	stopRequest: function _stopRequest()
@@ -228,10 +238,12 @@ ExchangeRequest.prototype = {
 
 		// remove domain part in xmlhttprequest.open call
 		var openUser = this.mArgument.user;
+
 /*		if (openUser.indexOf("\\") > -1) {
 			openUser = openUser.substr(openUser.indexOf("\\")+1);
 		}*/
 
+		/* ADO Old code
 		var myAuthPrompt2 = Cc["@1st-setup.nl/exchange/authprompt2;1"].getService(Ci.mivExchangeAuthPrompt2);
 		if (myAuthPrompt2.getUserCanceled(this.currentUrl)) {
 			
@@ -250,6 +262,29 @@ ExchangeRequest.prototype = {
 			return;
 		}
 		myAuthPrompt2 = null;
+		*/
+
+		var myAuthPrompt = Cc["@mozilla.org/login-manager/prompter;1"].createInstance(Ci.nsIAuthPrompt);
+
+		// Consctruct passwordRealm from user and url:
+		var uriStart = this.currentUrl.indexOf("://") + 3;
+		var passwordRealm = this.currentUrl.substr(0, uriStart) + openUser + "@" + this.currentUrl.substr(uriStart);
+		var promptTitle = "exchangecalendar password prompt";
+		var promptText = "Please give your exchange password for " + passwordRealm;
+		var passwordOut = new Object();
+		// Fill password argument
+		promptStatus = myAuthPrompt.promptPassword(promptTitle, promptText, passwordRealm,
+													Ci.nsIAuthPrompt.SAVE_PASSWORD_NEVER, // Change to SAVE_PASSWORD_FOR_SESSION when it will be implemented
+													passwordOut);
+		password = passwordOut.value;
+
+		// Canceled by user
+		if(!promptStatus){
+			this.fail(this.ER_ERROR_USER_ABORT_AUTHENTICATION, "User canceled providing a valid password for url="+ this.passwordRealm +". Aborting this request.");
+			return;
+		}
+		myAuthPrompt = null;
+
 
 		this.xmlReq = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance();
 
