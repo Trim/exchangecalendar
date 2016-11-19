@@ -1,0 +1,3 @@
+interfaces mivExchangeLoginManager.xpt
+component {7451198f-a392-41d3-b255-d1fdca7533b2} mivExchangeLoginManager.js
+contract @1st-setup.nl/exchange/loginmanager;1 {7451198f-a392-41d3-b255-d1fdca7533b2}
