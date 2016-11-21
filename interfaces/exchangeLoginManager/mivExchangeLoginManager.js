@@ -164,3 +164,18 @@ mivExchangeLoginManager.prototype = {
         }
     },
 }
+
+function NSGetFactory(cid) {
+
+	try {
+		if (!NSGetFactory.mivExchangeLoginManager) {
+			NSGetFactory.mivExchangeLoginManager = XPCOMUtils.generateNSGetFactory([mivExchangeLoginManager]);
+		}
+	} catch(e) {
+		Components.utils.reportError(e);
+		dump(e);
+		throw e;
+	}
+
+	return NSGetFactory.mivExchangeLoginManager(cid);
+}
