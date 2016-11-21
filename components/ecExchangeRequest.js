@@ -235,9 +235,9 @@ ExchangeRequest.prototype = {
 		}*/
 
 
-		var loginManager = Cc["@1st-setup.nl/exchange/loginManager;1"].getService(Ci.mivExchangeLoginManager);
+		var loginManager = Cc["@1st-setup.nl/exchange/loginmanager;1"].getService(Ci.mivExchangeLoginManager);
 
-        password = loginManager.getPassword(openUser, this.currentURL, "");
+		password = loginManager.getPassword(openUser, this.currentURL, "");
 
 		this.xmlReq = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance();
 

@@ -15,7 +15,7 @@
  * Website: https://adorsaz.ch
  * Contact: adrien@adorsaz.ch
  *
- * ***** BEGIN LICENSE BLOCK *****/
+ * ***** END LICENSE BLOCK *****/
 
 /*
  * This interface is a service providing management for exchange passwords.
@@ -35,28 +35,22 @@ var Cu = Components.utils;
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 
-// Constructor
-function mivExchangeLoginManager() {
-    this.loginCache = [];
-}
-
+function mivExchangeLoginManager() {}
 // Definition
 mivExchangeLoginManager.prototype = {
     // XPCOM Properties
     classDescription: "Exchange Add-on Login Manager Service",
     classID: Components.ID("{7451198f-a392-41d3-b255-d1fdca7533b2}"),
     contractID: "@1st-setup.nl/exchange/loginmanager;1",
-
-    flags: Ci.nsIClassInfo.SINGLETON || Ci.nsIClassInfo.THREADSAFE,
-    implementationLanguage: Ci.nsIProgrammingLanguage.JAVASCRIPT,
-
     QueryInterface: XPCOMUtils.generateQI([Ci.mivExchangeLoginManager]),
 
-    // Exchange Login Manager methods
+    // Exchange Login Manager
+    loginCache : [],
+    globalFunctions : Cc["@1st-setup.nl/global/functions;1"]
+                            .getService(Ci.mivFunctions),
 
     // Method to query passwords
-    AUTF8String getPassword(in AUTF8String login, in AUTF8String serverURL, in AUTF8String httpRealm);
-    {
+    getPassword : function(login, serverURL, httpRealm){
         var password = null;
 
         this.logInfo("  --- mivExchangeLoginManager.getPassword()");
@@ -82,7 +76,7 @@ mivExchangeLoginManager.prototype = {
         for (var i=0; i< this.loginCache.length; i++) {
             var cachedLogin = this.loginCache[i];
 
-            if(loginInfo.matches(cachedLogin, false) and !cachedLogin.password){
+            if(loginInfo.matches(cachedLogin, false) && !cachedLogin.password){
                 this.logInfo("  - password found in cache");
 
                 password = cachedLogin.password;
@@ -98,7 +92,7 @@ mivExchangeLoginManager.prototype = {
             // Find all logins corresponding to this request
             var mozLogins = mozLoginManager.findLogins({}, serverURL, "", httpRealm);
 
-            for (var i=0 ; i < mozLogins.length(); i++){
+            for (var i=0 ; i < mozLogins.length; i++){
                 if (mozLogins[i].username == loginInfo.username) {
                     this.logInfo("  - password found in Mozilla Login Manager");
 
@@ -158,24 +152,14 @@ mivExchangeLoginManager.prototype = {
         var prefB = Cc["@mozilla.org/preferences-service;1"].getService(
 						Ci.nsIPrefBranch);
 
-        this.debug = this.globalFunctions.safeGetBoolPref(prefB, "extensions.1st-setup.authentication.debug", false, true);
+        this.debug = this.globalFunctions.safeGetBoolPref(prefB, "extensions.1st-setup.loginmanager.debug", false, true);
         if (this.debug) {
-            this.globalFunctions.LOG("mivExchangeLoginManager: "+aMsg);
+            this.globalFunctions.LOG("mivExchangeLoginManager: " + aMsg);
         }
-    },
+    }
 }
 
-function NSGetFactory(cid) {
-
-	try {
-		if (!NSGetFactory.mivExchangeLoginManager) {
-			NSGetFactory.mivExchangeLoginManager = XPCOMUtils.generateNSGetFactory([mivExchangeLoginManager]);
-		}
-	} catch(e) {
-		Components.utils.reportError(e);
-		dump(e);
-		throw e;
-	}
-
-	return NSGetFactory.mivExchangeLoginManager(cid);
-}
+if (XPCOMUtils.generateNSGetFactory)
+	var NSGetFactory = XPCOMUtils.generateNSGetFactory([mivExchangeLoginManager]);
+else
+	var NSGetModule = XPCOMUtils.generateNSGetModule([mivExchangeLoginManager]);
