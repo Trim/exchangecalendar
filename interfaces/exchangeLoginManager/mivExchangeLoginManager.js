@@ -32,22 +32,19 @@
 var Cc = Components.classes;
 var Ci = Components.interfaces;
 var Cu = Components.utils;
-var Cr = Components.results;
-var components = Components;
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
-Cu.import("resource://gre/modules/Services.jsm");
 
 // Constructor
 function mivExchangeLoginManager() {
-    this.loginCache = {};
+    this.loginCache = [];
 }
 
 // Definition
 mivExchangeLoginManager.prototype = {
     // XPCOM Properties
     classDescription: "Exchange Add-on Login Manager Service",
-    classID: components.ID("{7451198f-a392-41d3-b255-d1fdca7533b2}"),
+    classID: Components.ID("{7451198f-a392-41d3-b255-d1fdca7533b2}"),
     contractID: "@1st-setup.nl/exchange/loginmanager;1",
 
     flags: Ci.nsIClassInfo.SINGLETON || Ci.nsIClassInfo.THREADSAFE,
@@ -119,7 +116,8 @@ mivExchangeLoginManager.prototype = {
 
             // Consctruct passwordRealm from user and url:
             var uriStart = serverURL.indexOf("://") + 3;
-            var passwordRealm = this.serverURL.substr(0, uriStart) + login + "@" + serverURL.substr(uriStart);
+            var passwordRealm = this.serverURL.substr(0, uriStart) + urlencode(login)
+            						+ "@" + serverURL.substr(uriStart);
             var promptTitle = "Exchange calendar password prompt";
             var promptText = "Please give your exchange password for login "
                              + login + " on server " + serverURL
@@ -136,9 +134,6 @@ mivExchangeLoginManager.prototype = {
             // Canceled by user
             if(!promptStatus){
                 this.logInfo("  - user canceled password prompt");
-
-                this.fail(this.ER_ERROR_USER_ABORT_AUTHENTICATION,
-                            "User canceled providing a valid password for url="+ this.passwordRealm +". Aborting this request.");
             } else {
                 this.logInfo("  - password received from user");
 
@@ -153,39 +148,19 @@ mivExchangeLoginManager.prototype = {
     // Internal methods.
 
     // Save Password to session cache
-    cachePassword: function _cachePassword(loginInfo, password){
+    cachePassword: function(loginInfo, password){
         loginInfo.password = password;
-        this.loginCache.append(loginInfo);
+        this.loginCache.push(loginInfo);
     },
 
-    logInfo: function _logInfo(aMsg, aDebugLevel)
+    logInfo: function(aMsg, aDebugLevel)
     {
-        var prefB = Cc["@mozilla.org/preferences-service;1"]
-            .getService(Ci.nsIPrefBranch);
+        var prefB = Cc["@mozilla.org/preferences-service;1"].getService(
+						Ci.nsIPrefBranch);
 
         this.debug = this.globalFunctions.safeGetBoolPref(prefB, "extensions.1st-setup.authentication.debug", false, true);
         if (this.debug) {
             this.globalFunctions.LOG("mivExchangeLoginManager: "+aMsg);
         }
     },
-
 }
-
-function NSGetFactory(cid) {
-
-    try {
-        if (!NSGetFactory.mivExchangeLoginManager) {
-            // Load main script from lightning that we need.
-            NSGetFactory.mivExchangeLoginManager = XPCOMUtils.generateNSGetFactory([mivExchangeLoginManager]);
-
-    }
-
-    } catch(e) {
-        Components.utils.reportError(e);
-        dump(e);
-        throw e;
-    }
-
-    return NSGetFactory.mivExchangeLoginManager(cid);
-}
-
