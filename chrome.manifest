@@ -75,4 +75,4 @@ manifest interfaces/exchangeLightningNotifier/mivExchangeLightningNotifier.manif
 manifest interfaces/exchangeAutoCompleteSearch/mivExchangeAutoCompleteSearch.manifest
 manifest interfaces/exchangeAutoCompleteResult/mivExchangeAutoCompleteResult.manifest
 
-manifest interfaces/exchangeLoginManager/mivExchangeLoginManger.manifest
+manifest interfaces/exchangeLoginManager/mivExchangeLoginManager.manifest
