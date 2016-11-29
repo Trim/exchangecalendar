@@ -45,11 +45,12 @@ mivExchangeLoginManager.prototype = {
     QueryInterface: XPCOMUtils.generateQI([Ci.mivExchangeLoginManager]),
 
     // Exchange Login Manager
-    cachedLogin = [],
+    loginCache : [],
+    globalFunctions : Cc["@1st-setup.nl/global/functions;1"]
+                            .getService(Ci.mivFunctions),
 
     // Method to query passwords
-    AUTF8String getPassword(in AUTF8String login, in AUTF8String serverURL, in AUTF8String httpRealm);
-    {
+    getPassword : function(login, serverURL, httpRealm){
         var password = null;
 
         this.logInfo("  --- mivExchangeLoginManager.getPassword()");
@@ -75,7 +76,7 @@ mivExchangeLoginManager.prototype = {
         for (var i=0; i< this.loginCache.length; i++) {
             var cachedLogin = this.loginCache[i];
 
-            if(loginInfo.matches(cachedLogin, false) and !cachedLogin.password){
+            if(loginInfo.matches(cachedLogin, false) && !cachedLogin.password){
                 this.logInfo("  - password found in cache");
 
                 password = cachedLogin.password;
@@ -91,7 +92,7 @@ mivExchangeLoginManager.prototype = {
             // Find all logins corresponding to this request
             var mozLogins = mozLoginManager.findLogins({}, serverURL, "", httpRealm);
 
-            for (var i=0 ; i < mozLogins.length(); i++){
+            for (var i=0 ; i < mozLogins.length; i++){
                 if (mozLogins[i].username == loginInfo.username) {
                     this.logInfo("  - password found in Mozilla Login Manager");
 
@@ -143,7 +144,7 @@ mivExchangeLoginManager.prototype = {
     // Save Password to session cache
     cachePassword: function(loginInfo, password){
         loginInfo.password = password;
-        this.cachedLogin.push(loginInfo);
+        this.loginCache.push(loginInfo);
     },
 
     logInfo: function(aMsg, aDebugLevel)
@@ -153,10 +154,9 @@ mivExchangeLoginManager.prototype = {
 
         this.debug = this.globalFunctions.safeGetBoolPref(prefB, "extensions.1st-setup.loginmanager.debug", false, true);
         if (this.debug) {
-            // TODO
-            //this.globalFunctions.LOG("mivExchangeLoginManager: "+aMsg);
+            this.globalFunctions.LOG("mivExchangeLoginManager: " + aMsg);
         }
-    },
+    }
 }
 
 if (XPCOMUtils.generateNSGetFactory)
