@@ -15,7 +15,7 @@
  * Website: https://adorsaz.ch
  * Contact: adrien@adorsaz.ch
  *
- * ***** BEGIN LICENSE BLOCK *****/
+ * ***** END LICENSE BLOCK *****/
 
 /*
  * This interface is a service providing management for exchange passwords.
@@ -35,24 +35,17 @@ var Cu = Components.utils;
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 
-// Constructor
-function mivExchangeLoginManager() {
-    this.loginCache = [];
-}
-
+function mivExchangeLoginManager() {}
 // Definition
 mivExchangeLoginManager.prototype = {
     // XPCOM Properties
     classDescription: "Exchange Add-on Login Manager Service",
     classID: Components.ID("{7451198f-a392-41d3-b255-d1fdca7533b2}"),
     contractID: "@1st-setup.nl/exchange/loginmanager;1",
-
-    flags: Ci.nsIClassInfo.SINGLETON || Ci.nsIClassInfo.THREADSAFE,
-    implementationLanguage: Ci.nsIProgrammingLanguage.JAVASCRIPT,
-
     QueryInterface: XPCOMUtils.generateQI([Ci.mivExchangeLoginManager]),
 
-    // Exchange Login Manager methods
+    // Exchange Login Manager
+    cachedLogin = [],
 
     // Method to query passwords
     AUTF8String getPassword(in AUTF8String login, in AUTF8String serverURL, in AUTF8String httpRealm);
@@ -150,7 +143,7 @@ mivExchangeLoginManager.prototype = {
     // Save Password to session cache
     cachePassword: function(loginInfo, password){
         loginInfo.password = password;
-        this.loginCache.push(loginInfo);
+        this.cachedLogin.push(loginInfo);
     },
 
     logInfo: function(aMsg, aDebugLevel)
@@ -158,11 +151,15 @@ mivExchangeLoginManager.prototype = {
         var prefB = Cc["@mozilla.org/preferences-service;1"].getService(
 						Ci.nsIPrefBranch);
 
-        this.debug = this.globalFunctions.safeGetBoolPref(prefB, "extensions.1st-setup.authentication.debug", false, true);
+        this.debug = this.globalFunctions.safeGetBoolPref(prefB, "extensions.1st-setup.loginmanager.debug", false, true);
         if (this.debug) {
-            this.globalFunctions.LOG("mivExchangeLoginManager: "+aMsg);
+            // TODO
+            //this.globalFunctions.LOG("mivExchangeLoginManager: "+aMsg);
         }
     },
 }
 
-var NSGetFactory = XPCOMUtils.generateNSGetFactory([mivExchangeLoginManager]);
+if (XPCOMUtils.generateNSGetFactory)
+	var NSGetFactory = XPCOMUtils.generateNSGetFactory([mivExchangeLoginManager]);
+else
+	var NSGetModule = XPCOMUtils.generateNSGetModule([mivExchangeLoginManager]);
