@@ -23,6 +23,10 @@
 [scriptable, uuid(7451198f-a392-41d3-b255-d1fdca7533b2)]
 interface mivExchangeLoginManager : nsISupports
 {
-	// Return password for a specific account
-	AUTF8String getPassword(in AUTF8String login, in AUTF8String serverURL, in AUTF8String httpRealm);
+    // Return password for a specific account
+    AUTF8String getPassword(in AUTF8String login, in AUTF8String serverURL, in AUTF8String httpRealm);
+    // Check if user canceled password request
+    boolean isUserCanceled(in AUTF8String login, in AUTF8String serverURL, in AUTF8String httpRealm);
+    // Reset user password request cancellation
+    void resetUserCancellation(in AUTF8String login, in AUTF8String serverURL, in AUTF8String httpRealm);
 };
