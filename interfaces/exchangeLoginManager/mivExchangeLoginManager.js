@@ -48,33 +48,25 @@ mivExchangeLoginManager.prototype = {
     loginCache : [],
     globalFunctions : Cc["@1st-setup.nl/global/functions;1"]
                             .getService(Ci.mivFunctions),
+    nsLoginInfo : Components.Constructor(
+                            "@mozilla.org/login-manager/loginInfo;1",
+                            Ci.nsILoginInfo,
+                            "init"),
 
-    // Method to query passwords
+    /*
+     * Retrieve password from running cache or query passwords to user through Mozilla's interface
+     */
     getPassword : function(login, serverURL, httpRealm){
         var password = null;
 
-        this.logInfo("  --- mivExchangeLoginManager.getPassword()");
-
-        // We'll need LoginInfo to use the Mozilla Login Manager
-        var nsLoginInfo = Components.Constructor(
-                            "@mozilla.org/login-manager/loginInfo;1",
-                            Ci.nsILoginInfo,
-                            "init");
+        this.logInfo("  --- mivExchangeLoginManager.getPassword() for user :" + login + ", URL: "+ serverURL + ", HTTP realm: " + httpRealm);
 
         // Exchange calendar add-on authenticate user by HTTP, not HTML Form
-        var loginInfo = new nsLoginInfo(
-                                serverURL, //hostname
-                                "", // action URL in HTML form (blank to be ignored)
-                                httpRealm, // HTTP WWW-Authenticate Basic Realm
-                                login, // User name
-                                "", // Password (unknown currently)
-                                "", // User name input field attribute HTML form
-                                "" // Password input field attribute HTML form
-                        );
+        var loginInfo = this.getLoginInfo(login, serverURL, httpRealm);
 
         // Check if password available in session cache
         for (var i=0; i< this.loginCache.length; i++) {
-            var cachedLogin = this.loginCache[i];
+            var cachedLogin = this.loginCache[i].loginInfo;
 
             if(loginInfo.matches(cachedLogin, false) && !cachedLogin.password){
                 this.logInfo("  - password found in cache");
@@ -110,7 +102,7 @@ mivExchangeLoginManager.prototype = {
 
             // Consctruct passwordRealm from user and url:
             var uriStart = serverURL.indexOf("://") + 3;
-            var passwordRealm = this.serverURL.substr(0, uriStart) + urlencode(login)
+            var passwordRealm = serverURL.substr(0, uriStart) + encodeURIComponent(login)
             						+ "@" + serverURL.substr(uriStart);
             var promptTitle = "Exchange calendar password prompt";
             var promptText = "Please give your exchange password for login "
@@ -139,14 +131,63 @@ mivExchangeLoginManager.prototype = {
         return password;
     },
 
+    /*
+     * Check if user voluntary refused to give us password by canceling prompt
+     */
+    isUserCanceled: function(login, serverURL, httpRealm) {
+        var loginInfo = getLoginInfo(login, serverURL, httpRealm);
+        var userCanceled = false;
+
+        for (var i=0; i< this.loginCache.length; i++) {
+            var cachedLogin = this.loginCache[i].loginInfo;
+
+            if(loginInfo.matches(cachedLogin, false)){
+                userCanceled = this.loginCache[i].isUserCanceled;
+                break;
+            }
+        }
+
+        return userCanceled;
+    },
+
+    resetUserCancelation: function(login, serverURL, httpRealm) {
+        var loginInfo = getLoginInfo(login, serverURL, httpRealm);
+
+        for (var i=0; i< this.loginCache.length; i++) {
+            var cachedLogin = this.loginCache[i].loginInfo;
+
+            if(loginInfo.matches(cachedLogin, false)){
+                this.loginCache[i].isUserCanceled = false;
+                break;
+            }
+        }
+
+        return userCanceled;
+    },
+
     // Internal methods.
 
     // Save Password to session cache
     cachePassword: function(loginInfo, password){
         loginInfo.password = password;
-        this.loginCache.push(loginInfo);
+        this.loginCache.push({loginInfo: loginInfo,
+                              isUserCanceled: false});
     },
 
+    // Create Mozilla's LoginInfo
+    getLoginInfo: function(login, serverURL, httpRealm){
+        return new nsLoginInfo(
+                serverURL, //hostname
+                "", // action URL in HTML form (blank to be ignored)
+                httpRealm, // HTTP WWW-Authenticate Basic Realm
+                login, // User name
+                "", // Password (unknown currently)
+                "", // User name input field attribute HTML form
+                "" // Password input field attribute HTML form
+        );
+    },
+
+    // Debug infromations
     logInfo: function(aMsg, aDebugLevel)
     {
         var prefB = Cc["@mozilla.org/preferences-service;1"].getService(
