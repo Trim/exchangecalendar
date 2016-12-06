@@ -150,7 +150,7 @@ mivExchangeLoginManager.prototype = {
         return userCanceled;
     },
 
-    resetUserCancelation: function(login, serverURL, httpRealm) {
+    resetUserCancellation: function(login, serverURL, httpRealm) {
         var loginInfo = getLoginInfo(login, serverURL, httpRealm);
 
         for (var i=0; i< this.loginCache.length; i++) {
@@ -176,7 +176,7 @@ mivExchangeLoginManager.prototype = {
 
     // Create Mozilla's LoginInfo
     getLoginInfo: function(login, serverURL, httpRealm){
-        return new nsLoginInfo(
+        return new this.nsLoginInfo(
                 serverURL, //hostname
                 "", // action URL in HTML form (blank to be ignored)
                 httpRealm, // HTTP WWW-Authenticate Basic Realm
