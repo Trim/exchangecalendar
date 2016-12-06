@@ -113,6 +113,9 @@ function ExchangeRequest(aArgument, aCbOk, aCbError, aListener)
 	this.timeZones = Cc["@1st-setup.nl/exchange/timezones;1"]
 				.getService(Ci.mivExchangeTimeZones);
 
+	this.loginManager = Cc["@1st-setup.nl/exchange/loginmanager;1"]
+				.getService(Ci.mivExchangeLoginManager);
+
 	this.xml2json = false;
 
 }
@@ -235,9 +238,8 @@ ExchangeRequest.prototype = {
 		}*/
 
 
-		var loginManager = Cc["@1st-setup.nl/exchange/loginmanager;1"].getService(Ci.mivExchangeLoginManager);
 
-		password = loginManager.getPassword(openUser, this.currentURL, "");
+		password = this.loginManager.getPassword(openUser, this.currentUrl, "");
 
 		this.xmlReq = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance();
 
@@ -812,15 +814,16 @@ try {
 
                                 if (this.debug) this.logInfo(": isConnError req.status="+xmlReq.status+": "+errMsg+"\nURL:"+this.currentUrl+"\n"+xmlReq.responseText, 2);
 
-				var myAuthPrompt2 = Cc["@1st-setup.nl/exchange/authprompt2;1"].getService(Ci.mivExchangeAuthPrompt2);
-				if ((this.urllist.length > 0) && (!myAuthPrompt2.getUserCanceled(this.currentUrl))) {
+				var isUserCanceled = this.loginManager.isUserCanceled(this.user, this.currentUrl, "");
+
+				if ((this.urllist.length > 0) && (!isUserCanceled)) {
 					if (this.tryNextURL()) { 
 						return true;
 					}
 	 				this.fail(this.ER_ERROR_HTTP_ERROR4XX, "HTTP Client error "+xmlReq.status+": "+errMsg+"\nURL:"+this.currentUrl+"\n"+xmlReq.responseText.substr(0,300)+"\n\n");
 				}
 				else {
-					if (myAuthPrompt2.getUserCanceled(this.currentUrl)) {
+					if (isUserCanceled) {
 		 				this.fail(this.ER_ERROR_USER_ABORT_AUTHENTICATION,  "User canceled providing a valid password for url="+this.currentUrl+". Aborting this request.");
 					}
 					else {
@@ -1143,6 +1146,9 @@ function ecnsIAuthPrompt2(aExchangeRequest)
 	this.URL = null;
 	this.lastStatus = 0;  // set by nsIProgressEventSink onStatus.
 	
+	this.loginManager = Cc["@1st-setup.nl/exchange/loginmanager;1"]
+				.getService(Ci.mivExchangeLoginManager);
+
 	this.timer = Cc["@mozilla.org/timer;1"]
 					.createInstance(Ci.nsITimer);
 }
@@ -1300,18 +1306,15 @@ ecnsIAuthPrompt2.prototype = {
 		this.logInfo("getPrePassword for user:"+aUsername+", server url:"+aURL);
 		this.username = aUsername;
 		this.URL = aURL;
- 		
+
 		var password;
-		var myAuthPrompt2 = Cc["@1st-setup.nl/exchange/authprompt2;1"].getService(Ci.mivExchangeAuthPrompt2);
-		if (myAuthPrompt2.getUserCanceled(aURL)) {
-			return null;
-		}
 		var openUser = aUsername;
 
-		try {
-			password = myAuthPrompt2.getPassword(null,openUser, aURL);
+		if (this.loginManager.isUserCanceled(openUser, this.URL, "")) {
+			password = null;
 		}
-		catch(err) {
+		else {
+			password = this.loginManager.getPassword(openUser, this.URL, "");
 		}
 
 		return password;
