@@ -4187,8 +4187,10 @@ calExchangeCalendar.prototype = {
 		}
 
 //dump("\resetCalendar\n");
-			var myAuthPrompt2 = Cc["@1st-setup.nl/exchange/authprompt2;1"].getService(Ci.mivExchangeAuthPrompt2);
-			myAuthPrompt2.removeUserCanceled(this.serverUrl);
+			var loginManager = Cc["@1st-setup.nl/exchange/loginmanager;1"]
+						.getService(Ci.mivExchangeLoginManager);
+			loginManager.resetUserCancellation(this.user, this.serverUrl, "");
+
 		}catch(err) { dump("\n EROROR:"+err+"\n"); }
 
 		if (this.getProperty("disabled")) {
