@@ -58,20 +58,14 @@ mivExchangeAuthPromptProvider.prototype = {
 	getAuthPrompt: function _nsIAuthPromptProvider_getAuthPrompt(aPromptReason, iid)
 	{
 		this.logInfo("  --- mivExchangeAuthPromptProvider.getAuthPrompt:aPromptReason:"+aPromptReason+", iid:"+iid);
-		if (iid.equals(Ci.nsIAuthPrompt2)) {    // id == 651395eb-8612-4876-8ac0-a88d4dce9e1e
-			this.logInfo("  --- ecnsIAuthPrompt2.getAuthPrompt: iid=nsIAuthPrompt2");
-			return Cc["@1st-setup.nl/exchange/authprompt2;1"].getService();
-		} 
-
-		this.logInfo("  --- mivExchangeAuthPromptProvider.getAuthPrompt:aPromptReason:"+aPromptReason+", iid:"+iid);
 		this.globalFunctions.LOG("  >>>>>>>>>>> SUBMIT THIS LINE TO https://github.com/Ericsson/exchangecalendar/issues: ecnsIAuthPrompt2.getAuthPrompt("+iid+")");
-  
+
 		return Cr.NS_ERROR_NOT_AVAILABLE;
 	},
 
 	// Internal methods.
 
-	logInfo: function _logInfo(aMsg, aDebugLevel) 
+	logInfo: function _logInfo(aMsg, aDebugLevel)
 	{
 		var prefB = Cc["@mozilla.org/preferences-service;1"]
 			.getService(Ci.nsIPrefBranch);
