@@ -814,16 +814,16 @@ try {
 
                                 if (this.debug) this.logInfo(": isConnError req.status="+xmlReq.status+": "+errMsg+"\nURL:"+this.currentUrl+"\n"+xmlReq.responseText, 2);
 
-				var isUserCanceled = this.loginManager.isUserCanceled(this.user, this.currentUrl, "");
+				var isUserCancelled = this.loginManager.isUserCancelled(this.user, this.currentUrl, "");
 
-				if ((this.urllist.length > 0) && (!isUserCanceled)) {
+				if ((this.urllist.length > 0) && (!isUserCancelled)) {
 					if (this.tryNextURL()) { 
 						return true;
 					}
 	 				this.fail(this.ER_ERROR_HTTP_ERROR4XX, "HTTP Client error "+xmlReq.status+": "+errMsg+"\nURL:"+this.currentUrl+"\n"+xmlReq.responseText.substr(0,300)+"\n\n");
 				}
 				else {
-					if (isUserCanceled) {
+					if (isUserCancelled) {
 		 				this.fail(this.ER_ERROR_USER_ABORT_AUTHENTICATION,  "User canceled providing a valid password for url="+this.currentUrl+". Aborting this request.");
 					}
 					else {
@@ -953,6 +953,7 @@ try {
 						
 						exchWebService.prePasswords[this.mArgument.user+"@"+this.currentUrl].tryCount = 0;
 
+						this.loginManager.deletePassword(this.prePassword, this.mArgument.user, this.currentUrl, "");
 						this.prePassword = null;
 
 						break;
@@ -1155,16 +1156,12 @@ function ecnsIAuthPrompt2(aExchangeRequest)
 
 ecnsIAuthPrompt2.prototype = {
 
-	QueryInterface: XPCOMUtils.generateQI([Ci.nsIAuthPrompt2, Ci.nsIBadCertListener2, Ci.nsIProgressEventSink, 
+	QueryInterface: XPCOMUtils.generateQI([Ci.nsIBadCertListener2, Ci.nsIProgressEventSink,
 						Ci.nsISecureBrowserUI, Ci.nsIDocShellTreeItem, Ci.nsIAuthPromptProvider,
 						Ci.nsIChannelEventSink, Ci.nsIRedirectResultListener]),
 
 	getInterface: function(iid)
 	{
-		if ((Ci.nsIAuthPrompt2) && (iid.equals(Ci.nsIAuthPrompt2))) {    // id == 651395eb-8612-4876-8ac0-a88d4dce9e1e
-			this.logInfo("ecnsIAuthPrompt2.getInterface: Ci.nsIAuthPrompt2");
-			return 	Cc["@1st-setup.nl/exchange/authprompt2;1"].getService(Ci.mivExchangeAuthPrompt2);
-		} 
 
 		if ((Ci.nsIBadCertListener2) && (iid.equals(Ci.nsIBadCertListener2))) {
 			this.logInfo("ecnsIAuthPrompt2.getInterface: Ci.nsIBadCertListener2");
@@ -1310,7 +1307,7 @@ ecnsIAuthPrompt2.prototype = {
 		var password;
 		var openUser = aUsername;
 
-		if (this.loginManager.isUserCanceled(openUser, this.URL, "")) {
+		if (this.loginManager.isUserCancelled(openUser, this.URL, "")) {
 			password = null;
 		}
 		else {
