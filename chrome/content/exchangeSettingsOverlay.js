@@ -356,8 +356,8 @@ exchSettingsOverlay.prototype = {
 
 		var folderIdOfShare = this.exchWebServicesgFolderIdOfShare;
 
-		var myAuthPrompt2 = Cc["@1st-setup.nl/exchange/authprompt2;1"].getService(Ci.mivExchangeAuthPrompt2);
-		myAuthPrompt2.removeUserCanceled(this.exchWebServicesgServer);
+		var loginManager = Cc["@1st-setup.nl/exchange/loginmanager;1"].getService(Ci.mivExchangeLoginManager);
+		loginManager.resetUserCancellation(this.exchWebServicesGetUsername(), this.exchWebServicesgServer, "");
 
 		try {
 			this._window.setCursor("wait");
