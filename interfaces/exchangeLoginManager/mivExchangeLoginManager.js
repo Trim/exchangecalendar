@@ -132,37 +132,53 @@ mivExchangeLoginManager.prototype = {
     },
 
     /*
-     * Check if user voluntary refused to give us password by canceling prompt
+     * Reset password cache (eg in case where the user gave us a wrong password)
      */
-    isUserCanceled: function(login, serverURL, httpRealm) {
-        var loginInfo = getLoginInfo(login, serverURL, httpRealm);
-        var userCanceled = false;
+    deletePassword: function(password, login, serverURL, httpRealm) {
+        var loginInfo = this.getLoginInfo(login, serverURL, httpRealm);
 
         for (var i=0; i< this.loginCache.length; i++) {
             var cachedLogin = this.loginCache[i].loginInfo;
 
-            if(loginInfo.matches(cachedLogin, false)){
-                userCanceled = this.loginCache[i].isUserCanceled;
-                break;
+            if(loginInfo.matches(cachedLogin, true)){
+                delete this.loginCache[i];
             }
         }
-
-        return userCanceled;
     },
 
-    resetUserCancellation: function(login, serverURL, httpRealm) {
-        var loginInfo = getLoginInfo(login, serverURL, httpRealm);
+    /*
+     * Check if user voluntary refused to give us password by canceling prompt
+     */
+    isUserCancelled: function(login, serverURL, httpRealm) {
+        var loginInfo = this.getLoginInfo(login, serverURL, httpRealm);
+        var userCancelled = false;
 
         for (var i=0; i< this.loginCache.length; i++) {
             var cachedLogin = this.loginCache[i].loginInfo;
 
             if(loginInfo.matches(cachedLogin, false)){
-                this.loginCache[i].isUserCanceled = false;
+                userCancelled = this.loginCache[i].isUserCancelled;
                 break;
             }
         }
 
-        return userCanceled;
+        return userCancelled;
+    },
+
+    /*
+     * Reset user cancellation, usefull in case where a user want to do a new registration
+     */
+    resetUserCancellation: function(login, serverURL, httpRealm) {
+        var loginInfo = this.getLoginInfo(login, serverURL, httpRealm);
+
+        for (var i=0; i< this.loginCache.length; i++) {
+            var cachedLogin = this.loginCache[i].loginInfo;
+
+            if(loginInfo.matches(cachedLogin, false)){
+                this.loginCache[i].isUserCancelled = false;
+                break;
+            }
+        }
     },
 
     // Internal methods.
@@ -171,17 +187,17 @@ mivExchangeLoginManager.prototype = {
     cachePassword: function(loginInfo, password){
         loginInfo.password = password;
         this.loginCache.push({loginInfo: loginInfo,
-                              isUserCanceled: false});
+                              isUserCancelled: false});
     },
 
     // Create Mozilla's LoginInfo
-    getLoginInfo: function(login, serverURL, httpRealm){
+    getLoginInfo: function(login, serverURL, httpRealm, password = ""){
         return new this.nsLoginInfo(
                 serverURL, //hostname
                 "", // action URL in HTML form (blank to be ignored)
                 httpRealm, // HTTP WWW-Authenticate Basic Realm
                 login, // User name
-                "", // Password (unknown currently)
+                password, // Password (default value to "" for unkown)
                 "", // User name input field attribute HTML form
                 "" // Password input field attribute HTML form
         );

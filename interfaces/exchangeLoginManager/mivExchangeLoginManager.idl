@@ -25,8 +25,10 @@ interface mivExchangeLoginManager : nsISupports
 {
     // Return password for a specific account
     AUTF8String getPassword(in AUTF8String login, in AUTF8String serverURL, in AUTF8String httpRealm);
+    // Delete password from cache
+    void deletePassword (in AUTF8String password, in AUTF8String login, in AUTF8String serverURL, in AUTF8String httpRealm);
     // Check if user canceled password request
-    boolean isUserCanceled(in AUTF8String login, in AUTF8String serverURL, in AUTF8String httpRealm);
+    boolean isUserCancelled(in AUTF8String login, in AUTF8String serverURL, in AUTF8String httpRealm);
     // Reset user password request cancellation
     void resetUserCancellation(in AUTF8String login, in AUTF8String serverURL, in AUTF8String httpRealm);
 };
