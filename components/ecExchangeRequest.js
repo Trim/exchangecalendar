@@ -161,7 +161,7 @@ ExchangeRequest.prototype = {
 
 	get debug()
 	{
-		if ((this.debuglevel == 0) || (!this.globalFunctions.shouldLog())) {
+		if ((this.debuglevel === 0) || (!this.globalFunctions.shouldLog())) {
 			return false;
 		}
 
@@ -175,7 +175,9 @@ ExchangeRequest.prototype = {
 
 	logInfo: function _logInfo(aMsg, aLevel)
 	{
-		if (!aLevel)  aLevel = 1;
+		if (!aLevel){
+          aLevel = 1;
+        }
 
 		if ((this.debug) && (aLevel <= this.debuglevel)) {
 			this.globalFunctions.LOG(this.uuid+": "+aMsg);
@@ -203,164 +205,223 @@ ExchangeRequest.prototype = {
 		this.xmlReq.abort();
 	},
 
+  	/*
+     * sendRequest open XML HTTP Request channel, authenticate user and send data through channel
+     */
 	sendRequest: function(aData, aUrl)
 	{
+      	// Stop process while exchangecalendar is shutted down
 		if (this.shutdown) {
 			return;
 		}
-
-//		this.logInfo(": sendRequest\n");
-		this.mData = aData;
+      
+      	//////////////////////////////////
+      	// Looking for URL to send data //
+      	//////////////////////////////////
+      
 		this.currentUrl = "";
 
-		while ((!aUrl) && (this.urllist.length > 0 )) {
+      	// If no URL is given, try cached next known URL
+      	// This handle the process of AutoDiscovery while list of URLs to try is not empty
+		if ((!aUrl) && (this.urllist.length > 0 )) {
 			aUrl = this.urllist[0];
 			this.urllist.shift();
 		}
 
-		if ((!aUrl) || (aUrl == "") || (aUrl == undefined)) {
-			this.fail(this.ER_ERROR_INVALID_URL, "No url to send request to (sendRequest).");
+      	// If no URL is given and we have tried every known URL, stop process
+		if ((!aUrl) || (aUrl === "") || (aUrl === undefined)) {
+			this.fail(this.ER_ERROR_INVALID_URL,
+                      	"No known url to send request to (sendRequest).");
+			return;
+		}
+      
+      	// If previously user canceled request on the "Certification issue dialog" for this URL,
+      	// we have to not go further
+		if (this.exchangeBadCertListener2.userCanceledCertProblem(aUrl)) {
+			this.fail(this.ER_ERROR_USER_ABORT_AUTHENTICATION,
+                      	"User previously canceled adding server certificate for url=" + aUrl + ". Aborting this request.");
 			return;
 		}
 
+      	// We found an URL to send data, save it to current process
 		this.currentUrl = aUrl;
 
-		if (this.exchangeBadCertListener2.userCanceledCertProblem(this.currentUrl)) {
-			this.fail(this.ER_ERROR_USER_ABORT_AUTHENTICATION, "User canceled adding server certificate for url="+this.currentUrl+". Aborting this request.");
-			return;
-		}
+      	/////////////////////////////
+      	// Processing data to send //
+      	/////////////////////////////
+		this.mData = aData;
 
+      	//////////////////////////////////////
+      	// Looking for user authentications //
+      	//////////////////////////////////////
+      
 		// remove domain part in xmlhttprequest.open call
 		var openUser = this.mArgument.user;
-
-/*		if (openUser.indexOf("\\") > -1) {
-			openUser = openUser.substr(openUser.indexOf("\\")+1);
-		}*/
-
-
-
-		password = this.loginManager.getPassword(openUser, this.currentUrl, "");
-
+		var password = this.loginManager.getPassword(openUser, this.currentUrl, "");
+		
+      	this._notificationCallbacks = new ecnsIAuthPrompt2(this);
+      
+      	////////////////////////////////////////////////////
+      	// Sending data through standard XML HTTP Request //
+      	////////////////////////////////////////////////////
+      
 		this.xmlReq = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance();
-
 		this.mXmlReq = this.xmlReq;
 
-		var tmp = this;
+      	// Prepare XML Request for current process
+		var currentEcRequest = this;
 
 		// http://dvcs.w3.org/hg/progress/raw-file/tip/Overview.html
 		// https://developer.mozilla.org/en/XPCOM_Interface_Reference/nsIXMLHttpRequestEventTarget
-		this.xmlReq.addEventListener("loadstart", function(evt) { tmp.loadstart(evt); }, false);
-		this.xmlReq.addEventListener("progress", function(evt) { tmp.progress(evt); }, false);
-		this.xmlReq.addEventListener("error", function(evt) { tmp.error(evt); }, false);
-		this.xmlReq.addEventListener("abort", function(evt) { tmp.abort(evt); }, false);
-		this.xmlReq.addEventListener("load", function(evt) { tmp.onLoad(evt); }, false);
-		this.xmlReq.addEventListener("loadend", function(evt) { tmp.loadend(evt); }, false);
+		this.xmlReq.addEventListener("loadstart", function(evt) { currentEcRequest.loadstart(evt); }, false);
+		this.xmlReq.addEventListener("progress", function(evt) { currentEcRequest.progress(evt); }, false);
+		this.xmlReq.addEventListener("error", function(evt) { currentEcRequest.error(evt); }, false);
+		this.xmlReq.addEventListener("abort", function(evt) { currentEcRequest.abort(evt); }, false);
+		this.xmlReq.addEventListener("load", function(evt) { currentEcRequest.onLoad(evt); }, false);
+		this.xmlReq.addEventListener("loadend", function(evt) { currentEcRequest.loadend(evt); }, false);
 
-		if (this.debug) this.logInfo(": 1 ExchangeRequest.sendRequest : user="+this.mArgument.user+", url="+this.currentUrl);
+		if (this.debug) {
+          this.logInfo(": 1 ExchangeRequest.sendRequest : user="+this.mArgument.user+", url="+this.currentUrl);
+        }
 
-		this._notificationCallbacks = new ecnsIAuthPrompt2(this);
-
+      	// Now, try to connect with found authentication datas
+      	// Note, that the "error" listener will try to recover connection if possible
 		try {
-
-//				this.xmlReq.open("POST", this.currentUrl, true);
+			// If a password is already known, we can try basic authentication diretcly.
 			if (password) {
-				if (this.debug) this.logInfo("We have a prePassword: *******");
+				if (this.debug){
+                  this.logInfo("We have a prePassword: *******");
+                }
+              
 				this.xmlReq.open("POST", this.currentUrl, true, openUser, password);
 
 				// If we have full credentials we are going to add a Basic auth header just for the case we support Basic.
 				var tok = openUser + ':' + password;
 				var basicAuthHash = btoa(tok);
 				this.xmlReq.setRequestHeader('Authorization', "Basic " + basicAuthHash);
-				
-				//this.xmlReq.open("POST", this.currentUrl, true, this.mArgument.user, password);
 			}
 			else {
-				this.xmlReq.open("POST", this.currentUrl, true, openUser);
-				//this.xmlReq.open("POST", this.currentUrl, true, this.mArgument.user);
+              	// If we don't have a password, we need to ask user a password
+                // Before doing this, we open the URL to get the NTML token
+              	// The notification callback will detect this request and ask to user to authenticate
+				this.xmlReq.open("POST", this.currentUrl, true);
 			}
 
 		}
 		catch(err) {
-			dump("\n ERROR sendrequest:"+err+"\n");
-			if (this.debug) this.logInfo(": ERROR on ExchangeRequest.sendRequest to URL:"+this.currentUrl+". err:"+err); 
+			if (this.debug){
+          		this.logInfo(": ERROR on ExchangeRequest.sendRequest to URL:" + this.currentUrl + ". err:" + err);
+            }
 
+      		// TODO: Documentation
 			if (this.tryNextURL()) {
 				return;
 			}
 
-			this.fail(this.ER_ERROR_OPEN_FAILED,"Could not connect to specified host:"+err);
+			this.fail(this.ER_ERROR_OPEN_FAILED,"Could not connect to specified host:" + err);
 			return;
 		}
 
+      	// Update HTTP Headers
 		this.xmlReq.overrideMimeType('text/xml');
 		this.xmlReq.setRequestHeader("Content-Type", "text/xml");
-//		this.xmlReq.setRequestHeader("User-Agent", "extensions.1st-setup.nl/" + gExchangeRequestVersion+"/username="+this.mArgument.user);
 		this.xmlReq.setRequestHeader("User-Agent", this.globalFunctions.safeGetCharPref(this.prefB, "extensions.1st-setup.others.userAgent", "exchangecalendar@extensions.1st-setup.nl", true));
 
 		// This is required for NTLM authenticated sessions. Which is default for a default EWS install.
 		this.xmlReq.setRequestHeader("Connection", "keep-alive");
 
-		/* set channel notifications for password processing */
+		// Set channel notifications for password processing
 		this.xmlReq.channel.notificationCallbacks = this._notificationCallbacks;
 		this.xmlReq.channel.loadGroup = null;
 
 		var httpChannel = this.xmlReq.channel.QueryInterface(Ci.nsIHttpChannel);
 
-		// XXX we want to preserve POST across 302 redirects TODO: This might go away because header params are copyied right now.
+		// XXX we want to preserve POST across 302 redirects
+        // TODO: This might go away because header params are copyied right now.
 		httpChannel.redirectionLimit = 0;
-try{
-		httpChannel.allowPipelining = false;
-}
-catch(err) {
-		this.logInfo("sendRequest: ERROR on httpChannel.allowPipelining to err:"+err); 
-}
+		try{
+			httpChannel.allowPipelining = false;
+        }
+        catch(err) {
+        	this.logInfo("sendRequest: ERROR on httpChannel.allowPipelining to err:" + err); 
+        }
 
-		if (this.debug) this.logInfo(": sendRequest Sending: " + this.mData+"\n", 2);
+		if (this.debug){
+          	this.logInfo(": sendRequest Sending: " + this.mData+"\n", 2);
+        }
 
-		//this.exchangeStatistics.addDataSend(this.currentUrl, this.mData.length);
-
+		// Finally, send data through data channel
 		this.xmlReq.send(this.mData);
 	},
 
+  	/*
+     * loadstart: XML HTTP Request callback
+     */
 	loadstart: function _loadtstart(evt)
 	{
-		if (this.debug) this.logInfo(": ExchangeRequest.loadstart");
+		if (this.debug){
+          this.logInfo(": ExchangeRequest.loadstart");
+        }
+      
 		this.shutdown = false;
 		this.badCert = false;
 	},
 
+  	/*
+     * loadend: XML HTTP Request callback
+     */
 	loadend: function _loadend(evt)
 	{
-		if (this.debug) this.logInfo(": ExchangeRequest.loadend");
+		if (this.debug){
+          this.logInfo(": ExchangeRequest.loadend");
 
-		let xmlReq = this.mXmlReq;
-
-		if (this.debug) this.logInfo(": ExchangeRequest.loadend :"+evt.type+", readyState:"+xmlReq.readyState+", status:"+xmlReq.status);
-		if (this.debug) this.logInfo(": ExchangeRequest.loadend :"+xmlReq.responseText,2);
+          let xmlReq = this.mXmlReq;
+          this.logInfo(": ExchangeRequest.loadend:" + evt.type+", readyState:" + xmlReq.readyState+", status:"+xmlReq.status);
+		  this.logInfo(": ExchangeRequest.loadend:" + xmlReq.responseText,2);
+        }
 
 	},
 
+  	/*
+     * progress: XML HTTP Request callback
+     */
 	progress: function _progress(evt)
 	{
-		if (this.debug) this.logInfo(": ExchangeRequest.progress. loaded:"+evt.loaded+", total:"+evt.total);
+		if (this.debug){
+          this.logInfo(": ExchangeRequest.progress. loaded:"+evt.loaded+", total:"+evt.total);
+        }
 	},
 
+  	/*
+     * error: XML HTTP Request callback
+     *
+     * Depending on error received try to recover if possible
+     */
 	error: function _error(evt)
 	{
 		let xmlReq = this.mXmlReq;
 
-		if (this.debug) this.logInfo(": ExchangeRequest.error :"+evt.type+", readyState:"+xmlReq.readyState+", status:"+xmlReq.status+", lastStatus:"+this._notificationCallbacks.lastStatus);
-		if (this.debug) this.logInfo(": ExchangeRequest.error :"+xmlReq.responseText,2);
-		if (this.debug) this.logInfo(': xmlReq.getResponseHeader("Location") :'+xmlReq.getResponseHeader("Location"),2);
+		if (this.debug){
+          this.logInfo(": ExchangeRequest.error :"+evt.type+", readyState:"+xmlReq.readyState+", status:"+xmlReq.status+", lastStatus:"+this._notificationCallbacks.lastStatus);
+		  this.logInfo(": ExchangeRequest.error :"+xmlReq.responseText,2);
+		  this.logInfo(': xmlReq.getResponseHeader("Location") :'+xmlReq.getResponseHeader("Location"),2);
+        }
 
-		if ((!this.shutdown) && (xmlReq.readyState == 4) && (xmlReq.status == 0)) {
-			this.logInfo(": ExchangeRequest.error : badCert going to check if it is a cert problem.");
-try {
-			var result = this.exchangeBadCertListener2.checkAndSolveCertProblem(this.currentUrl);
-}
-catch(err){
-			this.logInfo(": ExchangeRequest.error : this.exchangeBadCertListener2.checkAndSolveCertProblem Error:"+err);
-}
+        //////////////////////////////////////////////////////
+      	// Check if error is related to certification issue //
+      	//////////////////////////////////////////////////////
+      
+		if ((!this.shutdown) && (xmlReq.readyState === 4) && (xmlReq.status === 0)) {
+			this.logInfo(": ExchangeRequest.error : badCert received, going to check if it is a cert problem.");
+          
+          	var result = null;
+			try {
+				result = this.exchangeBadCertListener2.checkAndSolveCertProblem(this.currentUrl);
+			}
+			catch(err){
+				this.logInfo(": ExchangeRequest.error : this.exchangeBadCertListener2.checkAndSolveCertProblem Error:"+err);
+			}
+          
 			if (result.hadProblem) {
 				if (result.solved) {
 					this.logInfo(": ExchangeRequest.error : badCert problem but solved. going to retry url.");
@@ -376,10 +437,21 @@ catch(err){
 			}
 		}
 
-		if (this.isHTTPRedirect(evt)) return;
+      	// TODO: Documentation
+		if (this.isHTTPRedirect(evt)){
+          return;
+        }
 
-		if (this.tryNextURL()) return;
+      	// TODO: Documenatation
+		if (this.tryNextURL()){
+          return;
+        }
 
+        /////////////////////////
+      	// TODO Documeantation //
+      	/////////////////////////
+       
+        // NotificationCallbacks is nsIAuthPrompt2
 		this.observerService.notifyObservers(this._notificationCallbacks, "onExchangeConnectionError", this.currentUrl+"|"+this._notificationCallbacks.lastStatus+"|"+this._notificationCallbacks.lastStatusArg);
 
 		switch (this._notificationCallbacks.lastStatus) {
@@ -419,15 +491,15 @@ catch(err){
 		}
 
 	},
-
+  
+  	/*
+     * abort: XML HTTP Request callback
+     */
 	abort: function _abort(evt)
 	{
-		if (this.debug) this.logInfo("ExchangeRequest.abort: type:"+evt.type);
-		if (evt.type != "abort") {
-			if (this.debug) this.logInfo("ecExchangeRequest.abort: "+evt.type);
-		}
-		dump("Abort!\n");
-//		this.fail(-3, "User aborted data transfer.");
+		if (this.debug) {
+          this.logInfo("ExchangeRequest.abort: type:"+evt.type);
+        }
 	},
 
 	onUserStop: function _onUserStop(aCode, aMsg)
@@ -437,38 +509,55 @@ catch(err){
 		this.fail(aCode, aMsg);
 	},
 
+	/*
+     * isHTTPRedirect: check if URL has bee redirected and if we can update current request
+     */
 	isHTTPRedirect: function(evt)
 	{
 		let xmlReq = this.mXmlReq;
-		if (this.debug) this.logInfo("exchangeRequest.isHTTPRedirect.xmlReq. xmlReq.readyState:"+xmlReq.readyState+", xmlReq.status:"+xmlReq.status);
+      
+		if (this.debug){
+          this.logInfo("exchangeRequest.isHTTPRedirect.xmlReq. xmlReq.readyState:"+xmlReq.readyState+", xmlReq.status:"+xmlReq.status);
+        }
 
-		if (xmlReq.readyState != 4)
+        //TODO: Documentation
+		if (xmlReq.readyState != 4){
 			return false;
+        }
 
 		switch (xmlReq.status) {
 		case 301:  // Moved Permanently
 		case 302:  // Found
 		case 307:  // Temporary redirect (since HTTP/1.1)
-			if (this.debug) this.logInfo(": ExchangeRequest.redirect :"+evt.type+", readyState:"+xmlReq.readyState+", status:"+xmlReq.status);
+			if (this.debug){
+              this.logInfo(": ExchangeRequest.redirect :"+evt.type+", readyState:"+xmlReq.readyState+", status:"+xmlReq.status);
+            }
 
 			let httpChannel = xmlReq.channel.QueryInterface(Ci.nsIHttpChannel);
 			let loc = httpChannel.getResponseHeader("Location");
 
 			// The location could be a relative path
-			if (loc.indexOf("http") == -1) {
-				if (this.debug) this.logInfo("new location looks to be relative.");
-				if (loc.indexOf("/") == 0) {
-					if (this.debug) this.logInfo("Relative to the root of the server.");
+			if (loc.indexOf("http") === -1) {
+				if (this.debug){
+                  this.logInfo("new location looks to be relative.");
+                }
+              
+				if (loc.indexOf("/") === 0) {
+					if (this.debug) {
+                      	this.logInfo("Relative to the root of the server.");
+                    }
+                  
 					// Relative to the root of the server
-					//Find position of third slash https://xxx/
+					// Find position of third slash https://xxx/
 					var slashCounter = 0;
 					var counter = 0;
+                  	var tmpUrl = null;
 					while ((slashCounter < 3) && (counter < this.currentUrl.length)) {
 						if (this.currentUrl.substr(counter, 1) == "/") {
 							slashCounter++;
 
 							if (slashCounter == 3) {
-								var tmpUrl = this.currentUrl.substr(0, counter);
+								tmpUrl = this.currentUrl.substr(0, counter);
 								break;
 							}
 						}
@@ -483,15 +572,19 @@ catch(err){
 				}
 				else {
 					// Relative to last dir.
-					if (this.debug) this.logInfo("it is relative to the last dir. Currently not able to handle this. Will be available in future version.");
+					if (this.debug){
+                      this.logInfo("it is relative to the last dir. Currently not able to handle this.");
+                    }
 				}
 			}
 
-			if (this.debug) this.logInfo(": Redirect: " + loc + "\n");
+			if (this.debug){
+            	this.logInfo(": Redirect: " + loc + "\n");
+            }
 
-                        // XXX pheer loops.
-                        xmlReq.abort();
-                        this.sendRequest(this.mData, loc);
+            // XXX pheer loops.
+            xmlReq.abort();
+          	this.sendRequest(this.mData, loc);
 
 			return true;
 		}
@@ -724,7 +817,6 @@ try {
 			this.originalReq = null;
 		}
 
-//dump(" stat: time1:"+(time2-time1)+", time2:"+(time4-time3)+"\n");
 		newXML = null;
 
 		this.observerService.notifyObservers(this._notificationCallbacks, "onExchangeConnectionOk", this.currentUrl);
