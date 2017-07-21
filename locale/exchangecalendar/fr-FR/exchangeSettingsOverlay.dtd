@@ -1,9 +1,9 @@
 <!-- ExchangeCalendar Authentication (ecauth) setting -->
 
 <!ENTITY ecauth.description "exchangecalendar requires to authenticate you with the Exchange Web Service provided by your company Exchange Infrastructure.">
-<!ENTITY ecauth.username "Username:">
+<!ENTITY ecauth.username "Username">
 <!ENTITY ecauth.username.placeholder "user@example.com">
-<!ENTITY ecauth.password "Password:">
+<!ENTITY ecauth.password "Password">
 
 <!ENTITY ecauth.details "Details">
 <!ENTITY ecauth.configuration "Server configuration">
@@ -17,9 +17,11 @@
 
 <!ENTITY ecfolderselect.description "exchangecalendar needs to select a folder to look for data. You can choose a calendar or a task folder.">
 <!ENTITY ecfolderselect.owner "Owner">
+<!ENTITY ecfolderselect.sahredid "Share Folder Id">
 <!ENTITY ecfolderselect.folderlookfor "Look for available owner folders">
 <!ENTITY ecfolderselect.folderroot "Root folder">
 <!ENTITY ecfolderselect.folderpath "Subfolder path">
+<!ENTITY ecfolderselect.folderpathbrowse "Browse">
 
 <!-- TODO: Remove after replace with new labels -->
 <!ENTITY ecautodiscover "Use Exchange's autodiscovery function.">
