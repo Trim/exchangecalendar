@@ -220,7 +220,169 @@
 
 	<!-- Simplified folder selection dialog -->
 	<vbox id="exchangesettings-ecfolderselect">
+		<grid flex="1">
+			<columns>
+				<column />
+				<column flex="1"/>
+			</columns>
 
+			<rows>
+				<row align="center">
+					<label value="&ecfolderselect.owner;"
+						control="ecmailbox"/>
+
+					<textbox id="ecfolderselect-owner"
+						required="true"
+						oninput="tmpSettingsOverlay.exchWebServicesDoMailboxChanged(this);"
+						placeholder="&ecauth.username.placeholder;"/>
+				</row>
+
+				<row align="center">
+					<label value="&ecfolderselect.sahredid;"
+						control="ecfolderidofshare"/>
+
+					<textbox id="ecfolderselect-sharedfolderid"
+						required="false"
+						oninput="tmpSettingsOverlay.exchWebServicesDoFolderIdOfShareChanged(this);"/>
+				</row>
+
+				<!-- Button to query available folders of owner -->
+				<row align="center">
+
+					<label value=""/>
+
+					<button id="ecfolderselect-folderlookfor"
+						label="&ecfolderselect.folderlookfor;"
+						oncommand="tmpSettingsOverlay.exchWebServicesDoCheckServerAndMailbox();"/>
+				</row>
+
+				<!-- Discovered folder list -->
+				<row align="center">
+
+					<label value="&ecfolderselect.folderroot;"
+						control="ecfolderbase"/>
+
+					<menulist id="ecfolderselect-rootfolder"
+						value="1"
+						oncommand="tmpSettingsOverlay.exchWebServicesDoFolderBaseChanged(this);">
+
+						<menupopup>
+							<menuitem id="menuitem.label.ecfolderbase.calendar"
+								label="&menuitem.label.ecfolderbase.calendar;"
+								value="calendar"/>
+							<menuitem id="menuitem.label.ecfolderbase.tasks"
+								label="&menuitem.label.ecfolderbase.tasks;"
+								value ="tasks"/>
+							<menuitem id="menuitem.label.ecfolderbase.publicfoldersroot"
+								label="&menuitem.label.ecfolderbase.publicfoldersroot;"
+								value ="publicfoldersroot"/>
+							<menuitem id="menuitem.label.ecfolderbase.inbox"
+								label="&menuitem.label.ecfolderbase.inbox;"
+								value ="inbox"/>
+							<menuitem id="menuitem.label.ecfolderbase.voicemail"
+								label="&menuitem.label.ecfolderbase.voicemail;"
+								value ="voicemail"/>
+
+							<menuitem id="menuitem.label.ecfolderbase.msgfolderroot"
+								label="&menuitem.label.ecfolderbase.msgfolderroot;"
+								value ="msgfolderroot"/>
+							<menuitem id="menuitem.label.ecfolderbase.root"
+								label="&menuitem.label.ecfolderbase.root;"
+								value ="root"/>
+							<menuitem id="menuitem.label.ecfolderbase.contacts"
+								label="&menuitem.label.ecfolderbase.contacts;"
+								value ="contacts"/>
+							<menuitem id="menuitem.label.ecfolderbase.deleteditems"
+								label="&menuitem.label.ecfolderbase.deleteditems;"
+								value ="deleteditems"/>
+							<menuitem id="menuitem.label.ecfolderbase.drafts"
+								label="&menuitem.label.ecfolderbase.drafts;"
+								value ="drafts"/>
+							<menuitem id="menuitem.label.ecfolderbase.journal"
+								label="&menuitem.label.ecfolderbase.journal;"
+								value ="journal"/>
+							<menuitem id="menuitem.label.ecfolderbase.notes"
+								label="&menuitem.label.ecfolderbase.notes;"
+								value ="notes"/>
+							<menuitem id="menuitem.label.ecfolderbase.outbox"
+								label="&menuitem.label.ecfolderbase.outbox;"
+								value ="outbox"/>
+							<menuitem id="menuitem.label.ecfolderbase.sentitems"
+								label="&menuitem.label.ecfolderbase.sentitems;"
+								value ="sentitems"/>
+							<menuitem id="menuitem.label.ecfolderbase.junkemail"
+								label="&menuitem.label.ecfolderbase.junkemail;"
+								value ="junkemail"/>
+							<menuitem id="menuitem.label.ecfolderbase.searchfolders"
+								label="&menuitem.label.ecfolderbase.searchfolders;"
+								value ="searchfolders"/>
+
+							<!-- Exchange 2010 Server folders-->
+							<menuitem id="menuitem.label.ecfolderbase.version2010"
+								label="&menuitem.label.ecfolderbase.version2010;"
+								disabled="true"
+								value ="searchfolders"
+								donotchange="true"/>
+							<menuitem id="menuitem.label.ecfolderbase.recoverableitemsroot"
+								label="&menuitem.label.ecfolderbase.recoverableitemsroot;"
+								value ="recoverableitemsroot"/>
+							<menuitem id="menuitem.label.ecfolderbase.recoverableitemsdeletions"
+								label="&menuitem.label.ecfolderbase.recoverableitemsdeletions;"
+								value ="recoverableitemsdeletions"/>
+							<menuitem id="menuitem.label.ecfolderbase.recoverableitemsversion"
+								label="&menuitem.label.ecfolderbase.recoverableitemsversion;"
+								value ="recoverableitemsversion"/>
+							<menuitem id="menuitem.label.ecfolderbase.recoverableitemspurges"
+								label="&menuitem.label.ecfolderbase.recoverableitemspurges;"
+								value ="recoverableitemspurges"/>
+							<menuitem id="menuitem.label.ecfolderbase.archiveroot"
+								label="&menuitem.label.ecfolderbase.archiveroot;"
+								value ="archiveroot"/>
+							<menuitem id="menuitem.label.ecfolderbase.archivemsgfolderroot"
+								label="&menuitem.label.ecfolderbase.archivemsgfolderroot;"
+								value ="archivemsgfolderroot"/>
+							<menuitem id="menuitem.label.ecfolderbase.archivedeleteditems"
+								label="&menuitem.label.ecfolderbase.archivedeleteditems;"
+								value ="archivedeleteditems"/>
+							<menuitem id="menuitem.label.ecfolderbase.archiverecoverableitemsroot"
+								label="&menuitem.label.ecfolderbase.archiverecoverableitemsroot;"
+								value ="archiverecoverableitemsroot"/>
+							<menuitem id="menuitem.label.ecfolderbase.Archiverecoverableitemsdeletions"
+								label="&menuitem.label.ecfolderbase.Archiverecoverableitemsdeletions;"
+								value ="Archiverecoverableitemsdeletions"/>
+							<menuitem id="menuitem.label.ecfolderbase.Archiverecoverableitemsversions"
+								label="&menuitem.label.ecfolderbase.Archiverecoverableitemsversions;"
+								value ="Archiverecoverableitemsversions"/>
+							<menuitem id="menuitem.label.ecfolderbase.Archiverecoverableitemspurges"
+								label="&menuitem.label.ecfolderbase.Archiverecoverableitemspurges;"
+								value ="Archiverecoverableitemspurges"/>
+						</menupopup>
+					</menulist>
+				</row>
+
+				<!-- Subfolder path -->
+				<row align="center">
+
+					<label value="&ecfolderselect.folderpath;"
+						control="ecfolderpath"/>
+
+					<hbox align="center">
+						<label id="ecfolderselect-folderpath"
+							value="/"
+							flex="1"/>
+
+						<button id="ecfolderselect-folderpath-button"
+							label="&ecfolderselect.folderpathbrowse;"
+							oncommand="tmpSettingsOverlay.exchWebServicesDoFolderBrowse();"/>
+					</hbox>
+				</row>
+			</rows>
+
+			<label id="ecfolderselect-useravailability"
+				flex="1"
+				value="&exchWebServices.UserAvailability.label;"
+				collapsed="true" />
+		</grid>
 	</vbox>
 </overlay>
 

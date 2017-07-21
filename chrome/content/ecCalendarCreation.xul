@@ -88,11 +88,11 @@
 		<wizardpage pageid = "ecfolderselect-wizardpage"
 			next = "finishPage"
 			label = "&wizard.label;"
-			description = "&exchange1.description;"
+			description = "&ecfolderselect.description;"
 			onpageshow = "checkRequired();tmpCalendarCreation.initExchange1();"
 			onpageadvanced = "tmpCalendarCreation.saveSettings();">
 
-			<vbox id="exchWebService-exchange-settings" />
+			<vbox id="exchangesettings-ecfolderselect" />
 		</wizardpage>
 	</wizard>
 
