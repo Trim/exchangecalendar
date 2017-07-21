@@ -75,21 +75,86 @@ exchSettingsOverlay.prototype = {
 	exchWebServicesgFolderID : "",
 	exchWebServicesgChangeKey : "",
 
-	exchWebServicesValidUsernameDomain: function _exchWebServicesValidUsernameDomain()
-	{
-		return true;
+	// Simplified dialogs field
+	ecAuthSettingsValidated: false,
+	ecAuthUserName: null,
+	ecAuthPassword: null,
+	ecAuthAutoDiscovery = null,
+	ecAuthWebServiceURL = null,
 
-	/*	if ((this._document.getElementById("exchWebService_windowsuser").value.indexOf("@") > -1) &&
-			(this._document.getElementById("exchWebService_windowsdomain").value == "")) {
-			return true;
+	exchWebServicesValidateUsername: function _exchWebServicesValidateUsername( aTextboxId ) {
+		let isValidUser = false;
+		let currentUsername = this._document.getElementById(aTextboxId).value;
+
+		let splittedUsername = currentUsername.split("@") ;
+
+		// Valid user has one and only one arobase
+		if (splittedUsername.length === 2
+			&& splittedUsername[0] !== ""
+			&& splittedUsername[1] !== "") {
+			isValidUser = true;
 		}
 
-		if ((this._document.getElementById("exchWebService_windowsuser").value.indexOf("@") == -1) &&
-			(this._document.getElementById("exchWebService_windowsdomain").value != "")) {
-			return true;
+		// TODO Raise explicit error (username)
+
+		return isValidUser ;
+	},
+
+	ecAuthGetSettings: function _ecAuthGetSettings(){
+		this.ecAuthUserName = this._document.getElementById("ecauth-username").value;
+		this.ecAuthPassword = this._document.getElementById("ecauth-password").value;
+		this.ecAuthAutoDiscovery = this._document.getElementById("ecauth-configuration-type").value;
+		this.ecAuthWebServiceURL = this._document.getElementById("ecauth-exchangewebservice").value;
+
+		// TODO Check how Autodiscovery work to be sure that this address can be used to autodiscover
+		this.exchWebServicesgMailbox = this.ecAuthUserName;
+	}
+
+
+	ecAuthValidate: function _ecAuthValidate() {
+		let isSanityChecked = false;
+
+		this.ecAuthGetSettings();
+		this.ecAuthSettingsValidated = false;
+
+
+		// First check settings are sanity
+		// (basicly, user name, password and URL are filled)
+
+		if (this.exchWebServicesValidationUsername("ecauth-username")
+			&& this._document.getElementById("ecauth-password").value !== ""){
+
+			// Then let continue if auto discovering is selected or if exchange web service URL is setted
+			if (this.ecAuthAutoDiscovery === "autodiscovery") {
+				isSanityChecked = true ;
+			}
+			else {
+				if (this.ecAuthWebServiceURL !== "") {
+					try {
+						let ioServ = Cc["@mozilla.org/network/io-service;1"]
+							.getService(Ci.nsIIOService) ;
+
+						// Raise NS_ERROR_MALFORMED_URI in case of error
+						let validURI = ioServ.newURI(this.ecAuthWebServiceURL);
+
+						isSanityChecked = (this.ecAuthWebServiceURL.indexOf("https://") > -1
+							|| this.ecAuthWebServiceURL.indexOf("http://") > -1);
+					} catch (err) {
+						// TODO raise explicit error (webservice URI)
+						isSanityChecked = false;
+					}
+				}
+			}
 		}
 
-		return false; */
+		// Secondly, try to connect to validate all settings
+		if (isSanityChecked) {
+
+
+
+		}
+
+		return this.ecAuthSettingsValidated;
 	},
 
 	exchWebServicesCheckRequired: function _exchWebServicesCheckRequired() {
@@ -968,4 +1033,4 @@ exchSettingsOverlay.prototype = {
 			};
 	},
 }
-var tmpSettingsOverlay = new exchSettingsOverlay(document, window);
+var ecSettingsOverlay = new exchSettingsOverlay(document, window);
