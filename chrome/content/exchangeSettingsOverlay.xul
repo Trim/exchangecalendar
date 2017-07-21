@@ -39,12 +39,14 @@
 -->
 
 <!DOCTYPE dialog [
-    <!ENTITY % dtd1 SYSTEM "chrome://exchangecalendar/locale/exchangeSettingsOverlay.dtd" > %dtd1;
+	<!ENTITY % ecExchangeSettings SYSTEM "chrome://exchangecalendar/locale/exchangeSettingsOverlay.dtd" >
+	%ecExchangeSettings;
 ]>
-<overlay id="calendarCreation"
-         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-    <script type="application/javascript" src="chrome://exchangecalendar/content/exchangeSettingsOverlay.js"/> 
+<overlay id="calendarCreation"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+	<script type="application/javascript" src="chrome://exchangecalendar/content/exchangeSettingsOverlay.js"/>
 
 	<!-- Legacy setting dialog -->
 	<!-- TODO: Remove when all dialogs use simplified interface -->
