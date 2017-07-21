@@ -85,7 +85,8 @@ exchCalendarCreation.prototype = {
 
 			this._document.getElementById("calendar-uri").value = "https://auto/"+this.globalFunctions.getUUID();
 			this._document.getElementById("calendar-uri").setAttribute("disabled",true);
-			
+			this._document.getElementById("calendar-uri").parentNode.setAttribute("collapsed", true);
+
 			this._document.getElementById("cache").parentNode.hidden = true;
 			this._document.getElementById("cache").checked = false;
 			var temp = this._document.getElementById("cache").parentNode.parentNode;
@@ -99,6 +100,7 @@ exchCalendarCreation.prototype = {
 		else {
 			this._document.getElementById("calendar-uri").value = "";
 			this._document.getElementById("calendar-uri").removeAttribute("disabled",false);
+			this._document.getElementById("calendar-uri").parentNode.setAttribute("collapsed", false);
 
 			// Get the next page to set back  how it should advance.
 			var aCustomizePage = this._document.getElementById('calendar-wizard').getPageById("customizePage");
