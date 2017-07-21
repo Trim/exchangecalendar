@@ -39,39 +39,62 @@
 -->
 
 <!DOCTYPE dialog [
-    <!ENTITY % dtd1 SYSTEM "chrome://calendar/locale/calendarCreation.dtd" > %dtd1;
-    <!ENTITY % dtd2 SYSTEM "chrome://calendar/locale/calendar.dtd" > %dtd2;
-    <!ENTITY % dtd3 SYSTEM "chrome://exchangecalendar/locale/ecCalendarCreation.dtd" > %dtd3;
+	<!ENTITY % lightningCalendarCreation SYSTEM "chrome://calendar/locale/calendarCreation.dtd" >
+	%lightningCalendarCreation;
+
+	<!ENTITY % lightningCalendar SYSTEM "chrome://calendar/locale/calendar.dtd" >
+	%lightningCalendar;
+
+	<!ENTITY % ecCalendarCreation SYSTEM "chrome://exchangecalendar/locale/ecCalendarCreation.dtd" >
+	%ecCalendarCreation;
+
+	<!ENTITY % ecSettingsOverlay SYSTEM "chrome://exchangecalendar/locale/exchangeSettingsOverlay.dtd" >
+	%ecSettingsOverlay;
 ]>
+
 <?xul-overlay href="chrome://exchangecalendar/content/exchangeSettingsOverlay.xul"?>
 
 <overlay id="calendarCreation"
-         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-	
-    <script type="application/javascript" src="chrome://exchangecalendar/content/ecCalendarCreation.js"/>
-    <script type="application/javascript" src="chrome://gdata-provider/content/gdata-calendar-creation.js"/>  
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-    <radiogroup id="calendar-format" onselect="tmpCalendarCreation.doRadioExchangeCalendar(this.value);">
-	<vbox>
-	        <radio value="exchangecalendar" label="Microsoft Exchange 2007/2010/2013" id="exchWebService-radioexchangecalendar" />
-		<hbox id="exchange-cache-row" hidden="true">
-			<checkbox hidden="true" checked="true" id="exchange-cache" control="calendar-uri" label="&exchange.cache.label;"/>
-		</hbox>
-	</vbox>
-    </radiogroup>
+	<script type="application/javascript" src="chrome://exchangecalendar/content/ecCalendarCreation.js"/>
 
+	<!-- Add exchange calendar in network calendar format dialog -->
+	<radiogroup id="calendar-format" onselect="tmpCalendarCreation.doRadioExchangeCalendar(this.value);">
+		<vbox>
+			<radio value="exchangecalendar"
+				label="Microsoft Exchange 2007/2010/2013"
+				id="exchWebService-radioexchangecalendar" />
+			<hbox id="exchange-cache-row" hidden="true">
+				<checkbox hidden="true" checked="true" id="exchange-cache" control="calendar-uri" label="&exchange.cache.label;"/>
+			</hbox>
+		</vbox>
+	</radiogroup>
 
-<wizard id="calendar-wizard" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-   <wizardpage pageid="exchWebService_exchange1"
-               next="finishPage"
-               label="&wizard.label;"
-               description="&exchange1.description;"
-               onpageshow="checkRequired();tmpCalendarCreation.initExchange1();"
-               onpageadvanced="tmpCalendarCreation.saveSettings();">
+	<!-- Add extra pages to configure Exchange Web Service -->
+	<wizard id="calendar-wizard" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-	<vbox id="exchWebService-exchange-settings"/>
-   </wizardpage>
-</wizard>
+		<!-- Simplified authentication page -->
+		<wizardpage pageid = "ecauth-wizardpage"
+			next = "ecfolderselect-wizardpage"
+			label = "&wizard.label;"
+			description = "&ecauth.description;"
+			onpageshow = ""
+			onpageadvanced = "return true;" >
+
+			<vbox id = "exchangesettings-ecauthentication" />
+		</wizardpage>
+
+		<wizardpage pageid = "ecfolderselect-wizardpage"
+			next = "finishPage"
+			label = "&wizard.label;"
+			description = "&exchange1.description;"
+			onpageshow = "checkRequired();tmpCalendarCreation.initExchange1();"
+			onpageadvanced = "tmpCalendarCreation.saveSettings();">
+
+			<vbox id="exchWebService-exchange-settings" />
+		</wizardpage>
+	</wizard>
 
 </overlay>
 
