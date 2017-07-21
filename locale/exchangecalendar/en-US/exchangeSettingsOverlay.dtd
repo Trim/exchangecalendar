@@ -1,8 +1,34 @@
+<!-- ExchangeCalendar Authentication (ecauth) setting -->
+
+<!ENTITY ecauth.description "exchangecalendar requires to authenticate you with the Exchange Web Service provided by your company Exchange Infrastructure.">
+<!ENTITY ecauth.username "Username:">
+<!ENTITY ecauth.username.placeholder "user@example.com">
+<!ENTITY ecauth.password "Password:">
+
+<!ENTITY ecauth.details "Details">
+<!ENTITY ecauth.configuration "Server configuration">
+<!ENTITY ecauth.configurationdiscovery "Automatic configuration discovery">
+<!ENTITY ecauth.configurationmanual "Manuel set Exchange Web Service URL">
+<!ENTITY ecauth.exchangewebservice "Exchange Web Service URL">
+
+<!ENTITY ecauth.checksettings "Check settings">
+
+<!-- ExchangeCalendar Folder selection (ecfolderselect) -->
+
+<!ENTITY ecfolderselect.description "exchangecalendar needs to select a folder to look for data. You can choose a calendar or a task folder.">
+<!ENTITY ecfolderselect.owner "Owner">
+<!ENTITY ecfolderselect.folderlookfor "Look for available owner folders">
+<!ENTITY ecfolderselect.folderroot "Root folder">
+<!ENTITY ecfolderselect.folderpath "Subfolder path">
+
+<!-- TODO: Remove after replace with new labels -->
 <!ENTITY ecautodiscover "Use Exchange's autodiscovery function.">
 <!ENTITY ecfolderbase.label "Folder base:">
 <!ENTITY ecfolderpath.label "Path below folder base:">
 <!ENTITY ecfolderidofshare.label "Share Folder ID:">
 <!ENTITY exchWebServices.SharedFolderID.label "Shared display name:">
+
+<!-- Folder names -->
 
 <!ENTITY menuitem.label.ecfolderbase.calendar "Calendar folder">
 <!ENTITY menuitem.label.ecfolderbase.publicfoldersroot "Public folders">
@@ -34,23 +60,27 @@
 <!ENTITY menuitem.label.ecfolderbase.Archiverecoverableitemsversions "Archive recoverable items versions folder">
 <!ENTITY menuitem.label.ecfolderbase.Archiverecoverableitemspurges "Archive recoverable items purges folder">
 
+<!-- TODO: Remove after replace with new settings -->
 <!ENTITY button.label.autodiscovercheck "Perform autodiscovery">
 <!ENTITY button.label.serverandmailboxcheck "Check server and mailbox">
 <!ENTITY button.label.servercheck "Check server and account">
 
+<!-- TODO: Remove after replace with new labels -->
 <!ENTITY ecmailbox.label "Primary email address:">
 <!ENTITY ecmailbox.tooltip "If you do not specify a mailbox you will only have access to public folders.">
 <!ENTITY ecwindowsuser.label "Username:">
 <!ENTITY ecwindowsdomain.label "Domain name:">
 <!ENTITY ecwindowspassword.label "Password:">
 
+<!-- TODO: Remove after replace with new settings -->
 <!ENTITY button.label.folderpathcheck "Check">
 <!ENTITY button.label.folderbrowse "Browse">
 
 <!ENTITY exchWebServices.UserAvailability.label "Only user availability status for the mailbox's calendar will be visible.">
 
+<!-- TODO: Remove after replace with new settings -->
 <!ENTITY exchWebServices.exchtype.label "Exchange type">
+<!ENTITY exchWebServices.exchtype.label "Exchange Type">
 <!ENTITY exchWebServices.hostexch.label "Hosted Exchange">
 <!ENTITY exchWebServices.365exch.label "Microsoft Office 365">
 <!ENTITY exchWebServices.detail.label "Details">
- 

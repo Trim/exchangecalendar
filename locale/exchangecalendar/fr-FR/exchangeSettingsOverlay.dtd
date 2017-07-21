@@ -1,3 +1,35 @@
+<!-- ExchangeCalendar Authentication (ecauth) setting -->
+
+<!ENTITY ecauth.description "exchangecalendar requires to authenticate you with the Exchange Web Service provided by your company Exchange Infrastructure.">
+<!ENTITY ecauth.username "Username:">
+<!ENTITY ecauth.username.placeholder "user@example.com">
+<!ENTITY ecauth.password "Password:">
+
+<!ENTITY ecauth.details "Details">
+<!ENTITY ecauth.configuration "Server configuration">
+<!ENTITY ecauth.configurationdiscovery "Automatic configuration discovery">
+<!ENTITY ecauth.configurationmanual "Manuel set Exchange Web Service URL">
+<!ENTITY ecauth.exchangewebservice "Exchange Web Service URL">
+
+<!ENTITY ecauth.checksettings "Check settings">
+
+<!-- ExchangeCalendar Folder selection (ecfolderselect) -->
+
+<!ENTITY ecfolderselect.description "exchangecalendar needs to select a folder to look for data. You can choose a calendar or a task folder.">
+<!ENTITY ecfolderselect.owner "Owner">
+<!ENTITY ecfolderselect.folderlookfor "Look for available owner folders">
+<!ENTITY ecfolderselect.folderroot "Root folder">
+<!ENTITY ecfolderselect.folderpath "Subfolder path">
+
+<!-- TODO: Remove after replace with new labels -->
+<!ENTITY ecautodiscover "Use Exchange's autodiscovery function.">
+<!ENTITY ecfolderbase.label "Folder base:">
+<!ENTITY ecfolderpath.label "Path below folder base:">
+<!ENTITY ecfolderidofshare.label "Share Folder Id:">
+<!ENTITY exchWebServices.SharedFolderID.label "Shared display name:">
+
+<!-- Folder names -->
+
 <!ENTITY ecautodiscover "Utiliser la fonction de découverte automatique d'Exchange.">
 <!ENTITY ecfolderbase.label "Dossier racine:">
 <!ENTITY ecfolderpath.label "Chemin sous le dossier racine:">
