@@ -46,6 +46,8 @@
 
     <script type="application/javascript" src="chrome://exchangecalendar/content/exchangeSettingsOverlay.js"/> 
 
+	<!-- Legacy setting dialog -->
+	<!-- TODO: Remove when all dialogs use simplified interface -->
 	<vbox id="exchWebService-exchange-settings"> 
 	<groupbox>
 			<caption label="&exchWebServices.exchtype.label;"/>
@@ -168,6 +170,67 @@
 		</groupbox>
 	</vbox>
 
+	<!-- Simplified authentication dialog -->
+	<vbox id="exchangesettings-ecauthentication">
+		<grid flex="1">
+			<columns>
+				<column/>
+				<column flex="1" />
+			</columns>
+
+			<rows>
+				<row>
+					<label value="&ecauth.username;" />
+					<textbox id="ecauth-username"
+						required="true"
+						placeholder="&ecauth.username.placeholder;" />
+				</row>
+
+				<row>
+					<label value="&ecauth.password;" />
+					<textbox id="ecauth-password"
+						required="true"
+						type="password" />
+				</row>
+			</rows>
+		</grid>
+
+		<groupbox flex="1">
+			<caption label="&ecauth.details;" />
+
+			<grid flex="1">
+				<columns>
+					<column/>
+					<column flex="1" />
+				</columns>
+
+				<rows>
+					<row>
+						<label value="&ecauth.configuration;" />
+						<menulist id="ecauth-configuration-type" >
+							<menupopup>
+								<menuitem label="&ecauth.configurationdiscovery;"
+									value="autodiscovery"
+									selected="true" />
+								<menuitem label="&ecauth.configurationmanual;"
+									value="manual" />
+							</menupopup>
+						</menulist>
+					</row>
+
+					<row>
+						<label value="&ecauth.exchangewebservice;" />
+						<textbox id="ecauth-exchangewebservice" />
+					</row>
+				</rows>
+			</grid>
+		</groupbox>
+	</vbox>
+
+	<!-- Simplified folder selection dialog -->
+	<vbox id="exchangesettings-ecfolderselect">
+
+	</vbox>
 </overlay>
 
 
