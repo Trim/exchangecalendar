@@ -110,6 +110,41 @@ exchSettingsOverlay.prototype = {
 		this.exchWebServicesgMailbox = this.ecAuthUserName;
 	}
 
+	ecAuthServerConnectionOK: function _ecAuthServerConnectionOK(folderID, changeKey, folderClass)
+	{
+		this.globalFunctions.LOG("ecAuthServerConnectionOK");
+
+		this.ecAuthSettingsValidated = true;
+
+		if (this.exchWebServicesgFolderBase !== "publicfoldersroot") {
+			this.exchWebServicesgFolderBase = "publicfoldersroot";
+			this._document.getElementById("ecfolderselect-rootfolder").value = "publicfoldersroot";
+			this._document.getElementById("ecfolderselect-folderpath").value = "/";
+		}
+
+		this._window.setCursor("auto");
+	},
+
+	ecAuthServerConnectionError: function _ecAuthServerConnectionError(aExchangeRequest, aCode, aMsg)
+	{
+		this.globalFunctions.LOG("ecAuthServerConnectionError");
+
+		this.ecAuthSettingsValidated = false;
+
+		switch (aCode) {
+			case -20:
+			case -30:
+				break;
+			case -6:
+				alert(this.globalFunctions.getString("calExchangeCalendar", "ecErrorServerCheckURLInvalid", [this.exchWebServicesgServer], "exchangecalendar"));
+				break;
+			default:
+				alert(this.globalFunctions.getString("calExchangeCalendar", "ecErrorServerCheck", [aMsg, aCode], "exchangecalendar"));
+		}
+		this._document.getElementById("exchWebService_servercheckbutton").disabled = false;
+
+		this._window.setCursor("auto");
+	},
 
 	ecAuthValidate: function _ecAuthValidate() {
 		let isSanityChecked = false;
@@ -149,8 +184,48 @@ exchSettingsOverlay.prototype = {
 
 		// Secondly, try to connect to validate all settings
 		if (isSanityChecked) {
+			try {
+				this._window.setCursor("wait");
 
+				var self = this;
 
+				if (this.ecAuthAutoDiscovery === "autodiscovery") {
+					// We first try Autodiscovery for Exchange2010 and higher.
+					this.exchAutoDiscovery2010 = true;
+
+					let exchangeTestAutoDiscover = {
+						user: this.ecAuthUserName,
+						// TODO mailbox and username are not always related, need to ask mailbox before processing
+						mailbox: this.ecAuthUserName,
+						password: this.ecAuthPassword
+					};
+
+					let testAutoDiscover = new erAutoDiscoverySOAPRequest(
+						exchangeTestAutoDiscover,
+						function (ewsUrls, DisplayName, SMTPAddress, redirectAddr) { self.exchWebServicesAutodiscoveryOK(ewsUrls, DisplayName, SMTPAddress, redirectAddr); },
+						function (aExchangeRequest, aCode, aMsg) { self.exchWebServicesAutodiscoveryError(aExchangeRequest, aCode, aMsg); },
+						null);
+				}
+				else {
+					let exchangeTestPublicfolder = {
+						user: this.ecAuthUserName,
+						password: this.ecAuthPassword,
+						mailbox: "",
+						folderBase: "publicfoldersroot",
+						folderPath: "/",
+						serverUrl: this.ecAuthWebServiceURL
+					};
+
+					let testPublicFolder = new erGetFolderRequest(
+						exchangeTestPublicfolder,
+						function (folderID, changeKey, folderClass) { self.ecAuthServerConnectionOK(folderID, changeKey, folderClass); },
+						function (aExchangeRequest, aCode, aMsg) { self.ecAuthServerConnectionError(aExchangeRequest, aCode, aMsg); })
+				}
+			}
+			catch(err) {
+				this._window.setCursor("auto");
+				this.globalFunctions.ERROR("Warning: Error while checking server connection:"+err+"\n");
+			}
 
 		}
 
@@ -402,6 +477,12 @@ exchSettingsOverlay.prototype = {
 
 	exchWebServicesGetUsername: function _exchWebServicesGetUsername()
 	{
+
+		// TODO remove use of this function instead of using this workaround
+		if (this.ecAuthUserName && this.ecAuthUserName !== ""){
+			return this.ecAuthUserName;
+		}
+
  		if (this.exchWebServicesgUser.indexOf("@") > -1) {
 			return this.exchWebServicesgUser;
 		}
@@ -707,6 +788,8 @@ exchSettingsOverlay.prototype = {
 	{
 		this.globalFunctions.LOG("ecAutodiscoveryOK");
 
+		this.ecAuthSettingsValidated = true;
+
 		if (redirectAddr) {
 			// We have an redirectAddr. Go use the new email address as primary.
 			this.globalFunctions.LOG("ecAutodiscoveryOK: We received an redirectAddr:"+redirectAddr);
@@ -773,6 +856,8 @@ exchSettingsOverlay.prototype = {
 	exchWebServicesAutodiscoveryError: function _exchWebServicesAutodiscoveryError(aExchangeRequest, aCode, aMsg)
 	{
 		this.globalFunctions.LOG("ecAutodiscoveryError. aCode:"+aCode+", aMsg:"+aMsg);
+
+		this.ecAuthSettingsValidated = false;
 
 		if ((this.exchAutoDiscovery2010 == true) && (aCode != -20)) {
 			this.globalFunctions.LOG("exchWebServicesAutodiscoveryError: Going to try old POX autodiscovery as SOAP autodiscovery did not succeed.");
