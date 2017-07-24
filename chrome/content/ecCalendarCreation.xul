@@ -80,7 +80,7 @@
 			label = "&wizard.label;"
 			description = "&ecauth.description;"
 			onpageshow = ""
-			onpageadvanced = "return true;" >
+			onpageadvanced = "ecSettingsOverlay.ecAuthValidate();" >
 
 			<vbox id = "exchangesettings-ecauthentication" />
 		</wizardpage>
