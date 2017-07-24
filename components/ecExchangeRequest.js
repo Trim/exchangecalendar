@@ -284,28 +284,33 @@ ExchangeRequest.prototype = {
 		var openUser = this.mArgument.user;
 		var password = null;
 
-		var myAuthPrompt2 = Cc["@1st-setup.nl/exchange/authprompt2;1"].getService(
-			Ci.mivExchangeAuthPrompt2);
+		// Password is passed as argument on new calendar creation with simplified dialogs
+		if (this.mArgument.password){
+			password = this.mArgument.password;
+		}
+		else {
+			let myAuthPrompt2 = Cc["@1st-setup.nl/exchange/authprompt2;1"].getService(
+				Ci.mivExchangeAuthPrompt2);
 
-		if (myAuthPrompt2.getUserCanceled(this.currentUrl)) {
-			this.fail(this.ER_ERROR_USER_ABORT_AUTHENTICATION,
-				"User canceled providing a valid password for url="
-				+ this.currentUrl + ". Aborting this request.");
-			return;
-		}
+			if (myAuthPrompt2.getUserCanceled(this.currentUrl)) {
+				this.fail(this.ER_ERROR_USER_ABORT_AUTHENTICATION,
+					"User canceled providing a valid password for url="
+					+ this.currentUrl + ". Aborting this request.");
+				return;
+			}
 
-		try {
-			password = myAuthPrompt2.getPassword(null, openUser, this.currentUrl);
+			try {
+				password = myAuthPrompt2.getPassword(null, openUser, this.currentUrl);
+			}
+			catch(err) {
+				this.logInfo(err);
+				this.fail(this.ER_ERROR_USER_ABORT_AUTHENTICATION,
+					"User canceled providing a valid password for url="
+					+ this.currentUrl + ". Aborting this request.");
+				myAuthPrompt2 = null;
+				return;
+			}
 		}
-		catch(err) {
-			this.logInfo(err);
-			this.fail(this.ER_ERROR_USER_ABORT_AUTHENTICATION,
-				"User canceled providing a valid password for url="
-				+ this.currentUrl + ". Aborting this request.");
-			myAuthPrompt2 = null;
-			return;
-		}
-		myAuthPrompt2 = null;
 
 		////////////////////////////////////////////////////
 		// Sending data through standard XML HTTP Request //
