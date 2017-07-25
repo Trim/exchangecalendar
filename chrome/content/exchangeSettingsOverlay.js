@@ -79,8 +79,8 @@ exchSettingsOverlay.prototype = {
 	ecAuthSettingsValidated: false,
 	ecAuthUserName: null,
 	ecAuthPassword: null,
-	ecAuthAutoDiscovery = null,
-	ecAuthWebServiceURL = null,
+	ecAuthAutoDiscovery: null,
+	ecAuthWebServiceURL: null,
 
 	exchWebServicesValidateUsername: function _exchWebServicesValidateUsername( aTextboxId ) {
 		let isValidUser = false;
@@ -108,7 +108,7 @@ exchSettingsOverlay.prototype = {
 
 		// TODO Check how Autodiscovery work to be sure that this address can be used to autodiscover
 		this.exchWebServicesgMailbox = this.ecAuthUserName;
-	}
+	},
 
 	ecAuthServerConnectionOK: function _ecAuthServerConnectionOK(folderID, changeKey, folderClass)
 	{
@@ -156,7 +156,7 @@ exchSettingsOverlay.prototype = {
 		// First check settings are sanity
 		// (basicly, user name, password and URL are filled)
 
-		if (this.exchWebServicesValidationUsername("ecauth-username")
+		if (this.exchWebServicesValidateUsername("ecauth-username")
 			&& this._document.getElementById("ecauth-password").value !== ""){
 
 			// Then let continue if auto discovering is selected or if exchange web service URL is setted
