@@ -119,19 +119,19 @@ exchCalendarCreation.prototype = {
 	},
 
 	ecAuthRunTestServer: function _ecAuthRunTestServer() {
-		this._document.getElementById("ecauth-servertestok").collapsed = true;
-		this._document.getElementById("ecauth-servertestfail").collapsed = true;
+		this._document.getElementById("ecauth-servertestok").hidden = true;
+		this._document.getElementById("ecauth-servertestfail").hidden = true;
 
 		var self = this;
 
 		ecSettingsOverlay.ecAuthValidate(function (isTestSucced) {
 				if (isTestSucced) {
 					self._document.getElementById("calendar-wizard").canAdvance = true;
-					self._document.getElementById("ecauth-servertestok").collapsed = false;
+					self._document.getElementById("ecauth-servertestok").hidden = false;
 				}
 				else {
 					self._document.getElementById("calendar-wizard").canAdvance = false;
-					self._document.getElementById("ecauth-servertestfail").collapsed = false;
+					self._document.getElementById("ecauth-servertestfail").hidden = false;
 				}
 			} );
 	},
@@ -140,8 +140,8 @@ exchCalendarCreation.prototype = {
 		this._document.getElementById("calendar-wizard").canAdvance = false;
 		this._document.getElementById("ecauth-servertestrun").disabled = (ecSettingsOverlay.ecAuthSanityCheck() === false);
 
-		this._document.getElementById("ecauth-servertestok").collapsed = true;
-		this._document.getElementById("ecauth-servertestfail").collapsed = true;
+		this._document.getElementById("ecauth-servertestok").hidden = true;
+		this._document.getElementById("ecauth-servertestfail").hidden = true;
 	},
 
 	initExchange1: function _initExchange1()

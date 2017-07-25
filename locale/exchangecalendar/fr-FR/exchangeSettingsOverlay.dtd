@@ -14,12 +14,12 @@
 
 <!ENTITY ecauth.servertestrun "Test authentication settings">
 <!ENTITY ecauth.servertestok "Test succeed, click on next.">
-<!ENTITY ecauth.servertestfail "Test failed, please update the configuration and try again.">
+<!ENTITY ecauth.servertestfail "Test failed, please update the configuration and try again. If you used automatic configuration and it failed, try manual setting.">
 
 <!-- ExchangeCalendar Folder selection (ecfolderselect) -->
 
-<!ENTITY ecfolderselect.description "exchangecalendar needs to select a folder to look for data. You can choose a calendar or a task folder.">
-<!ENTITY ecfolderselect.owner "Owner">
+<!ENTITY ecfolderselect.description "exchangecalendar needs to select a folder to look for data. Then you can choose a calendar or a task folder.">
+<!ENTITY ecfolderselect.owner "Folder owner">
 <!ENTITY ecfolderselect.sahredid "Share Folder Id">
 <!ENTITY ecfolderselect.folderlookfor "Look for available owner folders">
 <!ENTITY ecfolderselect.folderroot "Root folder">

@@ -95,13 +95,12 @@
 
 			<label id = "ecauth-servertestok"
 				value = "&ecauth.servertestok;"
-				collapsed = "true" />
+				hidden = "true" />
 
 			<label id = "ecauth-servertestfail"
-				value = "&ecauth.servertestfail;"
-				collapsed = "true" />
+				hidden = "true" >&ecauth.servertestfail;</label>
 
-			<spacer flex = "2" />
+			<spacer flex = "1" />
 		</wizardpage>
 
 		<wizardpage pageid = "ecfolderselect-wizardpage"
