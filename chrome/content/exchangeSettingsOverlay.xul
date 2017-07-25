@@ -203,7 +203,7 @@
 							<menuitem label="&ecauth.configurationdiscovery;"
 								value="autodiscovery"
 								selected="true" />
-							<menuitem label="Microsoft Office 365"
+							<menuitem label="&ecauth.configurationoffice365;"
 								value="office365"
 								oncommand="document.getElementById('ecauth-exchangewebservice').value = 'https://outlook.office365.com/EWS/Exchange.asmx';" />
 							<menuitem label="&ecauth.configurationmanual;"

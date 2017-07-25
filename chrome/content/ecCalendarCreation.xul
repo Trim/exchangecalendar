@@ -88,17 +88,17 @@
 			<spacer flex = "1" />
 
 			<button id = "ecauth-servertestrun"
-				label = "Test authentication settings"
+				label = "&ecauth.servertestrun;"
 				oncommand = "tmpCalendarCreation.ecAuthRunTestServer();" />
 
 			<spacer flex = "1" />
 
 			<label id = "ecauth-servertestok"
-				value = "Test succeed, click on next."
+				value = "&ecauth.servertestok;"
 				collapsed = "true" />
 
 			<label id = "ecauth-servertestfail"
-				value = "Test failed, please update the configuration and try again."
+				value = "&ecauth.servertestfail;"
 				collapsed = "true" />
 
 			<spacer flex = "2" />
