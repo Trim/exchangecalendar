@@ -119,26 +119,21 @@ exchCalendarCreation.prototype = {
 	},
 
 	ecAuthRunTestServer: function _ecAuthRunTestServer() {
-
-		let ecAuthServerTestButton = this._document.getElementById("ecauth-servertestrun");
-		let originalTestLabel = ecAuthServerTestButton.label;
-
-		ecAuthServerTestButton.label = "Please wait…";
-
 		this._document.getElementById("ecauth-servertestok").collapsed = true;
 		this._document.getElementById("ecauth-servertestfail").collapsed = true;
 
-		let testResult = ecSettingsOverlay.ecAuthValidate();
-		if (testResult) {
-			this._document.getElementById("calendar-wizard").canAdvance = true;
-			this._document.getElementById("ecauth-servertestok").collapsed = false;
-		}
-		else {
-			this._document.getElementById("calendar-wizard").canAdvance = false;
-			this._document.getElementById("ecauth-servertestfail").collapsed = false;
-		}
+		var self = this;
 
-		ecAuthServerTestButton.label = originalTestLabel;
+		ecSettingsOverlay.ecAuthValidate(function (isTestSucced) {
+				if (isTestSucced) {
+					self._document.getElementById("calendar-wizard").canAdvance = true;
+					self._document.getElementById("ecauth-servertestok").collapsed = false;
+				}
+				else {
+					self._document.getElementById("calendar-wizard").canAdvance = false;
+					self._document.getElementById("ecauth-servertestfail").collapsed = false;
+				}
+			} );
 	},
 
 	ecAuthLoad: function _ecAuthLoad() {

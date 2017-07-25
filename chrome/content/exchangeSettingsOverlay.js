@@ -81,6 +81,7 @@ exchSettingsOverlay.prototype = {
 	ecAuthPassword: null,
 	ecAuthAutoDiscovery: null,
 	ecAuthWebServiceURL: null,
+	ecAuthServerTestCallback: null,
 
 	exchWebServicesValidateUsername: function _exchWebServicesValidateUsername( aTextboxId ) {
 		let isValidUser = false;
@@ -123,6 +124,8 @@ exchSettingsOverlay.prototype = {
 		}
 
 		this._window.setCursor("auto");
+
+		this.ecAuthServerTestCallback(this.ecAuthSettingsValidated);
 	},
 
 	ecAuthServerConnectionError: function _ecAuthServerConnectionError(aExchangeRequest, aCode, aMsg)
@@ -141,9 +144,10 @@ exchSettingsOverlay.prototype = {
 			default:
 				alert(this.globalFunctions.getString("calExchangeCalendar", "ecErrorServerCheck", [aMsg, aCode], "exchangecalendar"));
 		}
-		this._document.getElementById("exchWebService_servercheckbutton").disabled = false;
 
 		this._window.setCursor("auto");
+
+		this.ecAuthServerTestCallback(this.ecAuthSettingsValidated);
 	},
 
 	/*
@@ -186,10 +190,13 @@ exchSettingsOverlay.prototype = {
 	/*
 	 * Validate exchange authentication settings by trying a real connection on server
 	 */
-	ecAuthValidate: function _ecAuthValidate() {
+	ecAuthValidate: function _ecAuthValidate(aValidationCallback) {
 		this.ecAuthSettingsValidated = false;
 
 		if (this.ecAuthSanityCheck()) {
+			this.ecAuthServerTestCallback = aValidationCallback;
+
+
 			try {
 				this._window.setCursor("wait");
 
@@ -217,7 +224,7 @@ exchSettingsOverlay.prototype = {
 						user: this.ecAuthUserName,
 						password: this.ecAuthPassword,
 						mailbox: "",
-						folderBase: "publicfoldersroot",
+						folderBase: "calendar",
 						folderPath: "/",
 						serverUrl: this.ecAuthWebServiceURL
 					};
@@ -234,8 +241,6 @@ exchSettingsOverlay.prototype = {
 			}
 
 		}
-
-		return this.ecAuthSettingsValidated;
 	},
 
 	exchWebServicesCheckRequired: function _exchWebServicesCheckRequired() {
