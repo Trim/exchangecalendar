@@ -146,15 +146,13 @@ exchSettingsOverlay.prototype = {
 		this._window.setCursor("auto");
 	},
 
-	ecAuthValidate: function _ecAuthValidate() {
+	/*
+	 * Perform minimal tests to check before being able to run a real connection on server
+	 */
+	ecAuthSanityCheck: function _ecAuthSanityCheck(){
 		let isSanityChecked = false;
 
 		this.ecAuthGetSettings();
-		this.ecAuthSettingsValidated = false;
-
-
-		// First check settings are sanity
-		// (basicly, user name, password and URL are filled)
 
 		if (this.exchWebServicesValidateUsername("ecauth-username")
 			&& this._document.getElementById("ecauth-password").value !== ""){
@@ -182,8 +180,16 @@ exchSettingsOverlay.prototype = {
 			}
 		}
 
-		// Secondly, try to connect to validate all settings
-		if (isSanityChecked) {
+		return isSanityChecked;
+	},
+
+	/*
+	 * Validate exchange authentication settings by trying a real connection on server
+	 */
+	ecAuthValidate: function _ecAuthValidate() {
+		this.ecAuthSettingsValidated = false;
+
+		if (this.ecAuthSanityCheck()) {
 			try {
 				this._window.setCursor("wait");
 
