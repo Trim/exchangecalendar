@@ -118,6 +118,37 @@ exchCalendarCreation.prototype = {
 		
 	},
 
+	ecAuthRunTestServer: function _ecAuthRunTestServer() {
+
+		let ecAuthServerTestButton = this._document.getElementById("ecauth-servertestrun");
+		let originalTestLabel = ecAuthServerTestButton.label;
+
+		ecAuthServerTestButton.label = "Please wait…";
+
+		this._document.getElementById("ecauth-servertestok").collapsed = true;
+		this._document.getElementById("ecauth-servertestfail").collapsed = true;
+
+		let testResult = ecSettingsOverlay.ecAuthValidate();
+		if (testResult) {
+			this._document.getElementById("calendar-wizard").canAdvance = true;
+			this._document.getElementById("ecauth-servertestok").collapsed = false;
+		}
+		else {
+			this._document.getElementById("calendar-wizard").canAdvance = false;
+			this._document.getElementById("ecauth-servertestfail").collapsed = false;
+		}
+
+		ecAuthServerTestButton.label = originalTestLabel;
+	},
+
+	ecAuthLoad: function _ecAuthLoad() {
+		this._document.getElementById("calendar-wizard").canAdvance = false;
+		this._document.getElementById("ecauth-servertestrun").disabled = (ecSettingsOverlay.ecAuthSanityCheck() === false);
+
+		this._document.getElementById("ecauth-servertestok").collapsed = true;
+		this._document.getElementById("ecauth-servertestfail").collapsed = true;
+	},
+
 	initExchange1: function _initExchange1()
 	{
 		this.createPrefs.deleteBranch("");

@@ -79,10 +79,29 @@
 			next = "ecfolderselect-wizardpage"
 			label = "&wizard.label;"
 			description = "&ecauth.description;"
-			onpageshow = ""
-			onpageadvanced = "ecSettingsOverlay.ecAuthValidate();" >
+			onpageshow = "tmpCalendarCreation.ecAuthLoad();" >
 
-			<vbox id = "exchangesettings-ecauthentication" />
+			<vbox id = "exchangesettings-ecauthentication"
+				oncommand = "tmpCalendarCreation.ecAuthLoad();"
+				oninput = "tmpCalendarCreation.ecAuthLoad();" />
+
+			<spacer flex = "1" />
+
+			<button id = "ecauth-servertestrun"
+				label = "Test authentication settings"
+				oncommand = "tmpCalendarCreation.ecAuthRunTestServer();" />
+
+			<spacer flex = "1" />
+
+			<label id = "ecauth-servertestok"
+				value = "Test succeed, click on next."
+				collapsed = "true" />
+
+			<label id = "ecauth-servertestfail"
+				value = "Test failed, please update the configuration and try again."
+				collapsed = "true" />
+
+			<spacer flex = "2" />
 		</wizardpage>
 
 		<wizardpage pageid = "ecfolderselect-wizardpage"
