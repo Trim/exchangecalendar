@@ -226,18 +226,7 @@ exchSettingsOverlay.prototype = {
 					// We first try Autodiscovery for Exchange2010 and higher.
 					this.exchAutoDiscovery2010 = true;
 
-					let exchangeTestAutoDiscover = {
-						user: this.ecAuthUserName,
-						// TODO mailbox and username are not always related, need to ask mailbox before processing
-						mailbox: this.ecAuthUserName,
-						password: this.ecAuthPassword
-					};
-
-					let testAutoDiscover = new erAutoDiscoverySOAPRequest(
-						exchangeTestAutoDiscover,
-						function (ewsUrls, DisplayName, SMTPAddress, redirectAddr) { self.exchWebServicesAutodiscoveryOK(ewsUrls, DisplayName, SMTPAddress, redirectAddr); },
-						function (aExchangeRequest, aCode, aMsg) { self.exchWebServicesAutodiscoveryError(aExchangeRequest, aCode, aMsg); },
-						null);
+					this.ecAuthAutoDiscoverServerSettings();
 				}
 				else {
 					let exchangeTestPublicfolder = {
@@ -261,6 +250,151 @@ exchSettingsOverlay.prototype = {
 			}
 
 		}
+	},
+
+
+	/*
+	 * Run auto discovery process to find automatically server settings.
+	 * This process allow to find the Exchange Web Service URL and the default owner mailbox setting
+	 */
+	ecAuthAutoDiscoverServerSettings: function _ecAuthAutoDiscoveryServerTest()
+	{
+		try {
+			var self = this;
+
+			let exchangeTestAutoDiscover = {
+				user: this.ecAuthUserName,
+				mailbox: this.exchWebServicesgMailbox,
+				password: this.ecAuthPassword
+			};
+
+			if ( this.exchAutoDiscovery2010 ) {
+				let testSOAPAutoDiscover = new erAutoDiscoverySOAPRequest(
+					exchangeTestAutoDiscover,
+					function (ewsUrls, DisplayName, SMTPAddress, redirectAddr) { self.ecAuthAutodiscoveryServerOK(ewsUrls, DisplayName, SMTPAddress, redirectAddr); },
+					function (aExchangeRequest, aCode, aMsg) { self.ecAuthAutoDiscoveryServerError(aExchangeRequest, aCode, aMsg); },
+					null);
+			}
+			else {
+				let testPOXAutoDiscover = new erAutoDiscoverRequest(
+					exchangeTestAutoDiscover,
+					function (ewsUrls, DisplayName, SMTPAddress, redirectAddr) { self.ecAuthAutodiscoveryServerOK(ewsUrls, DisplayName, SMTPAddress, redirectAddr); },
+					function (aExchangeRequest, aCode, aMsg) { self.ecAuthAutoDiscoveryServerError(aExchangeRequest, aCode, aMsg); },
+					null);
+			}
+		}
+		catch(err) {
+			this._window.setCursor("auto");
+			this.globalFunctions.ERROR("Warning: Could not create erAutoDiscoverRequest. Err="+err+"\n");
+		}
+	},
+
+	/*
+	 * Auto discovery succeed, so:
+	 *  1. Check if there's a redirection and run again auto discovery
+	 *  2. Update wizard page with discovered settings (update server type to manual and update Exchange Web Service URL)
+	 *  3. Run directly validation test to valid wizard page
+	 */
+	ecAuthAutoDiscoveryServerOK: function _ecAuthAutoDiscoveryServerOK(ewsUrls, DisplayName, SMTPAddress, redirectAddr)
+	{
+		this.globalFunctions.LOG("ecAuthAutoDiscoveryServerOK");
+
+		// First AutoDiscovery test answered us with an address redirection
+		// Use it and run a new test
+		if (redirectAddr) {
+			this.globalFunctions.LOG("ecAuthAutoDiscoveryServerOK: We received an redirectAddr:"+redirectAddr);
+
+			this.exchWebServicesgMailbox = redirectAddr;
+			this.ecAuthUpdateSettings();
+
+			this.ecAuthAutoDiscoverServerSettings();
+
+			return;
+		}
+
+		this._window.setCursor("auto");
+		var selectedEWSUrl = {value:undefined};
+		var userCancel = false;
+
+		if (!ewsUrls) {
+			this.globalFunctions.ERROR("ecAuthAutoDiscoveryServerOK: No EWS URLs found !");
+			return;
+		}
+
+		// AutoDiscovery can respond with multiple Exchange Web Service URLs
+		// Ask user to choose one in that case.
+		if (ewsUrls.length > 1) {
+			this._window.openDialog("chrome://exchangecalendar/content/selectEWSUrl.xul",
+				"selectfrommultipleews",
+				"chrome,titlebar,toolbar,centerscreen,dialog,modal=yes,resizable=no",
+				ewsUrls, selectedEWSUrl);
+
+			if ((!selectedEWSUrl.value) || (selectedEWSUrl.value === "")) {
+				this.globalFunctions.LOG("  ++++ Selection canceled by user");
+				userCancel = true;
+			}
+		}
+		else {
+			selectedEWSUrl.value = ewsUrls[0].value;
+		}
+
+		if (!userCancel) {
+			if (SMTPAddress
+				&& SMTPAddress !== "") {
+				this.exchWebServicesgMailbox = SMTPAddress;
+			}
+
+			// Set Exhange Web Service URL and update
+			this.ecAuthAutoDiscovery = "manual";
+			this.ecAuthWebServiceURL = selectedEWSUrl.value;
+
+			this.ecAuthUpdateSettings();
+
+			this.ecAuthValidate(this.ecAuthServerTestCallback);
+		}
+	},
+
+	/*
+	 * Auto discovery failed, so:
+	 *  1. Check if we should try with an older auto discovery version (older than Exchange 2010)
+	 */
+	ecAuthAutoDiscoveryServerError: function _ecAuthAutoDiscoveryServerError(aExchangeRequest, aCode, aMsg)
+	{
+		this.globalFunctions.LOG("ecAuthAutoDiscoveryServerError. aCode:"+aCode+", aMsg:"+aMsg);
+
+		// AutoDiscovery for Exchange2010 and higher failed. Next try old POX Autodiscovery.
+		if ( this.exchAutoDiscovery2010 == true
+			&& aCode !== -20 ) {
+			this.globalFunctions.LOG("exchWebServicesAutodiscoveryError: Going to try old POX autodiscovery as SOAP autodiscovery did not succeed.");
+			this.exchAutoDiscovery2010 = false;
+
+			this.ecAuthAutoDiscoverServerSettings();
+			return;
+		}
+
+		switch (aCode) {
+			case -20:
+			case -30:
+				break;
+			case -6:
+			case -9:
+			case -10:
+			case -14:
+			case -15:
+			case -16:
+			case -17:
+			case -18:
+				alert(this.globalFunctions.getString("calExchangeCalendar", "ecErrorAutodiscoveryURLInvalid", [this.exchWebServicesgMailbox], "exchangecalendar"));
+				break;
+			default:
+				alert(this.globalFunctions.getString("calExchangeCalendar", "ecErrorAutodiscovery", [aMsg, aCode], "exchangecalendar"));
+		}
+
+		this._window.setCursor("auto");
+
+		this.ecAuthSettingsValidated = false;
+
+		this.ecAuthServerTestCallback(this.ecAuthSettingsValidated);
 	},
 
 	exchWebServicesCheckRequired: function _exchWebServicesCheckRequired() {
