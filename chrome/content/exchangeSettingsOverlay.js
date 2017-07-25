@@ -101,6 +101,9 @@ exchSettingsOverlay.prototype = {
 		return isValidUser ;
 	},
 
+	/*
+	 * Get settings filled by user in the simplified authentication interface
+	 */
 	ecAuthGetSettings: function _ecAuthGetSettings(){
 		this.ecAuthUserName = this._document.getElementById("ecauth-username").value;
 		this.ecAuthPassword = this._document.getElementById("ecauth-password").value;
@@ -111,6 +114,20 @@ exchSettingsOverlay.prototype = {
 		this.exchWebServicesgMailbox = this.ecAuthUserName;
 	},
 
+	/*
+	 * Update settings in the simplified authentication interface with current informations
+	 */
+	ecAuthUpdateSettings: function _ecAuthUpdateSettings() {
+		this._document.getElementById("ecauth-username").value = this.ecAuthUserName;
+		this._document.getElementById("ecauth-password").value = this.ecAuthPassword;
+		this._document.getElementById("ecauth-configuration-type").value = this.ecAuthAutoDiscovery;
+		this._document.getElementById("ecauth-exchangewebservice").value = this.ecAuthWebServiceURL;
+		this._document.getElementById("ecfolderselect-owner").value = this.exchWebServicesgMailbox;
+	},
+
+	/*
+	 * Authentication server settings are valid
+	 */
 	ecAuthServerConnectionOK: function _ecAuthServerConnectionOK(folderID, changeKey, folderClass)
 	{
 		this.globalFunctions.LOG("ecAuthServerConnectionOK");
@@ -128,6 +145,9 @@ exchSettingsOverlay.prototype = {
 		this.ecAuthServerTestCallback(this.ecAuthSettingsValidated);
 	},
 
+	/*
+	 * Authentication server settings are invalid
+	 */
 	ecAuthServerConnectionError: function _ecAuthServerConnectionError(aExchangeRequest, aCode, aMsg)
 	{
 		this.globalFunctions.LOG("ecAuthServerConnectionError");
