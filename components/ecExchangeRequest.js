@@ -387,20 +387,6 @@ ExchangeRequest.prototype = {
 
 		var httpChannel = this.xmlReq.channel.QueryInterface(Ci.nsIHttpChannel);
 
-		// XXX we want to preserve POST across 302 redirects
-		// TODO: This might go away because header params are copyied right now.
-		httpChannel.redirectionLimit = 0;
-		try{
-			httpChannel.allowPipelining = false;
-		}
-		catch(err) {
-			this.logInfo("sendRequest: ERROR on httpChannel.allowPipelining to err:"+err);
-		}
-
-		if (this.debug) {
-			this.logInfo(": sendRequest Sending: " + this.mData+"\n", 2);
-		}
-
 		// Finally, send data through the channel
 		this.xmlReq.send(this.mData);
 	},
@@ -595,11 +581,22 @@ ExchangeRequest.prototype = {
 			return false;
 		}
 
+		const redirectionStatus = [301, 302, 307] ; // Moved Permanently, Found, HTTP/1.1 Temporary Redirect
+
+		let httpChannel = xmlReq.channel;
+
 		// Read status to find redirection
-		switch (xmlReq.status) {
-			case 301:  // Moved Permanently
-			case 302:  // Found
-			case 307:  // Temporary redirect (since HTTP/1.1)
+		if ( httpChannel.originalURI !== httpChannel.URI // URI has been modified during the XML HTTP Request
+			|| redirectionStatus.indexOf(xmlReq.status) !== -1) {
+
+			let newURILocation;
+
+			// If the channel have differrent URI, redirection have been already
+			// followed and the final URI is the current one of the response
+			if(httpChannel.originalURI !== httpChannel.URI){
+				newURILocation = xmlReq.responseURL ;
+			}
+			else {
 				if (this.debug) {
 					this.logInfo(": ExchangeRequest.redirect :"
 						+ evt.type + ", readyState:" + xmlReq.readyState
@@ -607,7 +604,6 @@ ExchangeRequest.prototype = {
 				}
 
 				// Read new location from HTTP headers
-				let httpChannel = xmlReq.channel.QueryInterface(Ci.nsIHttpChannel);
 				let loc = httpChannel.getResponseHeader("Location");
 
 				// The location could be a relative path
@@ -654,17 +650,19 @@ ExchangeRequest.prototype = {
 						}
 					}
 				}
+				newURILocation = loc;
+			}
 
-				if (this.debug){
-					this.logInfo(": Redirect: " + loc + "\n");
-				}
+			if (this.debug){
+				this.logInfo(": Redirect: " + newURILocation + "\n");
+			}
 
-				// XXX pheer loops.
-				xmlReq.abort();
-				this.sendRequest(this.mData, loc);
+			// XXX pheer loops.
+			xmlReq.abort();
+			this.sendRequest(this.mData, newURILocation);
 
-				// This is a redirection and we are alreday trying a new URL
-				return true;
+			// This is a redirection and we are alreday trying a new URL
+			return true;
 		}
 
 		// That wasn't a redirection
