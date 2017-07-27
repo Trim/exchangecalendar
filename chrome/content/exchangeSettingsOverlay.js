@@ -83,16 +83,17 @@ exchSettingsOverlay.prototype = {
 	ecAuthWebServiceURL: null,
 	ecAuthServerTestCallback: null,
 
-	exchWebServicesValidateUsername: function _exchWebServicesValidateUsername( aTextboxId ) {
+	ecSettingsValidateUsername: function ecSettingsValidateUsername( aUsername ) {
 		let isValidUser = false;
-		let currentUsername = this._document.getElementById(aTextboxId).value;
 
-		let splittedUsername = currentUsername.split("@") ;
+		let splittedUsername = aUsername.split("@") ;
 
 		// Valid user has one and only one arobase
 		if (splittedUsername.length === 2
 			&& splittedUsername[0] !== ""
-			&& splittedUsername[1] !== "") {
+			&& splittedUsername[0].length > 0
+			&& splittedUsername[1] !== ""
+			&& splittedUsername[1].length > 0) {
 			isValidUser = true;
 		}
 
@@ -178,8 +179,8 @@ exchSettingsOverlay.prototype = {
 
 		this.ecAuthGetSettings();
 
-		if (this.exchWebServicesValidateUsername("ecauth-username")
-			&& this._document.getElementById("ecauth-password").value !== ""){
+		if (this.ecSettingsValidateUsername(this.ecAuthUserName)
+			&& this.ecAuthPassword !== ""){
 
 			// Then let continue if auto discovering is selected or if exchange web service URL is setted
 			if (this.ecAuthAutoDiscovery === "autodiscovery") {
