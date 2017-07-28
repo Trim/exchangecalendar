@@ -432,6 +432,68 @@ exchSettingsOverlay.prototype = {
 		this.ecFolderSelectUpdateDialog(false);
 	},
 
+	/*
+	 * Update dialog according to current settings
+	 */
+	ecFolderSelectUpdateDialog: function _ecFolderSelectUpdateDialog(updateSettingsBefore = true) {
+		if (updateSettingsBefore) {
+			this.ecFolderSelectGetSettings();
+		}
+
+		if (this.ecFolderSelectOwnerOrShareSanityCheck()) {
+			this._document.getElementById("ecfodlerselect-folderlookfor").disabled = false;
+		}
+		else {
+			this._document.getElementById("ecfodlerselect-folderlookfor").disabled = true;
+		}
+
+		if (this.ecFolderSelectOwnerOrShareValidated()) {
+			this._document.getElementById("ecfolderselect-folderroot-row").hidden = false;
+			this._document.getElementById("ecfolderselect-folderpath-row").hidden = false;
+
+			this._document.getElementById("ecfolderselect-useravailability").hidden = (!this.ecFolderSelectCanAccessAvailability);
+		}
+		else {
+			this._document.getElementById("ecfolderselect-folderroot-row").hidden = true;
+			this._document.getElementById("ecfolderselect-folderpath-row").hidden = true;
+			this._document.getElementById("ecfolderselect-useravailability").hidden = true;
+		}
+	},
+
+	/*
+	 * Perform minimal tests to check before allowing full folder selection
+	 */
+	ecFolderSelectOwnerOrShareSanityCheck: function _ecFolderSelectOwnerOrShareSanityCheck() {
+		let isSanityChecked = false;
+
+		this.ecFolderSelectGetSettings();
+
+		// Either email owner or sahred is given
+		if (this.ecSettingsValidateUsername(this.ecFolderSelectOwner)
+			|| (this.ecFolderSelectSharedId
+				&& this.ecFolderSelectSharedId !== ""){
+			isSanityChecked = true ;
+		}
+
+		return isSanityChecked;
+	},
+
+	ecFolderSelectOwnerOrShareValidated: function _ecFolderSelectOwnerOrShareValidated() {
+		let isOwnerOrShareValidated = false;
+
+		if( this.ecFolderSelectOwnerExists
+			&& (this.ecFolderSelectCanAccess || this.ecFolderSelectCanAccessAvailability)) {
+			isOwnerOrShareValidated = true;
+		}
+
+		if( this.ecFolderSelectShareExists
+			&& (this.ecFolderSelectCanAccess || this.ecFolderSelectCanAccessAvailability) {
+			isOwnerOrShareValidated = true;
+		}
+
+		let isOwnerOrShareValidated;
+	}
+
 	exchWebServicesCheckRequired: function _exchWebServicesCheckRequired() {
 	
 		if (!this.gexchWebServicesDetailsChecked) {
