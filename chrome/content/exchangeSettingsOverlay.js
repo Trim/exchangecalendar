@@ -773,6 +773,44 @@ exchSettingsOverlay.prototype = {
 	// End of set of shared folder id function set
 	////
 
+	/*
+	 * Open dialog to let user select subfolder path
+	 */
+	ecFolderSelectBrowsePath: function _ecFolderSelectBrowsePath()
+	{
+		let browseFolderDialogArgs = {
+			answer: "",
+			parentFolder: {
+				user: this.ecAuthUserName,
+				mailbox: this.ecFolderSelectOwner,
+				folderBase: this.ecFolderSelectRoot,
+				serverUrl: this.ecAuthWebServiceURL,
+				folderID: null,
+				changeKey: null
+			}
+		};
+
+		this._window.openDialog("chrome://exchangecalendar/content/browseFolder.xul",
+			"browseFolder",
+			"chrome,titlebar,toolbar,centerscreen,dialog,modal=yes,resizable=no",
+			browseFolderDialogArgs);
+
+		if (browseFolderDialogArgs.answer.toLowerCase() === "select") {
+			this.ecFolderSelectPath = browseFolderDialogArgs.fullPath;
+
+			if (input.fullPath === "/") {
+				this.exchWebServicesgFolderID = "";
+				this.exchWebServicesgChangeKey = "";
+			}
+			else {
+				this.exchWebServicesgFolderID = input.selectedFolder.folderID;
+				this.exchWebServicesgChangeKey = input.selectedFolder.changeKey;
+			}
+
+			this.ecFolderSelectUpdateSetings();
+		}
+	},
+
 	exchWebServicesCheckRequired: function _exchWebServicesCheckRequired() {
 	
 		if (!this.gexchWebServicesDetailsChecked) {
