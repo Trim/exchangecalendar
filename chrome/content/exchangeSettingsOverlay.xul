@@ -184,14 +184,12 @@
 				<row align = "center">
 					<label value="&ecauth.username;" />
 					<textbox id="ecauth-username"
-						required="true"
 						placeholder="&ecauth.username.placeholder;" />
 				</row>
 
 				<row align = "center">
 					<label value="&ecauth.password;" />
 					<textbox id="ecauth-password"
-						required="true"
 						type="password" />
 				</row>
 
@@ -236,18 +234,15 @@
 						control="ecmailbox"/>
 
 					<textbox id="ecfolderselect-owner"
-						required="true"
-						oninput="tmpSettingsOverlay.exchWebServicesDoMailboxChanged(this);"
-						placeholder="&ecauth.username.placeholder;"/>
+						placeholder="&ecauth.username.placeholder;"
+						oncommand = "tmpSettingsOverlay.ecFolderSelectUpdateDialog();"/>
 				</row>
 
 				<row align="center">
 					<label value="&ecfolderselect.sahredid;"
-						control="ecfolderidofshare"/>
+						oncommand = "tmpSettingsOverlay.ecFolderSelectUpdateDialog();"/>
 
-					<textbox id="ecfolderselect-sharedfolderid"
-						required="false"
-						oninput="tmpSettingsOverlay.exchWebServicesDoFolderIdOfShareChanged(this);"/>
+					<textbox id="ecfolderselect-sharedfolderid" />
 				</row>
 
 				<!-- Button to query available folders of owner -->
@@ -257,18 +252,19 @@
 
 					<button id="ecfolderselect-folderlookfor"
 						label="&ecfolderselect.folderlookfor;"
-						oncommand="tmpSettingsOverlay.exchWebServicesDoCheckServerAndMailbox();"/>
+						disabled = "true"
+						oncommand = "tmpSettingsOverlay.ecFolderSelectVerifyOwnerOrShare();"/>
 				</row>
 
 				<!-- Discovered folder list -->
-				<row align="center">
+				<row id = "ecfolderselect-folderroot-row"
+					align="center"
+					hidden = "true">
 
-					<label value="&ecfolderselect.folderroot;"
-						control="ecfolderbase"/>
+					<label value="&ecfolderselect.folderroot;" />
 
 					<menulist id="ecfolderselect-rootfolder"
-						value="1"
-						oncommand="tmpSettingsOverlay.exchWebServicesDoFolderBaseChanged(this);">
+						value="1" >
 
 						<menupopup>
 							<menuitem id="menuitem.label.ecfolderbase.calendar"
@@ -365,10 +361,11 @@
 				</row>
 
 				<!-- Subfolder path -->
-				<row align="center">
+				<row id = "ecfolderselect-folderpath-row"
+					align="center"
+					hidden = "true">
 
-					<label value="&ecfolderselect.folderpath;"
-						control="ecfolderpath"/>
+					<label value="&ecfolderselect.folderpath;" />
 
 					<hbox align="center">
 						<label id="ecfolderselect-folderpath"
@@ -384,8 +381,7 @@
 
 			<label id="ecfolderselect-useravailability"
 				flex="1"
-				value="&exchWebServices.UserAvailability.label;"
-				collapsed="true" />
+				hidden="true" >&exchWebServices.UserAvailability.label;</label>
 		</grid>
 	</vbox>
 </overlay>
