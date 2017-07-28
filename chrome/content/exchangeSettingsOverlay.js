@@ -83,6 +83,18 @@ exchSettingsOverlay.prototype = {
 	ecAuthWebServiceURL: null,
 	ecAuthServerTestCallback: null,
 
+	ecFolderSelectValidated: false,
+	ecFolderSelectOwnerExists: null,
+	ecFolderSelectShareExists: null,
+	ecFolderSelectCanAccess: null,
+	ecFolderSelectCanAccessAvailability: null,
+	ecFolderSelectValidationCallback: null,
+
+	ecFolderSelectOwner: null,
+	ecFolderSelectSharedId: "",
+	ecFolderSelectRoot: "calendar",
+	ecFolderSelectPath: "/",
+
 	ecSettingsValidateUsername: function ecSettingsValidateUsername( aUsername ) {
 		let isValidUser = false;
 
@@ -112,7 +124,7 @@ exchSettingsOverlay.prototype = {
 		this.ecAuthWebServiceURL = this._document.getElementById("ecauth-exchangewebservice").value;
 
 		// TODO Check how Autodiscovery work to be sure that this address can be used to autodiscover
-		this.exchWebServicesgMailbox = this.ecAuthUserName;
+		this.ecFolderSelectOwner = this.ecAuthUserName;
 	},
 
 	/*
@@ -123,7 +135,7 @@ exchSettingsOverlay.prototype = {
 		this._document.getElementById("ecauth-password").value = this.ecAuthPassword;
 		this._document.getElementById("ecauth-configuration-type").value = this.ecAuthAutoDiscovery;
 		this._document.getElementById("ecauth-exchangewebservice").value = this.ecAuthWebServiceURL;
-		this._document.getElementById("ecfolderselect-owner").value = this.exchWebServicesgMailbox;
+		this._document.getElementById("ecfolderselect-owner").value = this.ecFolderSelectOwner;
 	},
 
 	/*
@@ -265,7 +277,7 @@ exchSettingsOverlay.prototype = {
 
 			let exchangeTestAutoDiscover = {
 				user: this.ecAuthUserName,
-				mailbox: this.exchWebServicesgMailbox,
+				mailbox: this.ecFolderSelectOwner,
 				password: this.ecAuthPassword
 			};
 
@@ -305,7 +317,7 @@ exchSettingsOverlay.prototype = {
 		if (redirectAddr) {
 			this.globalFunctions.LOG("ecAuthAutoDiscoveryServerOK: We received an redirectAddr:"+redirectAddr);
 
-			this.exchWebServicesgMailbox = redirectAddr;
+			this.ecFolderSelectOwner = redirectAddr;
 			this.ecAuthUpdateSettings();
 
 			this.ecAuthAutoDiscoverServerSettings();
@@ -342,7 +354,7 @@ exchSettingsOverlay.prototype = {
 		if (!userCancel) {
 			if (SMTPAddress
 				&& SMTPAddress !== "") {
-				this.exchWebServicesgMailbox = SMTPAddress;
+				this.ecFolderSelectOwner = SMTPAddress;
 			}
 
 			// Set Exhange Web Service URL and update
@@ -385,7 +397,7 @@ exchSettingsOverlay.prototype = {
 			case -16:
 			case -17:
 			case -18:
-				alert(this.globalFunctions.getString("calExchangeCalendar", "ecErrorAutodiscoveryURLInvalid", [this.exchWebServicesgMailbox], "exchangecalendar"));
+				alert(this.globalFunctions.getString("calExchangeCalendar", "ecErrorAutodiscoveryURLInvalid", [this.ecFolderSelectOwner], "exchangecalendar"));
 				break;
 			default:
 				alert(this.globalFunctions.getString("calExchangeCalendar", "ecErrorAutodiscovery", [aMsg, aCode], "exchangecalendar"));
