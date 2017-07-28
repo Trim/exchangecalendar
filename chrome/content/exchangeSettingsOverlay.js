@@ -566,6 +566,107 @@ exchSettingsOverlay.prototype = {
 		}
 	},
 
+	////
+	// Set of functions to check mailbox existence on Exchange Server
+	////
+
+	ecFolderSelectVerifyMailboxOK: function _ecFolderSelectVerifyMailboxOK(newPrimarySMTP) {
+		this.ecFolderSelectOwnerExists = true;
+		// TODO Check if enough to say mailbox access is given and folder path is validated
+		this.ecFolderSelectCanAccess = true;
+		this.ecFolderSelectValidated = true;
+
+		if (newPrimarySMTP) {
+			this.ecFolderSelectOwner = newPrimarySMTP ;
+		}
+
+		this._window.setCursor("auto");
+		this.ecFolderSelectUpdateSetings();
+	},
+
+	ecFolderSelectVerifyMailboxError: function _ecFolderSelectVerifyMailboxError(aExchangeRequest, aCode, aMsg) {
+		this.globalFunctions.LOG("ecFolderSelectVerifyMailboxError: aCode:"+ aCode+", aMsg:"+aMsg);
+
+		this.ecFolderSelectOwnerExists = false;
+
+		switch (aCode) {
+			case -20:
+			case -30:
+				break;
+			case -6:
+				alert(this.globalFunctions.getString("calExchangeCalendar", "ecErrorServerCheckURLInvalid", [this.ecAuthWebServiceURL], "exchangecalendar"));
+				break;
+			case -7:
+			case -208:  // folderNotFound.
+				this.ecFolderSelectOwnerExists = true;
+				this.ecFolderSelectMailboxUserAvailability();
+				return;
+			case -212:
+				aMsg = aMsg + "(" + this.ecFolderSelectOwner + ")";
+			default:
+				alert(this.globalFunctions.getString("calExchangeCalendar", "ecErrorServerAndMailboxCheck", [aMsg, aCode], "exchangecalendar"));
+		}
+
+		this._window.setCursor("auto");
+		this.ecFolderSelectUpdateSetings();
+	},
+
+	// Check if we can get useravailability
+	ecFolderSelectMailboxUserAvailability: function _ecFolderSelectMailboxUserAvailability()
+	{
+		this.globalFunctions.LOG("ecFolderSelectMailboxUserAvailability");
+
+		var self = this;
+
+		let start = cal.now();
+
+		let offset = cal.createDuration();
+		offset.hours = 10;
+
+		let end = start.clone();
+		end.addDuration(offset);
+
+		let getUserAvailabilityArgs = {
+			user: this.ecAuthUserName,
+			mailbox: this.ecFolderSelectOwner,
+			serverUrl: this.ecAuthWebServiceURL,
+			folderBase: "calendar",
+			email: this.ecFolderSelectOwner,
+			attendeeType: 'Required',
+			start: cal.toRFC3339(start),
+			end: cal.toRFC3339(end)
+		} ;
+
+		let getUserAvailabilityRequest = new erGetUserAvailabilityRequest(
+			getUserAvailabilityArgs,
+			function(erGetUserAvailabilityRequest, aEvents) { self.ecFolderSelectMailboxUserAvailabilityOK (erGetUserAvailabilityRequest, aEvents); },
+			function(erGetUserAvailabilityRequest, aCode, aMsg) { self.ecFolderSelectMailboxUserAvailabilityError (erGetUserAvailabilityRequest, aCode, aMsg); } );
+
+	},
+
+	ecFolderSelectMailboxUserAvailabilityOK: function _ecFolderSelectMailboxUserAvailabilityOK (erGetUserAvailabilityRequest, aEvents)
+	{
+		this.ecFolderSelectCanAccessAvailability = true;
+		this.ecFolderSelectValidated = true;
+
+		this._window.setCursor("auto");
+		this.ecFolderSelectUpdateSetings();
+	},
+
+	ecFolderSelectMailboxUserAvailabilityError: function _ecFolderSelectMailboxUserAvailabilityError (erGetUserAvailabilityRequest, aCode, aMsg)
+	{
+		this.globalFunctions.LOG("ecFolderSelectMailboxUserAvailabilityError");
+		this.ecFolderSelectCanAccessAvailability = false;
+		this.ecFolderSelectValidated = false;
+
+		this._window.setCursor("auto");
+		this.ecFolderSelectUpdateSetings();
+	},
+
+	////
+	// End of mailbox existence function
+	////
+
 	exchWebServicesCheckRequired: function _exchWebServicesCheckRequired() {
 	
 		if (!this.gexchWebServicesDetailsChecked) {
