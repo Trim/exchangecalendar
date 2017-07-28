@@ -667,6 +667,112 @@ exchSettingsOverlay.prototype = {
 	// End of mailbox existence function
 	////
 
+	////
+	// Set of functions to check shared folder id existance on Exchange Server and translate it into folder root
+	////
+
+	/*
+	 * When real folder id and mail box is found, check shared folder type is an appointment or a task
+	 */
+	ecFolderSelectSharedIdConvertOK: function _ecFolderSelectSharedIdConvertOK(aFolderID, aMailbox)
+	{
+		this.globalFunctions.LOG("ecFolderSelectSharedIdConvertOK: aFolderID:"+aFolderID+", aMailbox:"+aMailbox);
+		this.ecFolderSelectShareExists = true;
+
+		var self = this;
+
+		try {
+			this._window.setCursor("wait");
+
+			let getFolderArgs = {
+				user: this.ecAuthUserName,
+				mailbox: aMailbox,
+				serverUrl: this.ecAuthWebServiceURL,
+				folderID: aFolderID
+			};
+
+			var getFolderRequest = new erGetFolderRequest(
+				getFolderArgs,
+				function (aExchangeRequest, aFolderID, aChangeKey, aFolderClass) { self.ecFolderSelectGetFolderOK (aExchangeRequest, aFolderID, aChangeKey, aFolderClass); },
+				function (aExchangeRequest, aCode, aMsg) { self.ecFolderSelectGetFolderError (aExchangeRequest, aCode, aMsg); }
+			);
+		}
+		catch(err) {
+			this._window.setCursor("auto");
+			this.globalFunctions.ERROR("Warning: Error during creation of erGetFolderRequest. Err="+err+"\n");
+		}
+	},
+
+	ecFolderSelectSharedIdConvertError: function _ecFolderSelectSharedIdConvertError(aExchangeRequest, aCode, aMsg)
+	{
+		this.ecFolderSelectShareExists = false;
+		this.ecFolderSelectValidated = false;
+
+		switch (aCode) {
+			case -20:
+			case -30:
+				break;
+			case -6:
+				alert(this.globalFunctions.getString("calExchangeCalendar", "ecErrorServerCheckURLInvalid", [this.exchWebServicesgServer], "exchangecalendar"));
+				break;
+			default:
+				alert(this.globalFunctions.getString("calExchangeCalendar", "ecErrorServerAndMailboxCheck", [aMsg, aCode], "exchangecalendar"));
+		}
+		this._window.setCursor("auto");
+	},
+
+	/*
+	 * On response of folder details, check its type and save it to UI
+	 */
+	ecFolderSelectGetFolderOK: function _ecFolderSelectGetFolderOK(aExchangeRequest, aFolderID, aChangeKey, aFolderClass)
+	{
+		this.globalFunctions.LOG("ecFolderSelectGetFolderOK: aFolderID:"+aFolderID+", aChangeKey:"+aChangeKey+", aFolderClass:"+aFolderClass);
+		this.ecFolderSelectCanAccess = true;
+		this.ecFolderSelectValidated = true;
+
+		// If request origin is a shared folder id conversion, update folder id and change key
+		if (this.ecFolderSelectShareExists) {
+			if FolderClass == "IPF.Appointment" |
+				 aFolderClass == "IPF.Task") {
+			th	is.exchWebServicesgFolderID = aFolderID;
+			th	is.exchWebServicesgChangeKey = aChangeKey;
+
+			}
+			else {
+				alert(this.globalFunctions.getString("calExchangeCalendar", "ecErrorServerAndMailboxCheck", [aMsg, aCode], "exchangecalendar"));
+			}
+		}
+
+		this._window.setCursor("auto");
+		this.ecFolderSelectUpdateSetings();
+		this.ecFolderSelectValidationCallback(this.ecFolderSelectValidated);
+	},
+
+	ecFolderSelectGetFolderError: function _ecFolderSelectGetFolderError(aExchangeRequest, aCode, aMsg)
+	{
+		this.ecFolderSelectCanAccess = false;
+		this.ecFolderSelectValidated = false;
+
+		switch (aCode) {
+			case -20:
+			case -30:
+				break;
+			case -6:
+				alert(this.globalFunctions.getString("calExchangeCalendar", "ecErrorServerCheckURLInvalid", [this.ecAuthWebServiceURL], "exchangecalendar"));
+				break;
+			default:
+				alert(this.globalFunctions.getString("calExchangeCalendar", "ecErrorServerAndMailboxCheck", [aMsg, aCode], "exchangecalendar"));
+		}
+
+		this._window.setCursor("auto");
+		this.ecFolderSelectUpdateSetings();
+		this.ecFolderSelectValidationCallback(this.ecFolderSelectValidated);
+	},
+
+	////
+	// End of set of shared folder id function set
+	////
+
 	exchWebServicesCheckRequired: function _exchWebServicesCheckRequired() {
 	
 		if (!this.gexchWebServicesDetailsChecked) {
