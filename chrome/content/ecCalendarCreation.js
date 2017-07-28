@@ -57,8 +57,8 @@ exchCalendarCreation.prototype = {
 	firstTime: true,
 
 	createPrefs : Cc["@mozilla.org/preferences-service;1"]
-                    			.getService(Ci.nsIPrefService)
-		    			.getBranch("extensions.exchangecalendar@extensions.1st-setup.nl.createcalendar."),
+		.getService(Ci.nsIPrefService)
+		.getBranch("extensions.exchangecalendar@extensions.1st-setup.nl.createcalendar."),
 
 	doRadioExchangeCalendar: function _doRadioExchangeCalendar(type)
 	{
@@ -142,6 +142,41 @@ exchCalendarCreation.prototype = {
 
 		this._document.getElementById("ecauth-servertestok").hidden = true;
 		this._document.getElementById("ecauth-servertestfail").hidden = true;
+	},
+
+	ecFolderSelectLoad: function _ecFolderSelectLoad() {
+		this.createPrefs.deleteBranch("");
+
+		// Preset folder owner if calendar email identity were selected inside the standard calendar properties page
+
+		let emailIdentityItem = this._document.getElementById("email-identity-menulist").selectedItem;
+
+		if(emailIdentityItem) {
+			let emailIdentity = emailIdentityItem.getAttribute("value");
+			let ecFolderOwner = this._document.getElementById("ecfolderselect-owner");
+
+			if (emailIdentity.toLowerCase() !== "none"
+				&& ecFolderOwner.value === "") {
+
+				let preferencesService = Cc["@mozilla.org/preferences-service;1"]
+					.getService(Ci.nsIPrefService);
+
+				let emailIdentityPref = preferencesService.getBranch("mail.identity." + emailIdentity + ".");
+
+				ecFolderOwner.value = emailIdentityPref.getCharPref("useremail");
+
+				this.createPrefs.setCharPref("mailbox", this._document.getElementById("ecfolderselect-owner").value);
+			}
+		}
+
+		// Preset folder path to root if nothing were defined
+
+		let ecFolderPath = this._document.getElementById("ecfolderselect-basepath").value;
+
+		if (!ecFolderPath
+			|| ecFolderPath === "") {
+			ecFolderPath = "/";
+		}
 	},
 
 	initExchange1: function _initExchange1()

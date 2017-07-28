@@ -107,7 +107,7 @@
 			next = "finishPage"
 			label = "&wizard.label;"
 			description = "&ecfolderselect.description;"
-			onpageshow = "checkRequired();tmpCalendarCreation.initExchange1();"
+			onpageshow = "tmpCalendarCreation.ecFolderSelectLoad();"
 			onpageadvanced = "tmpCalendarCreation.saveSettings();">
 
 			<vbox id="exchangesettings-ecfolderselect" />
