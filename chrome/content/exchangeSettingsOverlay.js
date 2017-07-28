@@ -494,6 +494,78 @@ exchSettingsOverlay.prototype = {
 		let isOwnerOrShareValidated;
 	}
 
+	/*
+	 * Validate folder selection interface to allow save settings
+	 */
+	ecFolderSelectValidate: function _ecFolderSelectValidate(aValidationCallback) {
+		if (this.ecFolderSelectOwnerShareSanityCheck()
+			&& this.ecFolderSelectOwnerOrShareValidated()) {
+			this.ecFolderSelectValidationCallback = aValidationCallback;
+
+			//TODO Currently, there's no real folder access control: there's only a share or mailbox existence check (and mailbox/share access)
+			// We need to check if we can validate that user has access to folder too !
+			this.ecFolderSelectValidationCallback(this.ecFolderSelectValidated);
+		}
+	},
+
+	/*
+	 * Check if given owner smtp email address exists inside the Exchange server
+	 * If an Id of a Shared Folder is given, owner is not checked and real folder is searched
+	 */
+	ecFolderSelectVerifyOwnerOrShare: function _ecFolderSelectVerifyOwnerOrShare() {
+		this.ecFolderSelectOwnerExists = false;
+		this.ecFolderSelectShareExists = false;
+
+		this.ecFolderSelectCanAccess = false;
+		this.ecFolderSelectCanAccessAvailability = false;
+
+		if (this.ecFolderSelectOwnerOrShareSanityCheck()) {
+
+			var self = this;
+
+			try {
+				this._window.setCursor("wait");
+
+				// If a shared folder Id is given, convert it
+				// Otherwise, check owner email
+				if (this.ecFolderSelectSharedId
+					&& this.ecFolderSelectSharedId !== "") {
+
+					let convertIdArgs = {
+						user: this.ecAuthUserName,
+						mailbox: this.ecFolderSelectOwner,
+						serverUrl: this.ecAuthWebServiceURL,
+						folderId: this.ecFolderSelectSharedId
+						};
+
+					let convertIdRequest = new erConvertIDRequest(
+						convertIdArgs,
+						function (aFolderID, aMailbox) { self.ecFolderSelectSharedIdConvertOK (aFolderID, aMailbox); },
+						function (aExchangeRequest, aCode, aMsg) { self.ecFolderSelectSharedIdConvertError (aExchangeRequest, aCode, aMsg); }
+					);
+				}
+				else {
+
+					let smtpCheckArgs = {
+						user: this.ecAuthUserName,
+						mailbox: this.ecFolderSelectOwner,
+						serverUrl: this.ecAuthWebServiceURL,
+						folderBase: "calendar"
+					};
+
+					let smtpCheckRequest = new erPrimarySMTPCheckRequest(
+						smtpCheckArgs,
+						function (newPrimarySMTP) { self.ecFolderSelectVerifyMailboxOK (newPrimarySMTP); },
+						function (aExchangeRequest, aCode, aMsg) { self.ecFolderSelectVerifyMailboxError (aExchangeRequest, aCode, aMsg); });
+				}
+			}
+			catch(err) {
+				this._window.setCursor("auto");
+				this.globalFunctions.ERROR("Warning: Error during creation of erPrimarySMTPCheckRequest. Err="+err+"\n");
+			}
+		}
+	},
+
 	exchWebServicesCheckRequired: function _exchWebServicesCheckRequired() {
 	
 		if (!this.gexchWebServicesDetailsChecked) {
