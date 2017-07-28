@@ -410,6 +410,28 @@ exchSettingsOverlay.prototype = {
 		this.ecAuthServerTestCallback(this.ecAuthSettingsValidated);
 	},
 
+	/*
+	 * Get settings filled by user in the simplified folder selection interface
+	 */
+	ecFolderSelectGetSettings: function _ecFolderSelectGetSettings(){
+		this.ecFolderSelectOwner = this._document.getElementById("ecfolderselect-owner").value;
+		this.ecFolderSelectSharedId = this._document.getElementById("ecfolderselect-sharedfolderid").value;
+		this.ecFolderSelectRoot = this._document.getElementById("ecfolderselect-rootfolder").value;
+		this.ecFolderSelectPath = this._document.getElementById("ecfolderselect-folderpath").value;
+	},
+
+	/*
+	 * Update settings in the simplified folder selection interface with current informations
+	 */
+	ecFolderSelectUpdateSetings: function _ecFolderSelectUpdateSetings() {
+		this._document.getElementById("ecfolderselect-owner").value = this.ecFolderSelectOwner;
+		this._document.getElementById("ecfolderselect-sharedfolderid").value = this.ecFolderSelectSharedId;
+		this._document.getElementById("ecfolderselect-rootfolder").value = this.ecFolderSelectRoot;
+		this._document.getElementById("ecfolderselect-folderpath").value = this.ecFolderSelectPath;
+
+		this.ecFolderSelectUpdateDialog(false);
+	},
+
 	exchWebServicesCheckRequired: function _exchWebServicesCheckRequired() {
 	
 		if (!this.gexchWebServicesDetailsChecked) {
