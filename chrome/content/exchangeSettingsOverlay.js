@@ -811,6 +811,68 @@ exchSettingsOverlay.prototype = {
 		}
 	},
 
+	/*
+	 * Save all settings inside Thunderbird preferences
+	 */
+	ecSettingsSaveCalendar: function _ecSettingsSaveCalendar (aCalId) {
+		let ecCalendarPref = Cc["@mozilla.org/preferences-service;1"]
+			.getService(Ci.nsIPrefService)
+			.getBranch("extensions.exchangecalendar@extensions.1st-setup.nl."+aCalId+".");
+
+		if (ecCalendarPref) {
+			ecCalendarPref.setCharPref("ecUser", this.ecAuthUserName);
+			// TODO Add a way to save password to mivExchangeAuthPrompt2
+			ecCalendarPref.setCharPref("ecServer", this.ecAuthWebServiceURL);
+
+			ecCalendarPref.setCharPref("ecMailbox", this.ecFolderSelectOwner);
+			ecCalendarPref.setCharPref("ecFolderIDOfShare", this.ecFolderSelectSharedId);
+
+			ecCalendarPref.setCharPref("ecFolderpath", this.ecFolderSelectPath);
+			ecCalendarPref.setCharPref("ecFolderbase", this.ecFolderSelectRoot);
+
+			if (this.ecFolderSelectPath === "/"
+				&& this.ecFolderSelectSharedId === "") {
+				this.exchWebServicesgFolderID = "";
+				this.exchWebServicesgChangeKey = "";
+			}
+
+			ecCalendarPref.setCharPref("ecFolderID", this.exchWebServicesgFolderID);
+			ecCalendarPref.setCharPref("ecChangeKey", this.exchWebServicesgChangeKey);
+		}
+	},
+
+	ecSettingsLoadCalendar: function ecSettingsLoadCalendar(aCalId)
+	{
+		let ecCalendarPref = Cc["@mozilla.org/preferences-service;1"]
+			.getService(Ci.nsIPrefService)
+			.getBranch("extensions.exchangecalendar@extensions.1st-setup.nl."+aCalId+".");
+
+		if (ecCalendarPref) {
+			this.ecAuthUserName = ecCalendarPref.getCharPref("ecUser");
+			// TODO Add a way to load password to mivExchangeAuthPrompt2
+			this.ecAuthWebServiceURL = ecCalendarPref.getCharPref("ecServer");
+
+			this.ecFolderSelectOwner = ecCalendarPref.getCharPref("ecMailbox");
+			try {
+				this.ecFolderSelectSharedId = ecCalendarPref.getCharPref("ecFolderIDOfShare");
+				this.exchWebServicesgFolderID = ecCalendarPref.getCharPref("ecFolderID");
+				this.exchWebServicesgChangeKey = ecCalendarPref.getCharPref("ecChangeKey");
+			}
+			catch(err) {
+				this.exchWebServicesgFolderIdOfShare = "";
+				this.exchWebServicesgFolderID = "";
+				this.exchWebServicesgChangeKey = "";
+			}
+
+			this.ecFolderSelectPath = ecCalendarPref.getCharPref("ecFolderpath");
+			this.ecFolderSelectRoot = ecCalendarPref.getCharPref("ecFolderbase");
+
+			this.ecAuthUpdateSettings();
+			this.ecFolderSelectUpdateSetings();
+		}
+
+	},
+
 	exchWebServicesCheckRequired: function _exchWebServicesCheckRequired() {
 	
 		if (!this.gexchWebServicesDetailsChecked) {
