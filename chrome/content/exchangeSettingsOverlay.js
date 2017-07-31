@@ -826,6 +826,8 @@ exchSettingsOverlay.prototype = {
 	 * Save all settings inside Thunderbird preferences
 	 */
 	ecSettingsSaveCalendar: function _ecSettingsSaveCalendar (aCalId) {
+		this.ecFolderSelectGetSettings();
+
 		let ecCalendarPref = Cc["@mozilla.org/preferences-service;1"]
 			.getService(Ci.nsIPrefService)
 			.getBranch("extensions.exchangecalendar@extensions.1st-setup.nl."+aCalId+".");
@@ -882,6 +884,8 @@ exchSettingsOverlay.prototype = {
 			this.ecFolderSelectUpdateSetings();
 		}
 
+		this.ecAuthUpdateSettings();
+		this.ecFolderSelectUpdateSetings();
 	},
 
 	exchWebServicesCheckRequired: function _exchWebServicesCheckRequired() {

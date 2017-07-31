@@ -226,7 +226,7 @@ exchCalendarCreation.prototype = {
 		let newCalColor = this._document.getElementById("calendar-color").value;
 
 		// Save settings in dialog to new cal id.
-		tmpSettingsOverlay.exchWebServicesSaveExchangeSettingsByCalId(newCalId);
+		ecSettingsOverlay.ecSettingsSaveCalendar(newCalId);
 
 		// Need to save the useOfflineCache preference separetly because it is not part of the main.
 		this.prefs = Cc["@mozilla.org/preferences-service;1"]
