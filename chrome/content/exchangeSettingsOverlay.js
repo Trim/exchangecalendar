@@ -423,7 +423,7 @@ exchSettingsOverlay.prototype = {
 	/*
 	 * Update settings in the simplified folder selection interface with current informations
 	 */
-	ecFolderSelectUpdateSetings: function _ecFolderSelectUpdateSetings() {
+	ecFolderSelectUpdateSettings: function _ecFolderSelectUpdateSettings() {
 		this._document.getElementById("ecfolderselect-owner").value = this.ecFolderSelectOwner;
 		this._document.getElementById("ecfolderselect-sharedfolderid").value = this.ecFolderSelectSharedId;
 		this._document.getElementById("ecfolderselect-rootfolder").value = this.ecFolderSelectRoot;
@@ -591,7 +591,7 @@ exchSettingsOverlay.prototype = {
 		}
 
 		this._window.setCursor("auto");
-		this.ecFolderSelectUpdateSetings();
+		this.ecFolderSelectUpdateSettings();
 	},
 
 	ecFolderSelectVerifyMailboxError: function _ecFolderSelectVerifyMailboxError(aExchangeRequest, aCode, aMsg) {
@@ -618,7 +618,7 @@ exchSettingsOverlay.prototype = {
 		}
 
 		this._window.setCursor("auto");
-		this.ecFolderSelectUpdateSetings();
+		this.ecFolderSelectUpdateSettings();
 	},
 
 	// Check if we can get useravailability
@@ -660,7 +660,7 @@ exchSettingsOverlay.prototype = {
 		this.ecFolderSelectValidated = true;
 
 		this._window.setCursor("auto");
-		this.ecFolderSelectUpdateSetings();
+		this.ecFolderSelectUpdateSettings();
 	},
 
 	ecFolderSelectMailboxUserAvailabilityError: function _ecFolderSelectMailboxUserAvailabilityError (erGetUserAvailabilityRequest, aCode, aMsg)
@@ -670,7 +670,7 @@ exchSettingsOverlay.prototype = {
 		this.ecFolderSelectValidated = false;
 
 		this._window.setCursor("auto");
-		this.ecFolderSelectUpdateSetings();
+		this.ecFolderSelectUpdateSettings();
 	},
 
 	////
@@ -753,7 +753,7 @@ exchSettingsOverlay.prototype = {
 		}
 
 		this._window.setCursor("auto");
-		this.ecFolderSelectUpdateSetings();
+		this.ecFolderSelectUpdateSettings();
 		this.ecFolderSelectValidationCallback(this.ecFolderSelectValidated);
 	},
 
@@ -774,7 +774,7 @@ exchSettingsOverlay.prototype = {
 		}
 
 		this._window.setCursor("auto");
-		this.ecFolderSelectUpdateSetings();
+		this.ecFolderSelectUpdateSettings();
 		this.ecFolderSelectValidationCallback(this.ecFolderSelectValidated);
 	},
 
@@ -818,7 +818,7 @@ exchSettingsOverlay.prototype = {
 				this.exchWebServicesgChangeKey = input.selectedFolder.changeKey;
 			}
 
-			this.ecFolderSelectUpdateSetings();
+			this.ecFolderSelectUpdateSettings();
 		}
 	},
 
@@ -881,11 +881,11 @@ exchSettingsOverlay.prototype = {
 			this.ecFolderSelectRoot = ecCalendarPref.getCharPref("ecFolderbase");
 
 			this.ecAuthUpdateSettings();
-			this.ecFolderSelectUpdateSetings();
+			this.ecFolderSelectUpdateSettings();
 		}
 
 		this.ecAuthUpdateSettings();
-		this.ecFolderSelectUpdateSetings();
+		this.ecFolderSelectUpdateSettings();
 	},
 
 	exchWebServicesCheckRequired: function _exchWebServicesCheckRequired() {
