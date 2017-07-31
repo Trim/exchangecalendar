@@ -441,10 +441,10 @@ exchSettingsOverlay.prototype = {
 		}
 
 		if (this.ecFolderSelectOwnerOrShareSanityCheck()) {
-			this._document.getElementById("ecfodlerselect-folderlookfor").disabled = false;
+			this._document.getElementById("ecfolderselect-folderlookfor").disabled = false;
 		}
 		else {
-			this._document.getElementById("ecfodlerselect-folderlookfor").disabled = true;
+			this._document.getElementById("ecfolderselect-folderlookfor").disabled = true;
 		}
 
 		if (this.ecFolderSelectOwnerOrShareValidated()) {
@@ -471,7 +471,7 @@ exchSettingsOverlay.prototype = {
 		// Either email owner or sahred is given
 		if (this.ecSettingsValidateUsername(this.ecFolderSelectOwner)
 			|| (this.ecFolderSelectSharedId
-				&& this.ecFolderSelectSharedId !== ""){
+				&& this.ecFolderSelectSharedId !== "")){
 			isSanityChecked = true ;
 		}
 
@@ -487,12 +487,12 @@ exchSettingsOverlay.prototype = {
 		}
 
 		if( this.ecFolderSelectShareExists
-			&& (this.ecFolderSelectCanAccess || this.ecFolderSelectCanAccessAvailability) {
+			&& (this.ecFolderSelectCanAccess || this.ecFolderSelectCanAccessAvailability)) {
 			isOwnerOrShareValidated = true;
 		}
 
-		let isOwnerOrShareValidated;
-	}
+		return isOwnerOrShareValidated;
+	},
 
 	/*
 	 * Validate folder selection interface to allow save settings
@@ -732,11 +732,10 @@ exchSettingsOverlay.prototype = {
 
 		// If request origin is a shared folder id conversion, update folder id and change key
 		if (this.ecFolderSelectShareExists) {
-			if FolderClass == "IPF.Appointment" |
-				 aFolderClass == "IPF.Task") {
-			th	is.exchWebServicesgFolderID = aFolderID;
-			th	is.exchWebServicesgChangeKey = aChangeKey;
-
+			if (FolderClass == "IPF.Appointment"
+				|| aFolderClass == "IPF.Task") {
+				this.exchWebServicesgFolderID = aFolderID;
+				this.exchWebServicesgChangeKey = aChangeKey;
 			}
 			else {
 				alert(this.globalFunctions.getString("calExchangeCalendar", "ecErrorServerAndMailboxCheck", [aMsg, aCode], "exchangecalendar"));

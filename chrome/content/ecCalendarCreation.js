@@ -171,11 +171,11 @@ exchCalendarCreation.prototype = {
 
 		// Preset folder path to root if nothing were defined
 
-		let ecFolderPath = this._document.getElementById("ecfolderselect-basepath").value;
+		let ecFolderPath = this._document.getElementById("ecfolderselect-folderpath");
 
 		if (!ecFolderPath
-			|| ecFolderPath === "") {
-			ecFolderPath = "/";
+			|| ecFolderPath.value === "") {
+			ecFolderPath.value = "/";
 		}
 	},
 
