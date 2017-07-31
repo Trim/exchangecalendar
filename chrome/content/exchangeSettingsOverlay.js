@@ -787,6 +787,8 @@ exchSettingsOverlay.prototype = {
 	 */
 	ecFolderSelectBrowsePath: function _ecFolderSelectBrowsePath()
 	{
+		this.ecFolderSelectGetSettings();
+
 		let browseFolderDialogArgs = {
 			answer: "",
 			parentFolder: {
