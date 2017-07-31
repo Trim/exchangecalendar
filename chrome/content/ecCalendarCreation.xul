@@ -107,10 +107,29 @@
 			next = "finishPage"
 			label = "&wizard.label;"
 			description = "&ecfolderselect.description;"
-			onpageshow = "tmpCalendarCreation.ecFolderSelectLoad();"
+			onpageshow = "tmpCalendarCreation.ecFolderSelectShowPage();"
 			onpageadvanced = "tmpCalendarCreation.saveSettings();">
 
-			<vbox id="exchangesettings-ecfolderselect" />
+			<vbox id="exchangesettings-ecfolderselect"
+				oncommand = "tmpCalendarCreation.ecFolderSelectLoad();"
+				oninput = "tmpCalendarCreation.ecFolderSelectLoad();" />
+
+			<spacer flex = "1" />
+
+			<button id = "ecfolderselect-foldertestrun"
+				label = "&ecfolderselect.foldertestrun;"
+				oncommand = "tmpCalendarCreation.ecFolderSelectRunTestFolder();" />
+
+			<spacer flex = "1" />
+
+			<label id = "ecfolderselect-foldertestok"
+				value = "&ecfolderselect.foldertestok;"
+				hidden = "true" />
+
+			<label id = "ecfolderselect-foldertestfail"
+				hidden = "true" >&ecfolderselect.foldertestfail;</label>
+
+			<spacer flex = "1" />
 		</wizardpage>
 	</wizard>
 

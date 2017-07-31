@@ -508,7 +508,7 @@ exchSettingsOverlay.prototype = {
 	 * Validate folder selection interface to allow save settings
 	 */
 	ecFolderSelectValidate: function _ecFolderSelectValidate(aValidationCallback) {
-		if (this.ecFolderSelectOwnerShareSanityCheck()
+		if (this.ecFolderSelectOwnerOrShareSanityCheck()
 			&& this.ecFolderSelectOwnerOrShareValidated()) {
 			this.ecFolderSelectValidationCallback = aValidationCallback;
 

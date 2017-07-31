@@ -21,10 +21,14 @@
 <!ENTITY ecfolderselect.description "exchangecalendar needs to select a folder to look for data. Then you can choose a calendar or a task folder.">
 <!ENTITY ecfolderselect.owner "Folder owner">
 <!ENTITY ecfolderselect.sahredid "Share Folder Id">
-<!ENTITY ecfolderselect.folderlookfor "Look for available owner folders">
+<!ENTITY ecfolderselect.folderlookfor "Look for owner mailbox or share folder existence">
 <!ENTITY ecfolderselect.folderroot "Root folder">
 <!ENTITY ecfolderselect.folderpath "Subfolder path">
 <!ENTITY ecfolderselect.folderpathbrowse "Browse">
+
+<!ENTITY ecfolderselect.foldertestrun "Test folder access">
+<!ENTITY ecfolderselect.foldertestok "Test succeed, click on next.">
+<!ENTITY ecfolderselect.foldertestfail "Test failed, please verify folder settings and try again.">
 
 <!-- TODO: Remove after replace with new labels -->
 <!ENTITY ecautodiscover "Use Exchange's autodiscovery function.">

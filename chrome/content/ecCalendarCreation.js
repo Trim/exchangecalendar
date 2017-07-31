@@ -124,8 +124,8 @@ exchCalendarCreation.prototype = {
 
 		var self = this;
 
-		ecSettingsOverlay.ecAuthValidate(function (isTestSucced) {
-				if (isTestSucced) {
+		ecSettingsOverlay.ecAuthValidate(function (isTestSucceed) {
+				if (isTestSucceed) {
 					self._document.getElementById("calendar-wizard").canAdvance = true;
 					self._document.getElementById("ecauth-servertestok").hidden = false;
 				}
@@ -144,7 +144,7 @@ exchCalendarCreation.prototype = {
 		this._document.getElementById("ecauth-servertestfail").hidden = true;
 	},
 
-	ecFolderSelectLoad: function _ecFolderSelectLoad() {
+	ecFolderSelectShowPage: function _ecFolderSelectShowPage() {
 		this.createPrefs.deleteBranch("");
 
 		// Preset folder owner if calendar email identity were selected inside the standard calendar properties page
@@ -177,6 +177,34 @@ exchCalendarCreation.prototype = {
 			|| ecFolderPath.value === "") {
 			ecFolderPath.value = "/";
 		}
+
+		this.ecFolderSelectLoad();
+	},
+
+	ecFolderSelectRunTestFolder: function _ecFolderSelectRunTestFolder() {
+		this._document.getElementById("ecfolderselect-foldertestok").hidden = true;
+		this._document.getElementById("ecfolderselect-foldertestfail").hidden = true;
+
+		var self = this;
+
+		ecSettingsOverlay.ecFolderSelectValidate(function (isTestSucceed) {
+				if (isTestSucceed) {
+					this._document.getElementById("calendar-wizard").canAdvance = true;
+					this._document.getElementById("ecfolderselect-foldertestok").hidden = false;
+				}
+				else {
+					self._document.getElementById("calendar-wizard").canAdvance = false;
+					this._document.getElementById("ecfolderselect-foldertestfail").hidden = false;
+				}
+			} );
+	},
+
+	ecFolderSelectLoad: function _ecFolderSelectLoad() {
+		this._document.getElementById("calendar-wizard").canAdvance = false;
+		this._document.getElementById("ecfolderselect-foldertestrun").hidden = (ecSettingsOverlay.ecFolderSelectOwnerOrShareValidated() === false);
+
+		this._document.getElementById("ecfolderselect-foldertestok").hidden = true;
+		this._document.getElementById("ecfolderselect-foldertestfail").hidden = true;
 	},
 
 	initExchange1: function _initExchange1()
