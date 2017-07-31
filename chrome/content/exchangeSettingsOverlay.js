@@ -86,6 +86,7 @@ exchSettingsOverlay.prototype = {
 	ecFolderSelectValidated: false,
 	ecFolderSelectOwnerExists: null,
 	ecFolderSelectShareExists: null,
+	ecFolderSelectOwnerOrShareCallback: null,
 	ecFolderSelectCanAccess: null,
 	ecFolderSelectCanAccessAvailability: null,
 	ecFolderSelectValidationCallback: null,
@@ -445,7 +446,6 @@ exchSettingsOverlay.prototype = {
 			this.ecFolderSelectShareExists = null;
 			this.ecFolderSelectCanAccess = null;
 			this.ecFolderSelectCanAccessAvailability = null;
-			this.ecFolderSelectValidationCallback = null;
 
 			this.ecFolderSelectGetSettings();
 		}
@@ -590,6 +590,10 @@ exchSettingsOverlay.prototype = {
 			this.ecFolderSelectOwner = newPrimarySMTP ;
 		}
 
+		if (this.ecFolderSelectOwnerOrShareCallback){
+			this.ecFolderSelectOwnerOrShareCallback (this.ecFolderSelectOwnerExists) ;
+		}
+
 		this._window.setCursor("auto");
 		this.ecFolderSelectUpdateSettings();
 	},
@@ -615,6 +619,10 @@ exchSettingsOverlay.prototype = {
 				aMsg = aMsg + "(" + this.ecFolderSelectOwner + ")";
 			default:
 				alert(this.globalFunctions.getString("calExchangeCalendar", "ecErrorServerAndMailboxCheck", [aMsg, aCode], "exchangecalendar"));
+		}
+
+		if (this.ecFolderSelectOwnerOrShareCallback){
+			this.ecFolderSelectOwnerOrShareCallback (this.ecFolderSelectOwnerExists) ;
 		}
 
 		this._window.setCursor("auto");
@@ -659,6 +667,10 @@ exchSettingsOverlay.prototype = {
 		this.ecFolderSelectCanAccessAvailability = true;
 		this.ecFolderSelectValidated = true;
 
+		if (this.ecFolderSelectOwnerOrShareCallback){
+			this.ecFolderSelectOwnerOrShareCallback (this.ecFolderSelectCanAccessAvailability) ;
+		}
+
 		this._window.setCursor("auto");
 		this.ecFolderSelectUpdateSettings();
 	},
@@ -668,6 +680,10 @@ exchSettingsOverlay.prototype = {
 		this.globalFunctions.LOG("ecFolderSelectMailboxUserAvailabilityError");
 		this.ecFolderSelectCanAccessAvailability = false;
 		this.ecFolderSelectValidated = false;
+
+		if (this.ecFolderSelectOwnerOrShareCallback){
+			this.ecFolderSelectOwnerOrShareCallback (this.ecFolderSelectCanAccessAvailability) ;
+		}
 
 		this._window.setCursor("auto");
 		this.ecFolderSelectUpdateSettings();
@@ -711,6 +727,10 @@ exchSettingsOverlay.prototype = {
 			this._window.setCursor("auto");
 			this.globalFunctions.ERROR("Warning: Error during creation of erGetFolderRequest. Err="+err+"\n");
 		}
+
+		if (this.ecFolderSelectOwnerOrShareCallback){
+			this.ecFolderSelectOwnerOrShareCallback (this.ecFolderSelectShareExists) ;
+		}
 	},
 
 	ecFolderSelectSharedIdConvertError: function _ecFolderSelectSharedIdConvertError(aExchangeRequest, aCode, aMsg)
@@ -728,6 +748,11 @@ exchSettingsOverlay.prototype = {
 			default:
 				alert(this.globalFunctions.getString("calExchangeCalendar", "ecErrorServerAndMailboxCheck", [aMsg, aCode], "exchangecalendar"));
 		}
+
+		if (this.ecFolderSelectOwnerOrShareCallback){
+			this.ecFolderSelectOwnerOrShareCallback (this.ecFolderSelectShareExists) ;
+		}
+
 		this._window.setCursor("auto");
 	},
 

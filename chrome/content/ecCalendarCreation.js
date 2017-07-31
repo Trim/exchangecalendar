@@ -178,6 +178,14 @@ exchCalendarCreation.prototype = {
 			ecFolderPath.value = "/";
 		}
 
+		if (!ecSettingsOverlay.ecFolderSelectOwnerOrShareCallback) {
+			var self = this;
+
+			ecSettingsOverlay.ecFolderSelectOwnerOrShareCallback = function (isTestSucceed) {
+				self._document.getElementById("ecfolderselect-foldertestrun").hidden = (isTestSucceed === false);
+			}
+		}
+
 		this.ecFolderSelectLoad();
 	},
 
