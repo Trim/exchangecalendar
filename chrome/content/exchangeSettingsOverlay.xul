@@ -379,10 +379,11 @@
 				</row>
 			</rows>
 
-			<label id="ecfolderselect-useravailability"
-				flex="1"
-				hidden="true" >&exchWebServices.UserAvailability.label;</label>
 		</grid>
+
+		<label id="ecfolderselect-useravailability"
+			flex="1"
+			hidden="true" >&exchWebServices.UserAvailability.label;</label>
 	</vbox>
 </overlay>
 
