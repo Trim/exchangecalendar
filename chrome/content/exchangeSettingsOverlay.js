@@ -435,8 +435,18 @@ exchSettingsOverlay.prototype = {
 	/*
 	 * Update dialog according to current settings
 	 */
-	ecFolderSelectUpdateDialog: function _ecFolderSelectUpdateDialog(updateSettingsBefore = true) {
-		if (updateSettingsBefore) {
+	ecFolderSelectUpdateDialog: function _ecFolderSelectUpdateDialog(userModifiedInput = true) {
+
+		// When user has modified inputs, we need to reset all test flags
+		// Indeed, we don't know anymore what is currently valid or not
+		if (userModifiedInput) {
+			this.ecFolderSelectValidated = false;
+			this.ecFolderSelectOwnerExists = null;
+			this.ecFolderSelectShareExists = null;
+			this.ecFolderSelectCanAccess = null;
+			this.ecFolderSelectCanAccessAvailability = null;
+			this.ecFolderSelectValidationCallback = null;
+
 			this.ecFolderSelectGetSettings();
 		}
 
