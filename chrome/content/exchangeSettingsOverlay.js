@@ -79,6 +79,7 @@ exchSettingsOverlay.prototype = {
 	ecAuthSettingsValidated: false,
 	ecAuthUserName: null,
 	ecAuthPassword: null,
+	ecAuthSavePassword: false,
 	ecAuthAutoDiscovery: null,
 	ecAuthWebServiceURL: null,
 	ecAuthServerTestCallback: null,
@@ -121,6 +122,7 @@ exchSettingsOverlay.prototype = {
 	ecAuthGetSettings: function _ecAuthGetSettings(){
 		this.ecAuthUserName = this._document.getElementById("ecauth-username").value;
 		this.ecAuthPassword = this._document.getElementById("ecauth-password").value;
+		this.ecAuthSavePassword = this._document.getElementById("ecauth-save-password").checked;
 		this.ecAuthAutoDiscovery = this._document.getElementById("ecauth-configuration-type").value;
 		this.ecAuthWebServiceURL = this._document.getElementById("ecauth-exchangewebservice").value;
 
@@ -410,6 +412,25 @@ exchSettingsOverlay.prototype = {
 
 		this.ecAuthServerTestCallback(this.ecAuthSettingsValidated);
 	},
+
+	/*
+	 * User interface can ask to save the authentication password
+	 */
+	 ecAuthSavePasswordSetting: function _ecAuthSavePasswordSetting() {
+	 	this.ecAuthGetSettings();
+
+		let ecAuthPrompt = Cc["@1st-setup.nl/exchange/authprompt2;1"]
+			.getService(Ci.mivExchangeAuthPrompt2);
+
+		let aUserName = this.ecAuthUserName ;
+		let aPassword = this.ecAuthPassword ;
+		let aURL = this.ecAuthWebServiceURL;
+		let aRealm = {};
+		let aSavePassword = this.ecAuthSavePassword;
+
+		//ecAuthPrompt.setPassword(this.ecAuthUserName, this.ecAuthPassword, this.ecAuthWebServiceURL, null, this.ecAuthSavePassword );
+		ecAuthPrompt.setPassword(aUserName, aPassword, aURL, aRealm, aSavePassword );
+	 },
 
 	/*
 	 * Get settings filled by user in the simplified folder selection interface
