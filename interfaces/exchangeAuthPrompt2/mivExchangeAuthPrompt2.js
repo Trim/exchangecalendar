@@ -776,6 +776,57 @@ mivExchangeAuthPrompt2.prototype = {
 		}
 	},
 
+	setPassword: function _setPassword(aUserName, aPassword, aURL, aRealm = null, aSaveInPasswordManager = false)
+	{
+		if ((!aUserName)
+			|| (!aURL)
+			|| (!aPassword)) {
+			this.logInfo("setPassword: No username, password or URL specified. Aborting.");
+			return ;
+		}
+
+		// TODO: getPassword code has disabled realm specification, need to check why
+		//var realm = aRealm;
+		var realm = "Exchange Web Service";
+
+		if (!realm) {
+			this.logInfo("setPassword: No realm specified. Trying to get it from the URL.");
+
+			let ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
+			let tmpURI = ioService.newURI(aURL, null, null);
+
+			realm = tmpURI.host;
+
+			this.logInfo("setPassword: Set realm to:"+realm);
+		}
+		else {
+			this.logInfo("setPassword: A realm was specified:"+realm);
+		}
+
+		// Save in current password cache and details
+		this.passwordCache[aUserName + "|" + aURL + "|" + realm] = aPassword;
+
+		if (this.details[aURL]) {
+			this.details[aURL].showing = false;
+		}
+		else {
+			this.details[aURL] = {
+				showing: false,
+				canceled: false,
+				queue: new Array(),
+				ntlmCount: 0,
+				previousFailedCount: 0,
+			}
+		}
+
+		// Save inside the password manager
+		if (aSaveInPasswordManager){
+			this.passwordManagerSave(aUserName, aPassword, aURL, realm);
+		}
+
+		return ;
+	}
+
 }
 
 function NSGetFactory(cid) {
