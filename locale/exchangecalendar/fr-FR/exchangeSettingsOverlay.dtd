@@ -4,6 +4,7 @@
 <!ENTITY ecauth.username "Username">
 <!ENTITY ecauth.username.placeholder "user@example.com">
 <!ENTITY ecauth.password "Password">
+<!ENTITY ecauth.savepassword "Use Password Manager to remember this password.">
 
 <!ENTITY ecauth.details "Details">
 <!ENTITY ecauth.configuration "Server configuration">

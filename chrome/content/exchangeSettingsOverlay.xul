@@ -194,6 +194,13 @@
 				</row>
 
 				<row align = "center">
+					<label value="" />
+					<checkbox id = "ecauth-save-password"
+						checked = "false"
+						label = "&ecauth.savepassword;" />
+				</row>
+
+				<row align = "center">
 					<label value="&ecauth.configuration;" />
 					<menulist id="ecauth-configuration-type"
 						oncommand = "document.getElementById('ecauth-exchangewebservice-row').collapsed = (event.target.value === 'autodiscovery') ; document.getElementById('ecauth-exchangewebservice').disabled = (event.target.value === 'office365') ;" >
