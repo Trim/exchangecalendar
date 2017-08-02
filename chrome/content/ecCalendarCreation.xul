@@ -79,7 +79,8 @@
 			next = "ecfolderselect-wizardpage"
 			label = "&wizard.label;"
 			description = "&ecauth.description;"
-			onpageshow = "tmpCalendarCreation.ecAuthLoad();" >
+			onpageshow = "tmpCalendarCreation.ecAuthLoad();"
+			onpageadvanced = "tmpCalendarCreation.ecAuthPageAdvanced();" >
 
 			<vbox id = "exchangesettings-ecauthentication"
 				oncommand = "tmpCalendarCreation.ecAuthLoad();"

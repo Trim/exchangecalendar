@@ -144,6 +144,10 @@ exchCalendarCreation.prototype = {
 		this._document.getElementById("ecauth-servertestfail").hidden = true;
 	},
 
+	ecAuthPageAdvanced: function _ecAuthPageAdvanced() {
+		ecSettingsOverlay.ecAuthSavePasswordSetting();
+	},
+
 	ecFolderSelectShowPage: function _ecFolderSelectShowPage() {
 		this.createPrefs.deleteBranch("");
 
