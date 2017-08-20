@@ -938,7 +938,16 @@ ExchangeRequest.prototype = {
 			}
 
 			try {
-				this.mCbOk(this, newXML);
+				if (this.isPromise){
+					let self = this;
+					this.mCbOk({
+						exchangeRequest: self,
+						response: newXML
+						});
+				}
+				else {
+					this.mCbOk(this, newXML);
+				}
 			}
 			catch(err)
 			{
@@ -951,7 +960,6 @@ ExchangeRequest.prototype = {
 			this.originalReq = null;
 		}
 
-		newXML = null;
 		this.observerService.notifyObservers(this.channelCallbackEcAuthPrompt2, "onExchangeConnectionOk", this.currentUrl);
 	},
 
@@ -1261,7 +1269,16 @@ ExchangeRequest.prototype = {
 		}
 
 		if (this.mCbError) {
-			this.mCbError(this, aCode, aMsg);
+			if (this.isPromise) {
+				let self = this;
+				this.mCbError({
+					exchangeRequest: self,
+					errorCode: aCode,
+					errorMessage: aMsg});
+			}
+			else {
+				this.mCbError(this, aCode, aMsg);
+			}
 		}
 
 		this.originalReq = null;
