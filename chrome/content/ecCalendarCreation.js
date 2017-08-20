@@ -124,16 +124,15 @@ exchCalendarCreation.prototype = {
 
 		var self = this;
 
-		ecSettingsOverlay.ecAuthValidate(function (isTestSucceed) {
-				if (isTestSucceed) {
-					self._document.getElementById("calendar-wizard").canAdvance = true;
-					self._document.getElementById("ecauth-servertestok").hidden = false;
-				}
-				else {
-					self._document.getElementById("calendar-wizard").canAdvance = false;
-					self._document.getElementById("ecauth-servertestfail").hidden = false;
-				}
-			} );
+		ecSettingsOverlay.ecAuthValidate()
+		.then( () => {
+			self._document.getElementById("calendar-wizard").canAdvance = true;
+			self._document.getElementById("ecauth-servertestok").hidden = false;
+		})
+		.catch( () => {
+			self._document.getElementById("calendar-wizard").canAdvance = false;
+			self._document.getElementById("ecauth-servertestfail").hidden = false;
+		});
 	},
 
 	ecAuthLoad: function _ecAuthLoad() {
