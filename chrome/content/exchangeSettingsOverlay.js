@@ -76,13 +76,11 @@ exchSettingsOverlay.prototype = {
 	exchWebServicesgChangeKey : "",
 
 	// Simplified dialogs field
-	ecAuthSettingsValidated: false,
 	ecAuthUserName: null,
 	ecAuthPassword: null,
 	ecAuthSavePassword: false,
 	ecAuthAutoDiscovery: null,
 	ecAuthWebServiceURL: null,
-	ecAuthServerTestCallback: null,
 
 	ecFolderSelectValidated: false,
 	ecFolderSelectOwnerExists: null,
@@ -142,51 +140,6 @@ exchSettingsOverlay.prototype = {
 	},
 
 	/*
-	 * Authentication server settings are valid
-	 */
-	ecAuthServerConnectionOK: function _ecAuthServerConnectionOK(folderID, changeKey, folderClass)
-	{
-		this.globalFunctions.LOG("ecAuthServerConnectionOK");
-
-		this.ecAuthSettingsValidated = true;
-
-		if (this.exchWebServicesgFolderBase !== "publicfoldersroot") {
-			this.exchWebServicesgFolderBase = "publicfoldersroot";
-			this._document.getElementById("ecfolderselect-rootfolder").value = "publicfoldersroot";
-			this._document.getElementById("ecfolderselect-folderpath").value = "/";
-		}
-
-		this._window.setCursor("auto");
-
-		this.ecAuthServerTestCallback(this.ecAuthSettingsValidated);
-	},
-
-	/*
-	 * Authentication server settings are invalid
-	 */
-	ecAuthServerConnectionError: function _ecAuthServerConnectionError(aExchangeRequest, aCode, aMsg)
-	{
-		this.globalFunctions.LOG("ecAuthServerConnectionError");
-
-		this.ecAuthSettingsValidated = false;
-
-		switch (aCode) {
-			case -20:
-			case -30:
-				break;
-			case -6:
-				alert(this.globalFunctions.getString("calExchangeCalendar", "ecErrorServerCheckURLInvalid", [this.exchWebServicesgServer], "exchangecalendar"));
-				break;
-			default:
-				alert(this.globalFunctions.getString("calExchangeCalendar", "ecErrorServerCheck", [aMsg, aCode], "exchangecalendar"));
-		}
-
-		this._window.setCursor("auto");
-
-		this.ecAuthServerTestCallback(this.ecAuthSettingsValidated);
-	},
-
-	/*
 	 * Perform minimal tests to check before being able to run a real connection on server
 	 */
 	ecAuthSanityCheck: function _ecAuthSanityCheck(){
@@ -226,45 +179,65 @@ exchSettingsOverlay.prototype = {
 	/*
 	 * Validate exchange authentication settings by trying a real connection on server
 	 */
-	ecAuthValidate: function _ecAuthValidate(aValidationCallback) {
-		this.ecAuthSettingsValidated = false;
-
+	ecAuthValidate: function _ecAuthValidate() {
 		if (this.ecAuthSanityCheck()) {
-			this.ecAuthServerTestCallback = aValidationCallback;
+			this._window.setCursor("wait");
+			var self = this;
 
+			if (this.ecAuthAutoDiscovery === "autodiscovery") {
+				// We first try Autodiscovery for Exchange2010 and higher.
+				this.exchAutoDiscovery2010 = true;
 
-			try {
-				this._window.setCursor("wait");
-
-				var self = this;
-
-				if (this.ecAuthAutoDiscovery === "autodiscovery") {
-					// We first try Autodiscovery for Exchange2010 and higher.
-					this.exchAutoDiscovery2010 = true;
-
-					this.ecAuthAutoDiscoverServerSettings();
-				}
-				else {
-					let exchangeTestPublicfolder = {
-						user: this.ecAuthUserName,
-						password: this.ecAuthPassword,
-						mailbox: "",
-						folderBase: "calendar",
-						folderPath: "/",
-						serverUrl: this.ecAuthWebServiceURL
-					};
-
-					let testPublicFolder = new erGetFolderRequest(
-						exchangeTestPublicfolder,
-						function (folderID, changeKey, folderClass) { self.ecAuthServerConnectionOK(folderID, changeKey, folderClass); },
-						function (aExchangeRequest, aCode, aMsg) { self.ecAuthServerConnectionError(aExchangeRequest, aCode, aMsg); })
-				}
+				//this.ecAuthAutoDiscoverServerSettings();
+				return Promise.reject(new Error("Authentication Discovery currently not supported"));
 			}
-			catch(err) {
-				this._window.setCursor("auto");
-				this.globalFunctions.ERROR("Warning: Error while checking server connection:"+err+"\n");
-			}
+			else {
+				let exchangeTestPublicfolder = {
+					user: this.ecAuthUserName,
+					password: this.ecAuthPassword,
+					mailbox: "",
+					folderBase: "calendar",
+					folderPath: "/",
+					serverUrl: this.ecAuthWebServiceURL
+				};
 
+				return new erGetFolderRequest(exchangeTestPublicfolder)
+					.then((aExchangeFolder) => {
+						let folderId = aExchangeFolder.folderId;
+						let changeKey = aExchangeFolder.changeKey;
+						let folderClass = aExchangeFolder.folderClass;
+
+						if (self.exchWebServicesgFolderBase !== "publicfoldersroot") {
+							self.exchWebServicesgFolderBase = "publicfoldersroot";
+							self._document.getElementById("ecfolderselect-rootfolder").value = "publicfoldersroot";
+							self._document.getElementById("ecfolderselect-folderpath").value = "/";
+						}
+
+						self._window.setCursor("auto");
+						return Promise.resolve();
+					})
+					.catch((aExchangeError) => {
+							let aCode = aExchangeError.errorCode;
+							let aMsg = aExchangeError.errorMessage;
+
+							switch (aCode) {
+								case -20:
+								case -30:
+									break;
+								case -6:
+									alert(self.globalFunctions.getString("calExchangeCalendar", "ecErrorServerCheckURLInvalid", [self.exchWebServicesgServer], "exchangecalendar"));
+									break;
+								default:
+									alert(self.globalFunctions.getString("calExchangeCalendar", "ecErrorServerCheck", [aMsg, aCode], "exchangecalendar"));
+							}
+
+							self._window.setCursor("auto");
+							return Promise.reject();
+					});
+			}
+		}
+		else {
+			return Promise.reject();
 		}
 	},
 
