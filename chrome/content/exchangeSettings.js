@@ -256,8 +256,10 @@ exchExchangeSettings.prototype = {
 
 	onLoad: function _onLoad() {
 		var calId = this._window.arguments[0].calendar.id;
+
 		this._document.getElementById("exchWebService_ExchangeSettings-title").value = this._window.arguments[0].calendar.name;
-		tmpSettingsOverlay.exchWebServicesLoadExchangeSettingsByCalId(calId);
+
+		ecSettingsOverlay.ecSettingsLoadCalendar(calId);
 
 		// Load meeting request settings.
 		var exchWebServicesCalPrefs = Cc["@mozilla.org/preferences-service;1"]
@@ -272,14 +274,11 @@ exchExchangeSettings.prototype = {
 		this._document.getElementById("exchWebService-followup-deactivtate").checked = this.globalFunctions.safeGetBoolPref(exchWebServicesCalPrefs, "followup.task.deactivate", false);
 
 
-		if (this.globalFunctions.safeGetCharPref(exchWebServicesCalPrefs, "ecFolderbase", "") == "calendar") {
-			this._document.getElementById("exchWebService-mail-properties-calendar").hidden = false;
-			this._document.getElementById("exchWebService-mail-properties-task").hidden = true;
-		}
-		else {
-			this._document.getElementById("exchWebService-mail-properties-calendar").hidden = true;
-			this._document.getElementById("exchWebService-mail-properties-task").hidden = false;
-		}
+		let isCalendarFolder = (this.globalFunctions.safeGetCharPref(exchWebServicesCalPrefs, "ecFolderbase", "") === "calendar");
+		let isTasksFolder = (this.globalFunctions.safeGetCharPref(exchWebServicesCalPrefs, "ecFolderbase", "") === "tasks");
+
+		this._document.getElementById("exchWebService-mail-properties-calendar").hidden = !isCalendarFolder;
+		this._document.getElementById("exchWebService-mail-properties-task").hidden = !isTasksFolder;
 
 		/*
 		this._document.getElementById("exchWebService-poll-inbox").checked = this.globalFunctions.safeGetBoolPref(exchWebServicesCalPrefs, "ecPollInbox", true);
@@ -295,22 +294,6 @@ exchExchangeSettings.prototype = {
 		this._document.getElementById("exchWebService-doautorespond-meetingrequest-message").checked = this.globalFunctions.safeGetBoolPref(exchWebServicesCalPrefs, "ecSendAutoRespondMeetingRequestMessage", false);
 		this._document.getElementById("exchWebService-autorespond-meetingrequest-message").value = this.globalFunctions.safeGetCharPref(exchWebServicesCalPrefs, "ecAutoRespondMeetingRequestMessage", "");
 		*/
-		this._document.getElementById("exchWebService_folderbaserow").hidden = (tmpSettingsOverlay.exchWebServicesgFolderIdOfShare != "");
-		this._document.getElementById("exchWebService_folderpathrow").hidden = (tmpSettingsOverlay.exchWebServicesgFolderIdOfShare != "");
-		this._document.getElementById("exchWebServices-SharedFolderID").hidden = true;
-
-		if (this._window.arguments[0].calendar.getProperty("exchWebService.getFolderProperties")) {
-			var folderProperties = Cc["@1st-setup.nl/conversion/xml2jxon;1"]
-				.createInstance(Ci.mivIxml2jxon);
-			folderProperties.processXMLString(this._window.arguments[0].calendar.getProperty("exchWebService.getFolderProperties"), 0, null);
-			this.showFolderProprties(folderProperties);
-		}
-		else {
-			this._document.getElementById("exchWebService-folderproperties-xml").value = "not found";
-			this._document.getElementById("exchWebService_folderbaserow").hidden = true;
-			this._document.getElementById("exchWebService_folderpathrow").hidden = true;
-			this._document.getElementById("exchWebServices-UserAvailability").hidden = false;
-		}
 
 		if (this._window) {
 			this._window.sizeToContent();
