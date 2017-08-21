@@ -295,8 +295,6 @@ exchExchangeSettings.prototype = {
 		this._document.getElementById("exchWebService-doautorespond-meetingrequest-message").checked = this.globalFunctions.safeGetBoolPref(exchWebServicesCalPrefs, "ecSendAutoRespondMeetingRequestMessage", false);
 		this._document.getElementById("exchWebService-autorespond-meetingrequest-message").value = this.globalFunctions.safeGetCharPref(exchWebServicesCalPrefs, "ecAutoRespondMeetingRequestMessage", "");
 		*/
-		this.checkFolderSettings();
-
 		this._document.getElementById("exchWebService_folderbaserow").hidden = (tmpSettingsOverlay.exchWebServicesgFolderIdOfShare != "");
 		this._document.getElementById("exchWebService_folderpathrow").hidden = (tmpSettingsOverlay.exchWebServicesgFolderIdOfShare != "");
 		this._document.getElementById("exchWebServices-SharedFolderID").hidden = true;
@@ -329,7 +327,6 @@ exchExchangeSettings.prototype = {
 			.getService(Ci.nsIPrefService)
 			.getBranch("extensions.exchangecalendar@extensions.1st-setup.nl." + calId + ".");
 
-		this.checkFolderSettings();
 
 		if (this._document.getElementById("exchWebService-autoprocessingproperties-deletecancelleditems").checked != this.globalFunctions.safeGetBoolPref(exchWebServicesCalPrefs, "ecautoprocessingdeletecancelleditems", null)) {
 			exchWebServicesCalPrefs.setBoolPref("ecautoprocessingdeletecancelleditems", this._document.getElementById("exchWebService-autoprocessingproperties-deletecancelleditems").checked);
@@ -375,47 +372,6 @@ exchExchangeSettings.prototype = {
 			.getService(Ci.nsIPrefService).savePrefFile(null);
 		return true;
 	},
-
-	checkFolderSettings: function _checkFolderSettings() {
-		/*
-		if ((this._document.getElementById("exchWebService_folderbase").value != "calendar") ||
-			(this._document.getElementById("exchWebService_folderpath").value != "/") ||
-			(!this._window.arguments[0].calendar.getProperty("exchWebService.getFolderProperties"))) {
-			// Disable inbox polling.
-			this._document.getElementById("exchWebService-poll-inbox").checked = false;
-			this._document.getElementById("vbox-exchWebService-meetingrequestsettings").hidden = true;
-			this._document.getElementById("vbox-exchWebService-nomeetingrequestsettings").hidden = false;
-		}
-		else {
-			this._document.getElementById("vbox-exchWebService-meetingrequestsettings").hidden = false;
-			this._document.getElementById("vbox-exchWebService-nomeetingrequestsettings").hidden = true;
-		}
-
-		this._document.getElementById("exchWebService-poll-inbox-interval").disabled = (!this._document.getElementById("exchWebService-poll-inbox").checked);
-
-		this._document.getElementById("exchWebService-autorespond-answer").disabled = (!this._document.getElementById("exchWebService-autorespond-meetingrequest").checked);
-		this._document.getElementById("exchWebService-doautorespond-meetingrequest-message").disabled = (!this._document.getElementById("exchWebService-autorespond-meetingrequest").checked);
-		this._document.getElementById("exchWebService-autorespond-meetingrequest-message").disabled = (!this._document.getElementById("exchWebService-autorespond-meetingrequest").checked);
-		*/
-		this._window.sizeToContent();
-	},
-
-	doAutoProcessing: function _doAutoProcessing() {
-		this._window.sizeToContent();
-	},
-
-	doTabChanged: function _doTabChanged(aTabs) {
-		this.checkFolderSettings();
-	},
-
-	doPollInboxChanged: function _doPollInboxChanged(aCheckbox) {
-		this.checkFolderSettings();
-	},
-
-	doAutoRespondChanged: function doAutoRespondChanged(aCheckbox) {
-		this.checkFolderSettings();
-	},
-
 }
 
 var tmpExchangeSettings = new exchExchangeSettings(document, window);
