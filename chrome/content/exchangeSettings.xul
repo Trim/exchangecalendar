@@ -135,12 +135,14 @@
       -->
       <tabpanel id="exchWebService-folderproperties">
         <hbox flex="1">
-          <vbox id="vbox-exchWebService-folderproperties">
-            <label id="exchWebService-folderproperties-xml" value="Details:"/>
+          <vbox id="vbox-exchWebService-folderproperties"
+              flex = "1">
+
+            <caption id="exchWebService-folderproperties-xml" value="Details:"/>
             <grid flex="1">
               <columns>
                 <column/>
-                <column flex="1"/>
+                <column/>
               </columns>
               <rows>
                 <row align="center">
@@ -161,12 +163,14 @@
                 </row>
               </rows>
             </grid>
+
             <separator/>
-            <label value="Effective rights:"/>
+
+            <caption value="Effective rights:"/>
             <grid flex="1">
               <columns>
                 <column/>
-                <column flex="1"/>
+                <column/>
               </columns>
               <rows>
                 <row align="center">
@@ -195,6 +199,7 @@
                 </row>
               </rows>
             </grid>
+
             <tree id="exchWebServicesPermissionsTree" flex="1" seltype="single" onselect="tmpExchangeSettings.doOnSelectUserId(this);" sortResource="UserId" sortDirection="natural" rows="5">
               <treecols>
                 <treecol id="exchWebService_permissonTree_userId" label="&treecol.label.userid;" primary="true" flex="2" fixed="false"/>
@@ -202,11 +207,12 @@
               </treecols>
               <treechildren/>
             </tree>
-            <label value="Select user rights:"/>
+
+            <caption value="Select user rights:"/>
             <grid flex="1">
               <columns>
                 <column/>
-                <column flex="1"/>
+                <column/>
               </columns>
               <rows>
                 <row align="center">
