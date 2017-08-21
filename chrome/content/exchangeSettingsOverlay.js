@@ -138,6 +138,7 @@ exchSettingsOverlay.prototype = {
 		this._document.getElementById("ecauth-password").value = this.ecAuthPassword;
 		this._document.getElementById("ecauth-configuration-type").value = this.ecAuthAutoDiscovery;
 		this._document.getElementById("ecauth-exchangewebservice").value = this.ecAuthWebServiceURL;
+		this._document.getElementById('ecauth-exchangewebservice-row').collapsed = (this.ecAuthAutoDiscovery === 'autodiscovery') ;
 		this._document.getElementById("ecfolderselect-owner").value = this.ecFolderSelectOwner;
 	},
 
@@ -908,7 +909,8 @@ exchSettingsOverlay.prototype = {
 
 		if (ecCalendarPref) {
 			this.ecAuthUserName = ecCalendarPref.getCharPref("ecUser");
-			// TODO Add a way to load password to mivExchangeAuthPrompt2
+
+			this.ecAuthAutoDiscovery = "manual"; // In all cases, we finally get a manual web service URL
 			this.ecAuthWebServiceURL = ecCalendarPref.getCharPref("ecServer");
 
 			this.ecFolderSelectOwner = ecCalendarPref.getCharPref("ecMailbox");
@@ -932,6 +934,19 @@ exchSettingsOverlay.prototype = {
 
 		this.ecAuthUpdateSettings();
 		this.ecFolderSelectUpdateSettings();
+
+		/*
+		 * Password and remember password settings are NOT saved inside the calendar settings.
+		 * So we can't load them easily and we hide elements allowing to set them.
+		 */
+		this._document.getElementById('ecauth-password').parentNode.collapsed = true;
+		this._document.getElementById('ecauth-save-password').parentNode.collapsed = true;
+
+		/*
+		 * By default, display selected root and path
+		 */
+		this._document.getElementById('ecfolderselect-folderroot-row').hidden = false;
+		this._document.getElementById('ecfolderselect-folderpath-row').hidden = false;
 	},
 
 	exchWebServicesCheckRequired: function _exchWebServicesCheckRequired() {
