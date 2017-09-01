@@ -48,7 +48,6 @@ function exchCalendarCreation(aDocument, aWindow)
 }
 
 exchCalendarCreation.prototype = {
-
 	oldLocationTextBox: "",
 	oldNextPage: "",
 	oldCache: false,
@@ -68,11 +67,11 @@ exchCalendarCreation.prototype = {
 			this.oldNextPage = aCustomizePage.getAttribute("next");
 			this.oldOnPageAdvanced = aCustomizePage.getAttribute("onpageadvanced");
 
-			this.firstTime = false;		
+			this.firstTime = false;
 		}
 
 		if (type === "exchangecalendar") {
-			
+
 			// Get the next page to set back new values.
 			let aCustomizePage = this._document.getElementById('calendar-wizard').getPageById("customizePage");
 			aCustomizePage.setAttribute("next", "ecauth-wizardpage");
@@ -118,37 +117,122 @@ exchCalendarCreation.prototype = {
 		
 	},
 
-	ecAuthRunTestServer: function _ecAuthRunTestServer() {
-		this._document.getElementById("ecauth-servertestok").hidden = true;
-		this._document.getElementById("ecauth-servertestfail").hidden = true;
+	/*
+	 * Run test on Exchange server to validate datas.
+	 *
+	 * This method is used in the wizardpage onpageadvanced attribute.
+	 *
+	 * So, it is called when:
+	 *  1. User click on Next from an exchangecalendar wizard page
+	 *  2. The asynchronus Exchange test is finished and the callback uses wizard.advance() method.
+	 *
+	 * Its return follows workflow defined by onadvancedpage:
+	 * Return false to stay on ecauth wizard-page, return true to go next step.
+	 */
+	ecSendTestOnPageAdvanced: function _ecSendTestOnPageAdvanced() {
+		let calendarWizard = this._document.getElementById('calendar-wizard');
 
-		var self = this;
+		// Run test only if none is running
+		if (! this.isTestRuning) {
+			this.isTestRuning = true;
 
-		ecSettingsOverlay.ecAuthValidate(function (isTestSucceed) {
-				if (isTestSucceed) {
-					self._document.getElementById("calendar-wizard").canAdvance = true;
-					self._document.getElementById("ecauth-servertestok").hidden = false;
-				}
-				else {
-					self._document.getElementById("calendar-wizard").canAdvance = false;
-					self._document.getElementById("ecauth-servertestfail").hidden = false;
-				}
-			} );
+			// Disable Window while running
+			calendarWizard.canAdvance = false;
+			this._window.setCursor("wait");
+
+			let self = this;
+
+			// To be able to use the wizard.advance()
+			// method, both parameters have to be 'true':
+			//   * canAdvance have
+			//   * self.isTestSucceed
+			let advancePage = function _advancePage() {
+				calendarWizard.canAdvance = true;
+				self.isTestSucceed = true;
+				self._document.getElementById('calendar-wizard').advance(null);
+			}
+
+			let endTest = function _endTest() {
+				self.isTestRuning = false;
+				self._window.setCursor("auto");
+			}
+
+			// Send callback test
+			switch (calendarWizard.currentPage.pageid) {
+
+				case 'ecauth-wizardpage':
+					ecSettingsOverlay.ecAuthValidate(function (isTestSucceed) {
+							if (isTestSucceed) {
+								self._document.getElementById("ecauth-servertestfail").hidden = true;
+								ecSettingsOverlay.ecAuthSavePasswordSetting();
+
+								advancePage();
+							}
+							else {
+								self._document.getElementById("ecauth-servertestfail").hidden = false;
+							}
+
+							endTest();
+						} );
+					break;
+
+				case 'ecmailbox-wizardpage':
+					ecSettingsOverlay.ecMailboxValidate(function(isTestSucceed) {
+							if (isTestSucceed) {
+								self._document.getElementById("ecmailbox-ownerorsharetestfail").hidden = true;
+
+								advancePage();
+							}
+							else {
+								self._document.getElementById("ecmailbox-ownerorsharetestfail").hidden = false;
+							}
+
+							endTest();
+						});
+					break;
+
+				case 'ecfolderselect-wizardpage':
+					ecSettingsOverlay.ecFolderSelectValidate(function (isTestSucceed) {
+							if (isTestSucceed) {
+								self._document.getElementById("ecfolderselect-foldertestfail").hidden = true;
+
+								self.saveSettings();
+								advancePage();
+							}
+							else {
+								self._document.getElementById("ecfolderselect-foldertestfail").hidden = false;
+							}
+
+							endTest();
+						} );
+					break;
+
+				default:
+					this.isTestSucceed = true;
+					endTest();
+					break;
+			}
+		}
+
+		// Return true only if authentication succeed
+		if (this.isTestSucceed) {
+			this.isTestRuning = false;
+			this.isTestSucceed = false;
+
+			return true;
+		}
+
+		// Return false to avoid going to next page by default
+		// as this method is synchrone
+		return false;
 	},
 
 	ecAuthLoad: function _ecAuthLoad() {
-		this._document.getElementById("calendar-wizard").canAdvance = false;
-		this._document.getElementById("ecauth-servertestrun").disabled = (ecSettingsOverlay.ecAuthSanityCheck() === false);
-
-		this._document.getElementById("ecauth-servertestok").hidden = true;
+		this._document.getElementById("calendar-wizard").canAdvance = ecSettingsOverlay.ecAuthSanityCheck();
 		this._document.getElementById("ecauth-servertestfail").hidden = true;
 	},
 
-	ecAuthPageAdvanced: function _ecAuthPageAdvanced() {
-		ecSettingsOverlay.ecAuthSavePasswordSetting();
-	},
-
-	ecFolderSelectShowPage: function _ecFolderSelectShowPage() {
+	ecMailboxOnPageShow: function _ecMailboxOnPageShow() {
 		this.createPrefs.deleteBranch("");
 
 		// Preset folder owner if calendar email identity were selected inside the standard calendar properties page
@@ -157,7 +241,7 @@ exchCalendarCreation.prototype = {
 
 		if(emailIdentityItem) {
 			let emailIdentity = emailIdentityItem.getAttribute("value");
-			let ecFolderOwner = this._document.getElementById("ecfolderselect-owner");
+			let ecFolderOwner = this._document.getElementById("ecmailbox-owner");
 
 			if (emailIdentity.toLowerCase() !== "none"
 				&& ecFolderOwner.value === "") {
@@ -169,53 +253,27 @@ exchCalendarCreation.prototype = {
 
 				ecFolderOwner.value = emailIdentityPref.getCharPref("useremail");
 
-				this.createPrefs.setCharPref("mailbox", this._document.getElementById("ecfolderselect-owner").value);
+				this.createPrefs.setCharPref("mailbox", this._document.getElementById("ecmailbox-owner").value);
 			}
 		}
 
-		// Preset folder path to root if nothing were defined
+		this.ecMailboxLoad();
+	},
+
+	ecMailboxLoad: function _ecMailboxLoad() {
+		this._document.getElementById("calendar-wizard").canAdvance = ecSettingsOverlay.ecMailboxOwnerOrShareSanityCheck();
+		this._document.getElementById("ecmailbox-ownerorsharetestfail").hidden = true;
+	},
+
+	ecFolderSelectLoad: function _ecFolderSelectLoad() {
+		this._document.getElementById("calendar-wizard").canAdvance = ecSettingsOverlay.ecMailboxOwnerOrShareValidated;
 
 		let ecFolderPath = this._document.getElementById("ecfolderselect-folderpath");
-
 		if (!ecFolderPath
 			|| ecFolderPath.value === "") {
 			ecFolderPath.value = "/";
 		}
 
-		if (!ecSettingsOverlay.ecFolderSelectOwnerOrShareCallback) {
-			var self = this;
-
-			ecSettingsOverlay.ecFolderSelectOwnerOrShareCallback = function (isTestSucceed) {
-				self._document.getElementById("ecfolderselect-foldertestrun").hidden = (isTestSucceed === false);
-			}
-		}
-
-		this.ecFolderSelectLoad();
-	},
-
-	ecFolderSelectRunTestFolder: function _ecFolderSelectRunTestFolder() {
-		this._document.getElementById("ecfolderselect-foldertestok").hidden = true;
-		this._document.getElementById("ecfolderselect-foldertestfail").hidden = true;
-
-		var self = this;
-
-		ecSettingsOverlay.ecFolderSelectValidate(function (isTestSucceed) {
-				if (isTestSucceed) {
-					this._document.getElementById("calendar-wizard").canAdvance = true;
-					this._document.getElementById("ecfolderselect-foldertestok").hidden = false;
-				}
-				else {
-					self._document.getElementById("calendar-wizard").canAdvance = false;
-					this._document.getElementById("ecfolderselect-foldertestfail").hidden = false;
-				}
-			} );
-	},
-
-	ecFolderSelectLoad: function _ecFolderSelectLoad() {
-		this._document.getElementById("calendar-wizard").canAdvance = false;
-		this._document.getElementById("ecfolderselect-foldertestrun").hidden = (ecSettingsOverlay.ecFolderSelectOwnerOrShareValidated() === false);
-
-		this._document.getElementById("ecfolderselect-foldertestok").hidden = true;
 		this._document.getElementById("ecfolderselect-foldertestfail").hidden = true;
 	},
 
@@ -247,7 +305,7 @@ exchCalendarCreation.prototype = {
 		this._document.getElementById("exchWebService_folderpath").value = "/";
 
 		tmpSettingsOverlay.exchWebServicesCheckRequired();
-	
+
 	},
 
 	/*

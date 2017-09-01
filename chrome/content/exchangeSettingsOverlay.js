@@ -75,7 +75,7 @@ exchSettingsOverlay.prototype = {
 	exchWebServicesgFolderID : "",
 	exchWebServicesgChangeKey : "",
 
-	// Simplified dialogs field
+	// exchangecalendar authentication
 	ecAuthSettingsValidated: false,
 	ecAuthUserName: null,
 	ecAuthPassword: null,
@@ -84,18 +84,21 @@ exchSettingsOverlay.prototype = {
 	ecAuthWebServiceURL: null,
 	ecAuthServerTestCallback: null,
 
-	ecFolderSelectValidated: false,
-	ecFolderSelectOwnerExists: null,
-	ecFolderSelectShareExists: null,
-	ecFolderSelectOwnerOrShareCallback: null,
-	ecFolderSelectCanAccess: null,
-	ecFolderSelectCanAccessAvailability: null,
-	ecFolderSelectValidationCallback: null,
+	// exchangecalendar share or mailbox owner
+	ecMailboxOwner: null,
+	ecMailboxSharedId: "",
+	ecMailboxOwnerExists: null,
+	ecMailboxShareExists: null,
+	ecMailboxCanAccess: null,
+	ecMailboxCanAccessAvailability: null,
+	ecMailboxValidated: false,
+	ecMailboxValidationCallback: null,
 
-	ecFolderSelectOwner: null,
-	ecFolderSelectSharedId: "",
+	// exchangecalendar folder selection
 	ecFolderSelectRoot: "calendar",
 	ecFolderSelectPath: "/",
+	ecFolderSelectValidated: false,
+	ecFolderSelectValidationCallback: null,
 
 	ecSettingsValidateUsername: function ecSettingsValidateUsername( aUsername ) {
 		let isValidUser = false;
@@ -127,7 +130,7 @@ exchSettingsOverlay.prototype = {
 		this.ecAuthWebServiceURL = this._document.getElementById("ecauth-exchangewebservice").value;
 
 		// TODO Check how Autodiscovery work to be sure that this address can be used to autodiscover
-		this.ecFolderSelectOwner = this.ecAuthUserName;
+		this.ecMailboxOwner = this.ecAuthUserName;
 	},
 
 	/*
@@ -139,7 +142,7 @@ exchSettingsOverlay.prototype = {
 		this._document.getElementById("ecauth-configuration-type").value = this.ecAuthAutoDiscovery;
 		this._document.getElementById("ecauth-exchangewebservice").value = this.ecAuthWebServiceURL;
 		this._document.getElementById('ecauth-exchangewebservice-row').collapsed = (this.ecAuthAutoDiscovery === 'autodiscovery') ;
-		this._document.getElementById("ecfolderselect-owner").value = this.ecFolderSelectOwner;
+		this._document.getElementById("ecmailbox-owner").value = this.ecMailboxOwner;
 	},
 
 	/*
@@ -150,12 +153,6 @@ exchSettingsOverlay.prototype = {
 		this.globalFunctions.LOG("ecAuthServerConnectionOK");
 
 		this.ecAuthSettingsValidated = true;
-
-		if (this.exchWebServicesgFolderBase !== "publicfoldersroot") {
-			this.exchWebServicesgFolderBase = "publicfoldersroot";
-			this._document.getElementById("ecfolderselect-rootfolder").value = "publicfoldersroot";
-			this._document.getElementById("ecfolderselect-folderpath").value = "/";
-		}
 
 		this._window.setCursor("auto");
 
@@ -321,7 +318,7 @@ exchSettingsOverlay.prototype = {
 		if (redirectAddr) {
 			this.globalFunctions.LOG("ecAuthAutoDiscoveryServerOK: We received an redirectAddr:"+redirectAddr);
 
-			this.ecFolderSelectOwner = redirectAddr;
+			this.ecMailboxOwner = redirectAddr;
 			this.ecAuthUpdateSettings();
 
 			this.ecAuthAutoDiscoverServerSettings();
@@ -358,7 +355,7 @@ exchSettingsOverlay.prototype = {
 		if (!userCancel) {
 			if (SMTPAddress
 				&& SMTPAddress !== "") {
-				this.ecFolderSelectOwner = SMTPAddress;
+				this.ecMailboxOwner = SMTPAddress;
 			}
 
 			// Set Exhange Web Service URL and update
@@ -434,161 +431,106 @@ exchSettingsOverlay.prototype = {
 	 },
 
 	/*
-	 * Get settings filled by user in the simplified folder selection interface
+	 * Get settings filled by user in the simplified mailbox/shareid selection interface
 	 */
-	ecFolderSelectGetSettings: function _ecFolderSelectGetSettings(){
-		this.ecFolderSelectOwner = this._document.getElementById("ecfolderselect-owner").value;
-		this.ecFolderSelectSharedId = this._document.getElementById("ecfolderselect-sharedfolderid").value;
-		this.ecFolderSelectRoot = this._document.getElementById("ecfolderselect-rootfolder").value;
-		this.ecFolderSelectPath = this._document.getElementById("ecfolderselect-folderpath").value;
+	ecMailboxGetSettings: function _ecMailboxGetSettings(){
+		this.ecMailboxOwner = this._document.getElementById("ecmailbox-owner").value;
+		this.ecMailboxSharedId = this._document.getElementById("ecmailbox-sharedfolderid").value;
 	},
 
 	/*
-	 * Update settings in the simplified folder selection interface with current informations
+	 * Get settings filled by user in the simplified mailbox/shareid selection interface
 	 */
-	ecFolderSelectUpdateSettings: function _ecFolderSelectUpdateSettings() {
-		this._document.getElementById("ecfolderselect-owner").value = this.ecFolderSelectOwner;
-		this._document.getElementById("ecfolderselect-sharedfolderid").value = this.ecFolderSelectSharedId;
-		this._document.getElementById("ecfolderselect-rootfolder").value = this.ecFolderSelectRoot;
-		this._document.getElementById("ecfolderselect-folderpath").value = this.ecFolderSelectPath;
-
-		this.ecFolderSelectUpdateDialog(false);
-	},
-
-	/*
-	 * Update dialog according to current settings
-	 */
-	ecFolderSelectUpdateDialog: function _ecFolderSelectUpdateDialog(userModifiedInput = true) {
-
-		// When user has modified inputs, we need to reset all test flags
-		// Indeed, we don't know anymore what is currently valid or not
-		if (userModifiedInput) {
-			this.ecFolderSelectValidated = false;
-			this.ecFolderSelectOwnerExists = null;
-			this.ecFolderSelectShareExists = null;
-			this.ecFolderSelectCanAccess = null;
-			this.ecFolderSelectCanAccessAvailability = null;
-
-			this.ecFolderSelectGetSettings();
-		}
-
-		if (this.ecFolderSelectOwnerOrShareSanityCheck()) {
-			this._document.getElementById("ecfolderselect-folderlookfor").disabled = false;
-		}
-		else {
-			this._document.getElementById("ecfolderselect-folderlookfor").disabled = true;
-		}
-
-		if (this.ecFolderSelectOwnerOrShareValidated()) {
-			this._document.getElementById("ecfolderselect-folderroot-row").hidden = false;
-			this._document.getElementById("ecfolderselect-folderpath-row").hidden = false;
-
-			this._document.getElementById("ecfolderselect-useravailability").hidden = (!this.ecFolderSelectCanAccessAvailability);
-		}
-		else {
-			this._document.getElementById("ecfolderselect-folderroot-row").hidden = true;
-			this._document.getElementById("ecfolderselect-folderpath-row").hidden = true;
-			this._document.getElementById("ecfolderselect-useravailability").hidden = true;
-		}
+	ecMailboxUpdateSettings: function _ecMailboxUpdateSettings() {
+		this._document.getElementById("ecmailbox-owner").value = this.ecMailboxOwner;
+		this._document.getElementById("ecmailbox-sharedfolderid").value = this.ecMailboxSharedId;
 	},
 
 	/*
 	 * Perform minimal tests to check before allowing full folder selection
 	 */
-	ecFolderSelectOwnerOrShareSanityCheck: function _ecFolderSelectOwnerOrShareSanityCheck() {
+	ecMailboxOwnerOrShareSanityCheck: function _ecMailboxOwnerOrShareSanityCheck() {
 		let isSanityChecked = false;
 
-		this.ecFolderSelectGetSettings();
+		this.ecMailboxGetSettings();
 
 		// Either email owner or sahred is given
-		if (this.ecSettingsValidateUsername(this.ecFolderSelectOwner)
-			|| (this.ecFolderSelectSharedId
-				&& this.ecFolderSelectSharedId !== "")){
+		if (this.ecSettingsValidateUsername(this.ecMailboxOwner)
+			|| (this.ecMailboxSharedId
+				&& this.ecMailboxSharedId !== "")){
 			isSanityChecked = true ;
 		}
 
 		return isSanityChecked;
 	},
 
-	ecFolderSelectOwnerOrShareValidated: function _ecFolderSelectOwnerOrShareValidated() {
-		let isOwnerOrShareValidated = false;
+	ecMailboxOwnerOrShareValidated: function _ecMailboxOwnerOrShareValidated() {
+		let isMailboxOwnerOrShareValidated = false;
 
-		if( this.ecFolderSelectOwnerExists
-			&& (this.ecFolderSelectCanAccess || this.ecFolderSelectCanAccessAvailability)) {
-			isOwnerOrShareValidated = true;
+		if( this.ecMailboxOwnerExists
+			&& (this.ecMailboxCanAccess || this.ecMailboxCanAccessAvailability)) {
+			isMailboxOwnerOrShareValidated = true;
 		}
 
-		if( this.ecFolderSelectShareExists
-			&& (this.ecFolderSelectCanAccess || this.ecFolderSelectCanAccessAvailability)) {
-			isOwnerOrShareValidated = true;
+		if( this.ecMailboxShareExists
+			&& (this.ecMailboxCanAccess || this.ecMailboxCanAccessAvailability)) {
+			isMailboxOwnerOrShareValidated = true;
 		}
 
-		return isOwnerOrShareValidated;
-	},
-
-	/*
-	 * Validate folder selection interface to allow save settings
-	 */
-	ecFolderSelectValidate: function _ecFolderSelectValidate(aValidationCallback) {
-		if (this.ecFolderSelectOwnerOrShareSanityCheck()
-			&& this.ecFolderSelectOwnerOrShareValidated()) {
-			this.ecFolderSelectValidationCallback = aValidationCallback;
-
-			//TODO Currently, there's no real folder access control: there's only a share or mailbox existence check (and mailbox/share access)
-			// We need to check if we can validate that user has access to folder too !
-			this.ecFolderSelectValidationCallback(this.ecFolderSelectValidated);
-		}
+		return isMailboxOwnerOrShareValidated;
 	},
 
 	/*
 	 * Check if given owner smtp email address exists inside the Exchange server
 	 * If an Id of a Shared Folder is given, owner is not checked and real folder is searched
 	 */
-	ecFolderSelectVerifyOwnerOrShare: function _ecFolderSelectVerifyOwnerOrShare() {
-		this.ecFolderSelectOwnerExists = false;
-		this.ecFolderSelectShareExists = false;
+	ecMailboxValidate: function _ecMailboxValidate(aValidationCallback) {
 
-		this.ecFolderSelectCanAccess = false;
-		this.ecFolderSelectCanAccessAvailability = false;
+		this.ecMailboxOwnerExists = false;
+		this.ecMailboxShareExists = false;
 
-		if (this.ecFolderSelectOwnerOrShareSanityCheck()) {
+		this.ecMailboxCanAccess = false;
+		this.ecMailboxCanAccessAvailability = false;
 
-			var self = this;
+		if (this.ecMailboxOwnerOrShareSanityCheck()) {
+			this.ecMailboxValidationCallback = aValidationCallback;
+
+			let self = this;
 
 			try {
 				this._window.setCursor("wait");
 
 				// If a shared folder Id is given, convert it
 				// Otherwise, check owner email
-				if (this.ecFolderSelectSharedId
-					&& this.ecFolderSelectSharedId !== "") {
+				if (this.ecMailboxSharedId
+					&& this.ecMailboxSharedId !== "") {
 
 					let convertIdArgs = {
 						user: this.ecAuthUserName,
-						mailbox: this.ecFolderSelectOwner,
+						mailbox: this.ecMailboxOwner,
 						serverUrl: this.ecAuthWebServiceURL,
-						folderId: this.ecFolderSelectSharedId
+						folderId: this.ecMailboxSharedId
 						};
 
 					let convertIdRequest = new erConvertIDRequest(
 						convertIdArgs,
-						function (aFolderID, aMailbox) { self.ecFolderSelectSharedIdConvertOK (aFolderID, aMailbox); },
-						function (aExchangeRequest, aCode, aMsg) { self.ecFolderSelectSharedIdConvertError (aExchangeRequest, aCode, aMsg); }
+						function (aFolderID, aMailbox) { self.ecMailboxSharedIdConvertOK (aFolderID, aMailbox); },
+						function (aExchangeRequest, aCode, aMsg) { self.ecMailboxSharedIdConvertError (aExchangeRequest, aCode, aMsg); }
 					);
 				}
 				else {
 
 					let smtpCheckArgs = {
 						user: this.ecAuthUserName,
-						mailbox: this.ecFolderSelectOwner,
+						mailbox: this.ecMailboxOwner,
 						serverUrl: this.ecAuthWebServiceURL,
 						folderBase: "calendar"
 					};
 
 					let smtpCheckRequest = new erPrimarySMTPCheckRequest(
 						smtpCheckArgs,
-						function (newPrimarySMTP) { self.ecFolderSelectVerifyMailboxOK (newPrimarySMTP); },
-						function (aExchangeRequest, aCode, aMsg) { self.ecFolderSelectVerifyMailboxError (aExchangeRequest, aCode, aMsg); });
+						function (newPrimarySMTP) { self.ecMailboxVerifyMailboxOK (newPrimarySMTP); },
+						function (aExchangeRequest, aCode, aMsg) { self.ecMailboxVerifyMailboxError (aExchangeRequest, aCode, aMsg); });
 				}
 			}
 			catch(err) {
@@ -602,28 +544,28 @@ exchSettingsOverlay.prototype = {
 	// Set of functions to check mailbox existence on Exchange Server
 	////
 
-	ecFolderSelectVerifyMailboxOK: function _ecFolderSelectVerifyMailboxOK(newPrimarySMTP) {
-		this.ecFolderSelectOwnerExists = true;
+	ecMailboxVerifyMailboxOK: function _ecMailboxVerifyMailboxOK(newPrimarySMTP) {
+		this.ecMailboxOwnerExists = true;
 		// TODO Check if enough to say mailbox access is given and folder path is validated
-		this.ecFolderSelectCanAccess = true;
-		this.ecFolderSelectValidated = true;
+		this.ecMailboxCanAccess = true;
+		this.ecMailboxValidated = true;
 
 		if (newPrimarySMTP) {
-			this.ecFolderSelectOwner = newPrimarySMTP ;
+			this.ecMailboxOwner = newPrimarySMTP ;
 		}
 
-		if (this.ecFolderSelectOwnerOrShareCallback){
-			this.ecFolderSelectOwnerOrShareCallback (this.ecFolderSelectOwnerExists) ;
+		if (this.ecMailboxValidationCallback){
+			this.ecMailboxValidationCallback (this.ecMailboxOwnerExists) ;
 		}
 
 		this._window.setCursor("auto");
-		this.ecFolderSelectUpdateSettings();
+		this.ecMailboxUpdateSettings();
 	},
 
-	ecFolderSelectVerifyMailboxError: function _ecFolderSelectVerifyMailboxError(aExchangeRequest, aCode, aMsg) {
-		this.globalFunctions.LOG("ecFolderSelectVerifyMailboxError: aCode:"+ aCode+", aMsg:"+aMsg);
+	ecMailboxVerifyMailboxError: function _ecMailboxVerifyMailboxError(aExchangeRequest, aCode, aMsg) {
+		this.globalFunctions.LOG("ecMailboxVerifyMailboxError: aCode:"+ aCode+", aMsg:"+aMsg);
 
-		this.ecFolderSelectOwnerExists = false;
+		this.ecMailboxOwnerExists = false;
 
 		switch (aCode) {
 			case -20:
@@ -634,27 +576,27 @@ exchSettingsOverlay.prototype = {
 				break;
 			case -7:
 			case -208:  // folderNotFound.
-				this.ecFolderSelectOwnerExists = true;
-				this.ecFolderSelectMailboxUserAvailability();
+				this.ecMailboxOwnerExists = true;
+				this.ecMailboxUserAvailability();
 				return;
 			case -212:
-				aMsg = aMsg + "(" + this.ecFolderSelectOwner + ")";
+				aMsg = aMsg + "(" + this.ecMailboxOwner + ")";
 			default:
 				alert(this.globalFunctions.getString("calExchangeCalendar", "ecErrorServerAndMailboxCheck", [aMsg, aCode], "exchangecalendar"));
 		}
 
-		if (this.ecFolderSelectOwnerOrShareCallback){
-			this.ecFolderSelectOwnerOrShareCallback (this.ecFolderSelectOwnerExists) ;
+		if (this.ecMailboxValidationCallback){
+			this.ecMailboxValidationCallback (this.ecMailboxOwnerExists) ;
 		}
 
 		this._window.setCursor("auto");
-		this.ecFolderSelectUpdateSettings();
+		this.ecMailboxUpdateSettings();
 	},
 
 	// Check if we can get useravailability
-	ecFolderSelectMailboxUserAvailability: function _ecFolderSelectMailboxUserAvailability()
+	ecMailboxUserAvailability: function _ecMailboxUserAvailability()
 	{
-		this.globalFunctions.LOG("ecFolderSelectMailboxUserAvailability");
+		this.globalFunctions.LOG("ecMailboxUserAvailability");
 
 		var self = this;
 
@@ -668,10 +610,10 @@ exchSettingsOverlay.prototype = {
 
 		let getUserAvailabilityArgs = {
 			user: this.ecAuthUserName,
-			mailbox: this.ecFolderSelectOwner,
+			mailbox: this.ecMailboxOwner,
 			serverUrl: this.ecAuthWebServiceURL,
 			folderBase: "calendar",
-			email: this.ecFolderSelectOwner,
+			email: this.ecMailboxOwner,
 			attendeeType: 'Required',
 			start: cal.toRFC3339(start),
 			end: cal.toRFC3339(end)
@@ -679,36 +621,36 @@ exchSettingsOverlay.prototype = {
 
 		let getUserAvailabilityRequest = new erGetUserAvailabilityRequest(
 			getUserAvailabilityArgs,
-			function(erGetUserAvailabilityRequest, aEvents) { self.ecFolderSelectMailboxUserAvailabilityOK (erGetUserAvailabilityRequest, aEvents); },
-			function(erGetUserAvailabilityRequest, aCode, aMsg) { self.ecFolderSelectMailboxUserAvailabilityError (erGetUserAvailabilityRequest, aCode, aMsg); } );
+			function(erGetUserAvailabilityRequest, aEvents) { self.ecMailboxUserAvailabilityOK (erGetUserAvailabilityRequest, aEvents); },
+			function(erGetUserAvailabilityRequest, aCode, aMsg) { self.ecMailboxUserAvailabilityError (erGetUserAvailabilityRequest, aCode, aMsg); } );
 
 	},
 
-	ecFolderSelectMailboxUserAvailabilityOK: function _ecFolderSelectMailboxUserAvailabilityOK (erGetUserAvailabilityRequest, aEvents)
+	ecMailboxUserAvailabilityOK: function _ecMailboxUserAvailabilityOK (erGetUserAvailabilityRequest, aEvents)
 	{
-		this.ecFolderSelectCanAccessAvailability = true;
-		this.ecFolderSelectValidated = true;
+		this.ecMailboxCanAccessAvailability = true;
+		this.ecMailboxValidated = true;
 
-		if (this.ecFolderSelectOwnerOrShareCallback){
-			this.ecFolderSelectOwnerOrShareCallback (this.ecFolderSelectCanAccessAvailability) ;
+		if (this.ecMailboxValidationCallback){
+			this.ecMailboxValidationCallback (this.ecMailboxCanAccessAvailability) ;
 		}
 
 		this._window.setCursor("auto");
-		this.ecFolderSelectUpdateSettings();
+		this.ecMailboxUpdateSettings();
 	},
 
-	ecFolderSelectMailboxUserAvailabilityError: function _ecFolderSelectMailboxUserAvailabilityError (erGetUserAvailabilityRequest, aCode, aMsg)
+	ecMailboxUserAvailabilityError: function _ecMailboxUserAvailabilityError (erGetUserAvailabilityRequest, aCode, aMsg)
 	{
-		this.globalFunctions.LOG("ecFolderSelectMailboxUserAvailabilityError");
-		this.ecFolderSelectCanAccessAvailability = false;
-		this.ecFolderSelectValidated = false;
+		this.globalFunctions.LOG("ecMailboxUserAvailabilityError");
+		this.ecMailboxCanAccessAvailability = false;
+		this.ecMailboxValidated = false;
 
-		if (this.ecFolderSelectOwnerOrShareCallback){
-			this.ecFolderSelectOwnerOrShareCallback (this.ecFolderSelectCanAccessAvailability) ;
+		if (this.ecMailboxValidationCallback){
+			this.ecMailboxValidationCallback (this.ecMailboxCanAccessAvailability) ;
 		}
 
 		this._window.setCursor("auto");
-		this.ecFolderSelectUpdateSettings();
+		this.ecMailboxUpdateSettings();
 	},
 
 	////
@@ -716,16 +658,16 @@ exchSettingsOverlay.prototype = {
 	////
 
 	////
-	// Set of functions to check shared folder id existance on Exchange Server and translate it into folder root
+	// Set of functions to verify shared folders
 	////
 
 	/*
 	 * When real folder id and mail box is found, check shared folder type is an appointment or a task
 	 */
-	ecFolderSelectSharedIdConvertOK: function _ecFolderSelectSharedIdConvertOK(aFolderID, aMailbox)
+	ecMailboxSharedIdConvertOK: function _ecMailboxSharedIdConvertOK(aFolderID, aMailbox)
 	{
-		this.globalFunctions.LOG("ecFolderSelectSharedIdConvertOK: aFolderID:"+aFolderID+", aMailbox:"+aMailbox);
-		this.ecFolderSelectShareExists = true;
+		this.globalFunctions.LOG("ecMailboxSharedIdConvertOK: aFolderID:"+aFolderID+", aMailbox:"+aMailbox);
+		this.ecMailboxShareExists = true;
 
 		var self = this;
 
@@ -741,8 +683,8 @@ exchSettingsOverlay.prototype = {
 
 			var getFolderRequest = new erGetFolderRequest(
 				getFolderArgs,
-				function (aExchangeRequest, aFolderID, aChangeKey, aFolderClass) { self.ecFolderSelectGetFolderOK (aExchangeRequest, aFolderID, aChangeKey, aFolderClass); },
-				function (aExchangeRequest, aCode, aMsg) { self.ecFolderSelectGetFolderError (aExchangeRequest, aCode, aMsg); }
+				function (aExchangeRequest, aFolderID, aChangeKey, aFolderClass) { self.ecMailboxGetFolderOK (aExchangeRequest, aFolderID, aChangeKey, aFolderClass); },
+				function (aExchangeRequest, aCode, aMsg) { self.ecMailboxGetFolderError (aExchangeRequest, aCode, aMsg); }
 			);
 		}
 		catch(err) {
@@ -750,15 +692,15 @@ exchSettingsOverlay.prototype = {
 			this.globalFunctions.ERROR("Warning: Error during creation of erGetFolderRequest. Err="+err+"\n");
 		}
 
-		if (this.ecFolderSelectOwnerOrShareCallback){
-			this.ecFolderSelectOwnerOrShareCallback (this.ecFolderSelectShareExists) ;
+		if (this.ecMailboxValidationCallback){
+			this.ecMailboxValidationCallback (this.ecMailboxShareExists) ;
 		}
 	},
 
-	ecFolderSelectSharedIdConvertError: function _ecFolderSelectSharedIdConvertError(aExchangeRequest, aCode, aMsg)
+	ecMailboxSharedIdConvertError: function _ecMailboxSharedIdConvertError(aExchangeRequest, aCode, aMsg)
 	{
-		this.ecFolderSelectShareExists = false;
-		this.ecFolderSelectValidated = false;
+		this.ecMailboxShareExists = false;
+		this.ecMailboxValidated = false;
 
 		switch (aCode) {
 			case -20:
@@ -771,8 +713,8 @@ exchSettingsOverlay.prototype = {
 				alert(this.globalFunctions.getString("calExchangeCalendar", "ecErrorServerAndMailboxCheck", [aMsg, aCode], "exchangecalendar"));
 		}
 
-		if (this.ecFolderSelectOwnerOrShareCallback){
-			this.ecFolderSelectOwnerOrShareCallback (this.ecFolderSelectShareExists) ;
+		if (this.ecMailboxValidationCallback){
+			this.ecMailboxValidationCallback (this.ecMailboxShareExists) ;
 		}
 
 		this._window.setCursor("auto");
@@ -781,14 +723,14 @@ exchSettingsOverlay.prototype = {
 	/*
 	 * On response of folder details, check its type and save it to UI
 	 */
-	ecFolderSelectGetFolderOK: function _ecFolderSelectGetFolderOK(aExchangeRequest, aFolderID, aChangeKey, aFolderClass)
+	ecMailboxGetFolderOK: function _ecMailboxGetFolderOK(aExchangeRequest, aFolderID, aChangeKey, aFolderClass)
 	{
-		this.globalFunctions.LOG("ecFolderSelectGetFolderOK: aFolderID:"+aFolderID+", aChangeKey:"+aChangeKey+", aFolderClass:"+aFolderClass);
-		this.ecFolderSelectCanAccess = true;
-		this.ecFolderSelectValidated = true;
+		this.globalFunctions.LOG("ecMailboxGetFolderOK: aFolderID:"+aFolderID+", aChangeKey:"+aChangeKey+", aFolderClass:"+aFolderClass);
+		this.ecMailboxCanAccess = true;
+		this.ecMailboxValidated = true;
 
 		// If request origin is a shared folder id conversion, update folder id and change key
-		if (this.ecFolderSelectShareExists) {
+		if (this.ecMailboxShareExists) {
 			if (FolderClass == "IPF.Appointment"
 				|| aFolderClass == "IPF.Task") {
 				this.exchWebServicesgFolderID = aFolderID;
@@ -800,14 +742,14 @@ exchSettingsOverlay.prototype = {
 		}
 
 		this._window.setCursor("auto");
-		this.ecFolderSelectUpdateSettings();
-		this.ecFolderSelectValidationCallback(this.ecFolderSelectValidated);
+		this.ecMailboxUpdateSettings();
+		this.ecMailboxValidationCallback(this.ecMailboxValidated);
 	},
 
-	ecFolderSelectGetFolderError: function _ecFolderSelectGetFolderError(aExchangeRequest, aCode, aMsg)
+	ecMailboxGetFolderError: function _ecMailboxGetFolderError(aExchangeRequest, aCode, aMsg)
 	{
-		this.ecFolderSelectCanAccess = false;
-		this.ecFolderSelectValidated = false;
+		this.ecMailboxCanAccess = false;
+		this.ecMailboxValidated = false;
 
 		switch (aCode) {
 			case -20:
@@ -821,13 +763,48 @@ exchSettingsOverlay.prototype = {
 		}
 
 		this._window.setCursor("auto");
-		this.ecFolderSelectUpdateSettings();
-		this.ecFolderSelectValidationCallback(this.ecFolderSelectValidated);
+		this.ecMailboxUpdateSettings();
+		this.ecMailboxValidationCallback(this.ecMailboxValidated);
 	},
 
 	////
-	// End of set of shared folder id function set
+	// End of functions to verify shared folders
 	////
+
+	/*
+	 * Get settings filled by user in the simplified folder selection interface
+	 */
+	ecFolderSelectGetSettings: function _ecFolderSelectGetSettings(){
+		this.ecFolderSelectRoot = this._document.getElementById("ecfolderselect-rootfolder").value;
+		this.ecFolderSelectPath = this._document.getElementById("ecfolderselect-folderpath").value;
+	},
+
+	/*
+	 * Update settings in the simplified folder selection interface with current informations
+	 */
+	ecFolderSelectUpdateSettings: function _ecFolderSelectUpdateSettings() {
+		this._document.getElementById("ecfolderselect-rootfolder").value = this.ecFolderSelectRoot;
+		this._document.getElementById("ecfolderselect-folderpath").value = this.ecFolderSelectPath;
+		this._document.getElementById("ecfolderselect-useravailability").hidden = (!this.ecMailboxCanAccessAvailability);
+	},
+
+	ecFolderSelectLoad: function _ecFolderSelectLoad() {
+		this.ecFolderSelectUpdateSettings();
+	},
+
+	/*
+	 * Validate folder selection interface to allow save settings
+	 */
+	ecFolderSelectValidate: function _ecFolderSelectValidate(aValidationCallback) {
+		if (true) {
+			this.ecFolderSelectValidationCallback = aValidationCallback;
+
+			//TODO Currently, there's no real folder access control: there's only a share or mailbox existence check (and mailbox/share access)
+			// We need to check if we can validate that user has access to folder too !
+			this.ecFolderSelectValidated = true;
+			this.ecFolderSelectValidationCallback(this.ecFolderSelectValidated);
+		}
+	},
 
 	/*
 	 * Open dialog to let user select subfolder path
@@ -856,13 +833,13 @@ exchSettingsOverlay.prototype = {
 		if (browseFolderDialogArgs.answer.toLowerCase() === "select") {
 			this.ecFolderSelectPath = browseFolderDialogArgs.fullPath;
 
-			if (input.fullPath === "/") {
+			if (this.ecFolderSelectPath === "/") {
 				this.exchWebServicesgFolderID = "";
 				this.exchWebServicesgChangeKey = "";
 			}
 			else {
-				this.exchWebServicesgFolderID = input.selectedFolder.folderID;
-				this.exchWebServicesgChangeKey = input.selectedFolder.changeKey;
+				this.exchWebServicesgFolderID = browseFolderDialogArgs.selectedFolder.folderID;
+				this.exchWebServicesgChangeKey = browseFolderDialogArgs.selectedFolder.changeKey;
 			}
 
 			this.ecFolderSelectUpdateSettings();
@@ -881,17 +858,16 @@ exchSettingsOverlay.prototype = {
 
 		if (ecCalendarPref) {
 			ecCalendarPref.setCharPref("ecUser", this.ecAuthUserName);
-			// TODO Add a way to save password to mivExchangeAuthPrompt2
 			ecCalendarPref.setCharPref("ecServer", this.ecAuthWebServiceURL);
 
-			ecCalendarPref.setCharPref("ecMailbox", this.ecFolderSelectOwner);
-			ecCalendarPref.setCharPref("ecFolderIDOfShare", this.ecFolderSelectSharedId);
+			ecCalendarPref.setCharPref("ecMailbox", this.ecMailboxOwner);
+			ecCalendarPref.setCharPref("ecFolderIDOfShare", this.ecMailboxSharedId);
 
 			ecCalendarPref.setCharPref("ecFolderpath", this.ecFolderSelectPath);
 			ecCalendarPref.setCharPref("ecFolderbase", this.ecFolderSelectRoot);
 
 			if (this.ecFolderSelectPath === "/"
-				&& this.ecFolderSelectSharedId === "") {
+				&& this.ecMailboxSharedId === "") {
 				this.exchWebServicesgFolderID = "";
 				this.exchWebServicesgChangeKey = "";
 			}

@@ -227,6 +227,32 @@
 		</grid>
 	</vbox>
 
+	<!-- Simplified mailbox check dialog -->
+	<vbox id="exchangesettings-ecmailbox">
+		<grid flex="1">
+			<columns>
+				<column />
+				<column flex="1"/>
+			</columns>
+
+			<rows>
+				<row align="center">
+					<label value="&ecfolderselect.owner;"/>
+
+					<textbox id="ecmailbox-owner"
+						placeholder="&ecauth.username.placeholder;" />
+				</row>
+
+				<row align="center">
+					<label value="&ecfolderselect.sahredid;" />
+
+					<textbox id="ecmailbox-sharedfolderid" />
+				</row>
+			</rows>
+
+		</grid>
+	</vbox>
+
 	<!-- Simplified folder selection dialog -->
 	<vbox id="exchangesettings-ecfolderselect">
 		<grid flex="1">
@@ -236,37 +262,9 @@
 			</columns>
 
 			<rows>
-				<row align="center">
-					<label value="&ecfolderselect.owner;"
-						control="ecmailbox"/>
-
-					<textbox id="ecfolderselect-owner"
-						placeholder="&ecauth.username.placeholder;"
-						oninput = "ecSettingsOverlay.ecFolderSelectUpdateDialog();"/>
-				</row>
-
-				<row align="center">
-					<label value="&ecfolderselect.sahredid;" />
-
-					<textbox id="ecfolderselect-sharedfolderid"
-						oninput = "ecSettingsOverlay.ecFolderSelectUpdateDialog();"/>
-				</row>
-
-				<!-- Button to query available folders of owner -->
-				<row align="center">
-
-					<label value=""/>
-
-					<button id="ecfolderselect-folderlookfor"
-						label="&ecfolderselect.folderlookfor;"
-						disabled = "true"
-						oncommand = "ecSettingsOverlay.ecFolderSelectVerifyOwnerOrShare();"/>
-				</row>
-
 				<!-- Discovered folder list -->
 				<row id = "ecfolderselect-folderroot-row"
-					align="center"
-					hidden = "true">
+					align="center">
 
 					<label value="&ecfolderselect.folderroot;" />
 
@@ -369,8 +367,7 @@
 
 				<!-- Subfolder path -->
 				<row id = "ecfolderselect-folderpath-row"
-					align="center"
-					hidden = "true">
+					align="center" >
 
 					<label value="&ecfolderselect.folderpath;" />
 

@@ -74,13 +74,13 @@
 	<!-- Add extra pages to configure Exchange Web Service -->
 	<wizard id="calendar-wizard" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-		<!-- Simplified authentication page -->
+		<!-- Authentication page -->
 		<wizardpage pageid = "ecauth-wizardpage"
-			next = "ecfolderselect-wizardpage"
+			next = "ecmailbox-wizardpage"
 			label = "&wizard.label;"
 			description = "&ecauth.description;"
 			onpageshow = "tmpCalendarCreation.ecAuthLoad();"
-			onpageadvanced = "tmpCalendarCreation.ecAuthPageAdvanced();" >
+			onpageadvanced = "return tmpCalendarCreation.ecSendTestOnPageAdvanced();" >
 
 			<vbox id = "exchangesettings-ecauthentication"
 				oncommand = "tmpCalendarCreation.ecAuthLoad();"
@@ -88,44 +88,46 @@
 
 			<spacer flex = "1" />
 
-			<button id = "ecauth-servertestrun"
-				label = "&ecauth.servertestrun;"
-				oncommand = "tmpCalendarCreation.ecAuthRunTestServer();" />
-
-			<spacer flex = "1" />
-
-			<label id = "ecauth-servertestok"
-				value = "&ecauth.servertestok;"
-				hidden = "true" />
-
 			<label id = "ecauth-servertestfail"
 				hidden = "true" >&ecauth.servertestfail;</label>
 
 			<spacer flex = "1" />
 		</wizardpage>
 
+		<!-- Mailbox / Share choose page -->
+		<wizardpage pageid = "ecmailbox-wizardpage"
+			next = "ecfolderselect-wizardpage"
+			label = "&wizard.label;"
+			description = "Test Mailbox owner blah blahb bla"
+			onpageshow = "tmpCalendarCreation.ecMailboxOnPageShow()"
+			onpageadvanced = "return tmpCalendarCreation.ecSendTestOnPageAdvanced();">
+
+			<vbox id="exchangesettings-ecmailbox"
+				oncommand = "tmpCalendarCreation.ecMailboxLoad();"
+				oninput = "tmpCalendarCreation.ecMailboxLoad();" />
+
+			<spacer flex = "1" />
+
+			<label id = "ecmailbox-ownerorsharetestfail"
+				hidden = "true" >Mailowner test failed blah blah</label>
+
+			<spacer flex = "1" />
+
+		</wizardpage>
+
+		<!-- Folder selection -->
 		<wizardpage pageid = "ecfolderselect-wizardpage"
 			next = "finishPage"
 			label = "&wizard.label;"
 			description = "&ecfolderselect.description;"
-			onpageshow = "tmpCalendarCreation.ecFolderSelectShowPage();"
-			onpageadvanced = "tmpCalendarCreation.saveSettings();">
+			onpageshow = "tmpCalendarCreation.ecFolderSelectLoad();"
+			onpageadvanced = "return tmpCalendarCreation.ecSendTestOnPageAdvanced();">
 
 			<vbox id="exchangesettings-ecfolderselect"
 				oncommand = "tmpCalendarCreation.ecFolderSelectLoad();"
 				oninput = "tmpCalendarCreation.ecFolderSelectLoad();" />
 
 			<spacer flex = "1" />
-
-			<button id = "ecfolderselect-foldertestrun"
-				label = "&ecfolderselect.foldertestrun;"
-				oncommand = "tmpCalendarCreation.ecFolderSelectRunTestFolder();" />
-
-			<spacer flex = "1" />
-
-			<label id = "ecfolderselect-foldertestok"
-				value = "&ecfolderselect.foldertestok;"
-				hidden = "true" />
 
 			<label id = "ecfolderselect-foldertestfail"
 				hidden = "true" >&ecfolderselect.foldertestfail;</label>
