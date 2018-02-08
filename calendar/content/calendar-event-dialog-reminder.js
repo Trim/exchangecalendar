@@ -32,6 +32,7 @@ var Ci = Components.interfaces;
 var Cc = Components.classes;
 
 Cu.import("resource://calendar/modules/calUtils.jsm");
+Cu.import("resource://gre/modules/Preferences.jsm");
 
 if (!exchWebService) var exchWebService = {};
 
@@ -77,7 +78,7 @@ exchChangeCalendarPropertiesReminder.prototype = {
             let listbox = this._document.getElementById("reminder-listbox");
 
             let reminder = cal.createAlarm();
-            let alarmlen = getPrefSafe("calendar.alarms." + itemType + "alarmlen", 15);
+            let alarmlen = Preferences.get("calendar.alarms." + itemType + "alarmlen", 15);
 
             // Default is an absolute DISPLAY alarm, |alarmlen| minutes before the event.
             // If DISPLAY is not supported by the provider, then pick the provider's
