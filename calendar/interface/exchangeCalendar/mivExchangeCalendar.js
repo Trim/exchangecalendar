@@ -4446,7 +4446,7 @@ calExchangeCalendar.prototype = {
 
         var rrule = null;
         for each(var ritem in aItem.recurrenceInfo.getRecurrenceItems({})) {
-            if (calInstanceOf(ritem, Ci.calIRecurrenceRule)) {
+            if (cal.wrapInstance(ritem, Ci.calIRecurrenceRule)) {
                 rrule = ritem;
                 if (this.debug) this.logInfo(" ;;;; rrule:" + rrule.icalProperty.icalString);
                 //break;
