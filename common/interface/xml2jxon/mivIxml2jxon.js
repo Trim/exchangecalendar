@@ -264,7 +264,6 @@ mivIxml2jxon.prototype = {
     classID: components.ID("{" + xguid + "}"),
     contractID: cId,
     flags: Ci.nsIClassInfo.THREADSAFE,
-    implementationLanguage: Ci.nsIProgrammingLanguage.JAVASCRIPT,
     get closed() {
         return this._c1;
     },

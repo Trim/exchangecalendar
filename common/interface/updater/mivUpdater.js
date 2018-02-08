@@ -174,7 +174,6 @@ mivUpdater.prototype = {
     classID: components.ID("{" + mivUpdateGUID + "}"),
     contractID: "@1st-setup.nl/checkers/updater;1",
     flags: Ci.nsIClassInfo.SINGLETON || Ci.nsIClassInfo.THREADSAFE,
-    implementationLanguage: Ci.nsIProgrammingLanguage.JAVASCRIPT,
 
     // External methods
 

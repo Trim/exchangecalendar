@@ -294,7 +294,6 @@ mivExchangeLoadBalancer.prototype = {
     classID: components.ID("{" + mivExchangeLoadBalancerGUID + "}"),
     contractID: "@1st-setup.nl/exchange/loadbalancer;1",
     flags: Ci.nsIClassInfo.SINGLETON,
-    implementationLanguage: Ci.nsIProgrammingLanguage.JAVASCRIPT,
 
     // External methods
 

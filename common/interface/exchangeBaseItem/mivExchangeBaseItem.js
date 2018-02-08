@@ -298,7 +298,6 @@ mivExchangeBaseItem.prototype = {
     classID: components.ID("{" + mivExchangeBaseItemGUID + "}"),
     contractID: "@1st-setup.nl/exchange/calendarbaseitem;1",
     flags: 0,
-    implementationLanguage: Ci.nsIProgrammingLanguage.JAVASCRIPT,
 
     // methods from nsIClassInfo
 

@@ -79,7 +79,6 @@ mivExchangeTimeZones.prototype = {
     classID: components.ID("{" + mivExchangeTimeZonesGUID + "}"),
     contractID: "@1st-setup.nl/exchange/timezones;1",
     flags: Ci.nsIClassInfo.SINGLETON,
-    implementationLanguage: Ci.nsIProgrammingLanguage.JAVASCRIPT,
 
     // void getInterfaces(out PRUint32 count, [array, size_is(count), retval] out nsIIDPtr array);
     getInterfaces: function _getInterfaces(count) {

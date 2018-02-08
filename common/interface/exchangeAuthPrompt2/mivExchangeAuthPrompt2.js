@@ -61,7 +61,6 @@ mivExchangeAuthPrompt2.prototype = {
     classID: components.ID("{" + mivExchangeAuthPrompt2GUID + "}"),
     contractID: "@1st-setup.nl/exchange/authprompt2;1",
     flags: Ci.nsIClassInfo.SINGLETON || Ci.nsIClassInfo.THREADSAFE,
-    implementationLanguage: Ci.nsIProgrammingLanguage.JAVASCRIPT,
 
     // External methods
 

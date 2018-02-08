@@ -58,7 +58,6 @@ mivExchangeAccountManager.prototype = {
     classID: components.ID("{" + mivExchangeAccountManagerGUID + "}"),
     contractID: "@1st-setup.nl/exchange/accountmanager;1",
     flags: Ci.nsIClassInfo.SINGLETON || Ci.nsIClassInfo.THREADSAFE,
-    implementationLanguage: Ci.nsIProgrammingLanguage.JAVASCRIPT,
 
     // External methods 
     getAccountIds: function _getAccountIds() {

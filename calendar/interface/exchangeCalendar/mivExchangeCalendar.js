@@ -467,7 +467,6 @@ calExchangeCalendar.prototype = {
         return null;
     },
 
-    implementationLanguage: Ci.nsIProgrammingLanguage.JAVASCRIPT,
     flags: 0,
     // End nsIClassInfo
 

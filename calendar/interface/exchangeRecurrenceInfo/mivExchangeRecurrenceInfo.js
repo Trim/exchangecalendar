@@ -69,7 +69,6 @@ mivExchangeRecurrenceInfo.prototype = {
     classID: components.ID("{" + mivExchangeRecurrenceInfoGUID + "}"),
     contractID: "@1st-setup.nl/exchange/recurrenceinfo;1",
     flags: Ci.nsIClassInfo.THREADSAFE,
-    implementationLanguage: Ci.nsIProgrammingLanguage.JAVASCRIPT,
 
     // void getInterfaces(out PRUint32 count, [array, size_is(count), retval] out nsIIDPtr array);
     getInterfaces: function _getInterfaces(count) {

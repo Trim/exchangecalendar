@@ -62,7 +62,6 @@ mivExchangeLightningNotifier.prototype = {
     classID: components.ID("{" + mivExchangeLightningNotifierGUID + "}"),
     contractID: "@1st-setup.nl/exchange/lightningnotifier;1",
     flags: Ci.nsIClassInfo.SINGLETON,
-    implementationLanguage: Ci.nsIProgrammingLanguage.JAVASCRIPT,
 
     // External methods
 

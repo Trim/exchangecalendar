@@ -59,7 +59,6 @@ mivExchangeAutoCompleteSearch.prototype = {
     classID: components.ID("{" + mivExchangeAutoCompleteSearchGUID + "}"),
     contractID: "@mozilla.org/autocomplete/search;1?name=exchangeAutoCompleteSearch",
     flags: Ci.nsIClassInfo.SINGLETON || Ci.nsIClassInfo.THREADSAFE,
-    implementationLanguage: Ci.nsIProgrammingLanguage.JAVASCRIPT,
 
     getInterfaces: function _getInterfaces(count) {
         var ifaces = [Ci.mivExchangeAutoCompleteSearch,

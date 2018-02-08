@@ -75,7 +75,6 @@ mivExchangeEvent.prototype = {
     classID: components.ID("{" + mivExchangeEventGUID + "}"),
     contractID: "@1st-setup.nl/exchange/calendarevent;1",
     flags: 0,
-    implementationLanguage: Ci.nsIProgrammingLanguage.JAVASCRIPT,
 
     getInterfaces: function _getInterfaces(count) {
         var ifaces = [Ci.mivExchangeEvent,

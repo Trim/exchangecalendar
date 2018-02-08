@@ -76,7 +76,6 @@ mivExchangeTodo.prototype = {
     classID: components.ID("{" + mivExchangeTodoGUID + "}"),
     contractID: "@1st-setup.nl/exchange/calendartodo;1",
     flags: 0,
-    implementationLanguage: Ci.nsIProgrammingLanguage.JAVASCRIPT,
 
     getInterfaces: function _getInterfaces(count) {
         var ifaces = [Ci.mivExchangeTodo,

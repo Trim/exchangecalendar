@@ -53,7 +53,6 @@ mivExchangeAutoCompleteResult.prototype = {
     classID: components.ID("{" + mivExchangeAutoCompleteResultGUID + "}"),
     contractID: "@1st-setup.nl/exchange/autocompleteresult;1",
     flags: Ci.nsIClassInfo.THREADSAFE,
-    implementationLanguage: Ci.nsIProgrammingLanguage.JAVASCRIPT,
 
     getInterfaces: function _getInterfaces(count) {
         var ifaces = [Ci.mivExchangeAutoCompleteResult,

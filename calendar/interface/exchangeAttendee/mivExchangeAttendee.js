@@ -68,7 +68,6 @@ mivExchangeAttendee.prototype = {
     classID: components.ID("{" + mivExchangeAttendeeGUID + "}"),
     contractID: "@1st-setup.nl/exchange/attendee;1",
     flags: 0,
-    implementationLanguage: Ci.nsIProgrammingLanguage.JAVASCRIPT,
 
     // methods from nsIClassInfo
 

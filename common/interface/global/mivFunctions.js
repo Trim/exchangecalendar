@@ -59,7 +59,6 @@ mivFunctions.prototype = {
     classID: components.ID("{c7543f10-e2d1-44b3-ae37-9221e0d5b524}"),
     contractID: "@1st-setup.nl/global/functions;1",
     flags: Ci.nsIClassInfo.SINGLETON || Ci.nsIClassInfo.THREADSAFE,
-    implementationLanguage: Ci.nsIProgrammingLanguage.JAVASCRIPT,
 
     doEncodeFolderSpecialChars: function _doEncodeFolderSpecialChars(str, r1) {
         var result = str;
