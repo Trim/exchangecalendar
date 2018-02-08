@@ -464,7 +464,7 @@ mivExchangeAuthPrompt2.prototype = {
         }
         this.logInfo("asyncPromptAuth: authInfo.domain=" + authInfo.domain);
 
-        var URL = decodeURIComponent(aChannel.URI.scheme + "://" + aChannel.URI.hostPort + aChannel.URI.path);
+        var URL = decodeURIComponent(aChannel.URI.scheme + "://" + aChannel.URI.hostPort + aChannel.URI.pathQueryRef);
         if (this.showPassword) {
             this.logInfo("asyncPromptAuth: aChannel.URL=" + URL + ", username=" + decodeURIComponent(aChannel.URI.username) + ", password=" + decodeURIComponent(aChannel.URI.password));
         }
@@ -538,7 +538,7 @@ mivExchangeAuthPrompt2.prototype = {
 
         var error = false;
 
-        var URL = decodeURIComponent(aChannel.URI.scheme + aChannel.URI.hostPort + aChannel.URI.path);
+        var URL = decodeURIComponent(aChannel.URI.scheme + aChannel.URI.hostPort + aChannel.URI.pathQueryRef);
         var password;
         var username;
 

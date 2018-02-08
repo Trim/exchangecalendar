@@ -178,9 +178,9 @@ mivFunctions.prototype = {
     },
 
     splitUriGetParams: function _splitUriGetParams(aUri) {
-        if (aUri.path.indexOf("?") > -1) {
+        if (aUri.pathQueryRef.indexOf("?") > -1) {
             // We have get params.
-            let getParamsStr = aUri.path.substr(aUri.path.indexOf("?") + 1);
+            let getParamsStr = aUri.pathQueryRef.substr(aUri.pathQueryRef.indexOf("?") + 1);
             // Split is in the individual params.
             var getParams = {};
             while (getParamsStr.indexOf("&") > -1) {
