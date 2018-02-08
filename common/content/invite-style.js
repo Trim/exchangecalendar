@@ -1,4 +1,4 @@
-Components.utils.import("resource:///modules/gloda/mimemsg.js");
+Components.utils.import("resource://gre/modules/gloda/mimemsg.js");
 
 function showIconsAsInviteColumn() {}
 showIconsAsInviteColumn.prototype.execute = function () {

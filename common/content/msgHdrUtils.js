@@ -70,10 +70,10 @@ const nsMsgFolderFlags_Archive = 0x00004000;
 const nsMsgFolderFlags_Inbox = 0x00001000;
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm"); // for defineLazyServiceGetter
-Cu.import("resource:///modules/gloda/mimemsg.js");
-Cu.import("resource:///modules/gloda/utils.js");
-Cu.import("resource:///modules/iteratorUtils.jsm"); // for toXPCOMArray
-Cu.import("resource:///modules/mailServices.js");
+Cu.import("resource://gre/modules/gloda/mimemsg.js");
+Cu.import("resource://gre/modules/gloda/utils.js");
+Cu.import("resource://gre/modules/iteratorUtils.jsm"); // for toXPCOMArray
+Cu.import("resource://gre/modules/mailServices.js");
 
 // Adding a messenger lazy getter to the MailServices even though it's not a service
 XPCOMUtils.defineLazyGetter(MailServices, "messenger", function () {

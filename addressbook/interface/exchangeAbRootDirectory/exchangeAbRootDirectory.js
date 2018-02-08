@@ -32,8 +32,8 @@ Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://exchangecommon/ecFunctions.js");
 Cu.import("resource://exchangecommon/ecExchangeRequest.js");
 
-Cu.import("resource:///modules/mailServices.js");
-Cu.import("resource:///modules/iteratorUtils.jsm");
+Cu.import("resource://gre/modules/mailServices.js");
+Cu.import("resource://gre/modules/iteratorUtils.jsm");
 
 Cu.import("resource://exchangeaddress/exchangeAbFunctions.js");
 

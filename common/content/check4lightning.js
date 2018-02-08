@@ -31,7 +31,7 @@ var Cc = Components.classes;
 var Ci = Components.interfaces;
 var Cu = Components.utils;
 
-Cu.import("resource:///modules/mailServices.js");
+Cu.import("resource://gre/modules/mailServices.js");
 
 function exchCheck4Lightning(aDocument, aWindow) {
     this._document = aDocument;

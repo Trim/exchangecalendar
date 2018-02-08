@@ -5,7 +5,7 @@ var Cc = Components.classes;
 var Ci = Components.interfaces;
 Components.utils.import("resource://app/modules/gloda/public.js");
 Components.utils.import("resource://app/modules/gloda/explattr.js");
-Components.utils.import("resource:///modules/iteratorUtils.jsm");
+Components.utils.import("resource://gre/modules/iteratorUtils.jsm");
 
 var importantTag;
 
