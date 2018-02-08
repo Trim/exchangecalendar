@@ -250,10 +250,10 @@ function msgHdrsMarkAsRead(msgHdrs, read) {
         }
         pending[msgHdr.folder.URI].msgs.appendElement(msgHdr, false);
     }
-    for each(let {
+    for (let {
         folder,
         msgs
-    } in pending) {
+    } of pending) {
         folder.markMessagesRead(msgs, read);
         folder.msgDatabase = null; /* don't leak */
     }
@@ -274,10 +274,10 @@ function msgHdrsDelete(msgHdrs) {
         }
         pending[msgHdr.folder.URI].msgs.appendElement(msgHdr, false);
     }
-    for each(let {
+    for (let {
         folder,
         msgs
-    } in pending) {
+    } of pending) {
         folder.deleteMessages(msgs, getMail3Pane().msgWindow, false, false, null, true);
         folder.msgDatabase = null; /* don't leak */
     }
