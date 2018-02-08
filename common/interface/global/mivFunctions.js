@@ -450,7 +450,7 @@ mivFunctions.prototype = {
             //this.getConsoleService().logStringMessage(" >>>>>>>>>>>>>>>");
 
             var localFile = Cc["@mozilla.org/file/local;1"]
-                .createInstance(Ci.nsILocalFile);
+                .createInstance(Ci.nsIFile);
 
             try {
                 localFile.initWithPath(file);
