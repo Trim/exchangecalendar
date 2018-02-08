@@ -194,9 +194,9 @@ exchExchangeSettings.prototype = {
     },
 
     permissionObject: function _permissionObject(aPermission) {
-        for each(var item in aPermission.XPath('/*')) {
+        for (let item of aPermission.XPath('/*')) {
             if (item.tagName == "UserId") {
-                for each(var userProp in item.XPath('/*')) {
+                for (let userProp of item.XPath('/*')) {
                     if (!this[item.tagName]) {
                         this[item.tagName] = {};
                     }
@@ -240,7 +240,7 @@ exchExchangeSettings.prototype = {
 
         // PermissionSet
         var permissions = new Array;
-        for each(var permission in calendarPermissions) {
+        for (let permission of calendarPermissions) {
             permissions.push(new this.permissionObject(permission));
         }
 

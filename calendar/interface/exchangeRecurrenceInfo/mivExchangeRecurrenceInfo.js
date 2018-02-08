@@ -160,7 +160,7 @@ mivExchangeRecurrenceInfo.prototype = {
     //void getRecurrenceItems(out unsigned long aCount, [array,size_is(aCount),retval] out calIRecurrenceItem aItems);
     getRecurrenceItems: function _getRecurrenceItems(aReturn) {
         var result = this._recurrenceInfo.getRecurrenceItems(aReturn);
-        /*		for each(var reitem in result) {
+        /*		for (let reitem of result) {
         			//this.logInfo("getRecurrenceItems 1: title:"+this.item.title+", result.length:"+result.length+", reitem.interval:"+reitem.interval, 1, 3);
         			if (reitem.isByCount) {
         				//this.logInfo("getRecurrenceItems 1: title:"+this.item.title+", result.length:"+result.length+", reitem.count:"+reitem.count, 1, 3);
@@ -173,7 +173,7 @@ mivExchangeRecurrenceInfo.prototype = {
     },
     //void setRecurrenceItems(in unsigned long aCount, [array,size_is(aCount)] in calIRecurrenceItem aItems);
     setRecurrenceItems: function _setRecurrenceItems(aCount, aItems) {
-        /*		for each(var reitem in aItems) {
+        /*		for (let reitem of aItems) {
         			this.logInfo("setRecurrenceItems 1: title:"+this.item.title+", aItems.length:"+aItems.length+", reitem.interval:"+reitem.interval, 1, 3);
         			if (reitem.isByCount) {
         				this.logInfo("setRecurrenceItems 1: title:"+this.item.title+", aItems.length:"+aItems.length+", reitem.count:"+reitem.count, 1, 3);
@@ -403,7 +403,7 @@ mivExchangeRecurrenceInfo.prototype = {
         var recurrenceItems = this.getRecurrenceItems({});
         //this.logInfo("Going to see if we have recurrenceItems:"+recurrenceItems.length);
         var result = "";
-        for each(var ritem in recurrenceItems) {
+        for (let ritem of recurrenceItems) {
             //this.logInfo(" ||||| ritem:"+ritem);
             if (ritem instanceof Ci.calIRecurrenceRule) {
                 if (ritem) {
