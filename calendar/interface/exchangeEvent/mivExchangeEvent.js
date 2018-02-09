@@ -371,7 +371,7 @@ mivExchangeEvent.prototype = {
                 }
                 else {
                     // We set in bias advanced to UCT datetime values for exchGlobalFunctions.
-                    //					var exchStart = cal.toRFC3339(tmpStart.getInTimezone(cal.UTC()));
+                    //					var exchStart = cal.toRFC3339(tmpStart.getInTimezone(cal.dtz.UTC));
                     var exchStart = cal.toRFC3339(tmpStart).substr(0, 19);
                 }
                 this._nonPersonalDataChanged = true;
@@ -414,7 +414,7 @@ mivExchangeEvent.prototype = {
                 }
                 else {
                     // We set in bias advanced to UCT datetime values for exchGlobalFunctions.
-                    //					var exchEnd = cal.toRFC3339(tmpEnd.getInTimezone(cal.UTC()));
+                    //					var exchEnd = cal.toRFC3339(tmpEnd.getInTimezone(cal.dtz.UTC));
                     var exchEnd = cal.toRFC3339(tmpEnd).substr(0, 19);
                 }
                 this._nonPersonalDataChanged = true;

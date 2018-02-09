@@ -2238,7 +2238,7 @@ mivExchangeBaseItem.prototype = {
             //dump("addException:"+this.title+"| itemAlarms.length:"+itemAlarms.length+", aItem.reminderSignalTime:"+aItem.reminderSignalTime+"\n");
             var tmpStartDate = aItem.startDate || aItem.entryDate;
             if ((itemAlarms.length > 0) && (aItem.reminderSignalTime) && ((!tmpStartDate) || (tmpStartDate.compare(aItem.reminderSignalTime) >= 0))) {
-                this.setProperty("X-MOZ-SNOOZE-TIME-" + aItem.recurrenceId.nativeTime, aItem.reminderSignalTime.getInTimezone(cal.UTC()).icalString);
+                this.setProperty("X-MOZ-SNOOZE-TIME-" + aItem.recurrenceId.nativeTime, aItem.reminderSignalTime.getInTimezone(cal.dtz.UTC).icalString);
             }
         }
     },
@@ -2269,7 +2269,7 @@ mivExchangeBaseItem.prototype = {
             var itemAlarms = aItem.getAlarms({});
             var tmpStartDate = aItem.startDate || aItem.entryDate;
             if ((itemAlarms.length > 0) && (aItem.reminderSignalTime) && ((!tmpStartDate) || (tmpStartDate.compare(aItem.reminderSignalTime) >= 0))) {
-                this.setProperty("X-MOZ-SNOOZE-TIME-" + aItem.recurrenceId.nativeTime, this.reminderSignalTime.getInTimezone(cal.UTC()).icalString);
+                this.setProperty("X-MOZ-SNOOZE-TIME-" + aItem.recurrenceId.nativeTime, this.reminderSignalTime.getInTimezone(cal.dtz.UTC).icalString);
             }
         }
     },
@@ -2335,7 +2335,7 @@ mivExchangeBaseItem.prototype = {
             //dump("AddOccurrence: itemAlarms.length:"+itemAlarms.length+", X-MOZ-SNOOZE-TIME-"+aItem.recurrenceId.nativeTime);
             var tmpStartDate = aItem.startDate || aItem.entryDate;
             if ((itemAlarms.length > 0) && ((!tmpStartDate) || ((this.reminderDueBy) && (tmpStartDate.compare(this.reminderDueBy) == 0)))) {
-                this.setProperty("X-MOZ-SNOOZE-TIME-" + aItem.recurrenceId.nativeTime, this.reminderSignalTime.getInTimezone(cal.UTC()).icalString);
+                this.setProperty("X-MOZ-SNOOZE-TIME-" + aItem.recurrenceId.nativeTime, this.reminderSignalTime.getInTimezone(cal.dtz.UTC).icalString);
             }
         }
     },
@@ -3041,7 +3041,7 @@ mivExchangeBaseItem.prototype = {
             break;
         }
 
-        alarmTime = alarmTime.getInTimezone(cal.UTC());
+        alarmTime = alarmTime.getInTimezone(cal.dtz.UTC);
 
         return alarmTime;
     },
@@ -3273,7 +3273,7 @@ mivExchangeBaseItem.prototype = {
                         // A Todo always has an alarm.related of ALARM_RELATED_ABSOLUTE
                         // So referenceDate is set there.
                         if (this.className == "mivExchangeEvent") {
-                            var referenceDate = this.startDate.getInTimezone(cal.UTC());
+                            var referenceDate = this.startDate.getInTimezone(cal.dtz.UTC);
                             referenceDate.isDate = false;
                         }
 
@@ -3288,7 +3288,7 @@ mivExchangeBaseItem.prototype = {
                             }
                             else {
                                 //var offset = 0;
-                                referenceDate = newAlarmTime.getInTimezone(cal.UTC());
+                                referenceDate = newAlarmTime.getInTimezone(cal.dtz.UTC);
                             }
                             break;
                         case Ci.calIAlarm.ALARM_RELATED_START:
@@ -3350,7 +3350,7 @@ mivExchangeBaseItem.prototype = {
                 // A Todo always has an alarm.related of ALARM_RELATED_ABSOLUTE
                 // So referenceDate is set there.
                 if (this.className == "mivExchangeEvent") {
-                    var referenceDate = this.startDate.getInTimezone(cal.UTC());
+                    var referenceDate = this.startDate.getInTimezone(cal.dtz.UTC);
                     referenceDate.isDate = false;
                 }
 
@@ -3365,7 +3365,7 @@ mivExchangeBaseItem.prototype = {
                     }
                     else {
                         //var offset = 0;
-                        referenceDate = newAlarmTime.getInTimezone(cal.UTC());
+                        referenceDate = newAlarmTime.getInTimezone(cal.dtz.UTC);
                     }
                     break;
                 case Ci.calIAlarm.ALARM_RELATED_START:
@@ -3528,7 +3528,7 @@ mivExchangeBaseItem.prototype = {
         }
 
         if (newSnoozeTime) {
-            newSnoozeTime = newSnoozeTime.getInTimezone(cal.UTC());
+            newSnoozeTime = newSnoozeTime.getInTimezone(cal.dtz.UTC);
             const MAPI_PidLidReminderSignalTime = "34144";
 
             this.addSetItemField(updates, "ExtendedFieldURI", cal.toRFC3339(newSnoozeTime), {

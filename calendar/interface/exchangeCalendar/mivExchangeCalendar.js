@@ -2858,7 +2858,7 @@ calExchangeCalendar.prototype = {
             // Convert date from local timezone to UTC
             // Given range is in local timezone and cache save in UTC
             dayPos.isDate = false;
-            dayPos = dayPos.getInTimezone(cal.UTC());
+            dayPos = dayPos.getInTimezone(cal.dtz.UTC);
             dayPos.isDate = true;
 
             // Go through all days bewteen the range start day and the range end day
@@ -4630,7 +4630,7 @@ calExchangeCalendar.prototype = {
             break;
         }
 
-        alarmTime = alarmTime.getInTimezone(cal.UTC());
+        alarmTime = alarmTime.getInTimezone(cal.dtz.UTC);
 
         return alarmTime;
     },
@@ -4691,7 +4691,7 @@ calExchangeCalendar.prototype = {
             extField.setAttribute("PropertyType", "SystemTime");
 
             var newSnoozeTime = cal.createDateTime(tmpStr);
-            newSnoozeTime = newSnoozeTime.getInTimezone(cal.UTC());
+            newSnoozeTime = newSnoozeTime.getInTimezone(cal.dtz.UTC);
             eprop.addChildTag("Value", "nsTypes", cal.toRFC3339(newSnoozeTime));
         }
 
@@ -4745,7 +4745,7 @@ calExchangeCalendar.prototype = {
                     }
                     else {
                         if (this.debug) this.logInfo("Master has no alarmLastAck. We set the alarm to the first child with an alarm in the future.");
-                        var prevTime = cal.createDateTime().getInTimezone(cal.UTC());
+                        var prevTime = cal.createDateTime().getInTimezone(cal.dtz.UTC);
                     }
 
                     var childEvent = null;
@@ -4798,7 +4798,7 @@ calExchangeCalendar.prototype = {
             extField.setAttribute("PropertyType", "SystemTime");
 
             var newSnoozeTime = cal.createDateTime(tmpStr);
-            newSnoozeTime = newSnoozeTime.getInTimezone(cal.UTC());
+            newSnoozeTime = newSnoozeTime.getInTimezone(cal.dtz.UTC);
             eprop.addChildTag("Value", "nsTypes", cal.toRFC3339(newSnoozeTime));
         }
         if (this.debug) this.logInfo("getMasterSnoozeStates END");
@@ -4958,8 +4958,8 @@ calExchangeCalendar.prototype = {
         }
         else {
             // We set in bias advanced to UCT datetime values for this.globalFunctions.
-            var exchStart = cal.toRFC3339(tmpStart.getInTimezone(cal.UTC()));
-            var exchEnd = cal.toRFC3339(tmpEnd.getInTimezone(cal.UTC()));
+            var exchStart = cal.toRFC3339(tmpStart.getInTimezone(cal.dtz.UTC));
+            var exchEnd = cal.toRFC3339(tmpEnd.getInTimezone(cal.dtz.UTC));
         }
 
         var alarms = aItem.getAlarms({});
@@ -5006,7 +5006,7 @@ calExchangeCalendar.prototype = {
         if (aItem.hasProperty("X-MOZ-SNOOZE-TIME")) {
             //dump("Item is snoozed. Going to set the snooze time\n");
             var newSnoozeTime = cal.createDateTime(aItem.getProperty("X-MOZ-SNOOZE-TIME"));
-            newSnoozeTime = newSnoozeTime.getInTimezone(cal.UTC());
+            newSnoozeTime = newSnoozeTime.getInTimezone(cal.dtz.UTC);
             const MAPI_PidLidReminderSignalTime = "34144";
 
             var eprop = e.addChildTag("ExtendedProperty", "nsTypes", null);
@@ -5234,7 +5234,7 @@ calExchangeCalendar.prototype = {
             switch (alarms[0].related) {
             case Ci.calIAlarm.ALARM_RELATED_ABSOLUTE:
                 if (this.debug) this.logInfo("ALARM_RELATED_ABSOLUTE.");
-                var newAlarmTime = alarms[0].alarmDate.clone().getInTimezone(cal.UTC());
+                var newAlarmTime = alarms[0].alarmDate.clone().getInTimezone(cal.dtz.UTC);
                 break;
             case Ci.calIAlarm.ALARM_RELATED_START:
                 if (this.debug) this.logInfo("ALARM_RELATED_START we are going to calculate the absolute.");
@@ -5289,7 +5289,7 @@ calExchangeCalendar.prototype = {
         if (aItem.hasProperty("X-MOZ-SNOOZE-TIME")) {
             //dump("Item is snoozed. Going to set the snooze time\n");
             var newSnoozeTime = cal.createDateTime(aItem.getProperty("X-MOZ-SNOOZE-TIME"));
-            newSnoozeTime = newSnoozeTime.getInTimezone(cal.UTC());
+            newSnoozeTime = newSnoozeTime.getInTimezone(cal.dtz.UTC);
             const MAPI_PidLidReminderSignalTime = "34144";
 
             var eprop = e.addChildTag("ExtendedProperty", "nsTypes", null);
@@ -10357,14 +10357,14 @@ else { dump("Occurrence does not exist in cache anymore.\n");}
         if (aStartDate) {
             utcStartDate = aStartDate.clone();
             utcStartDate.isDate = false;
-            utcStartDate = utcStartDate.getInTimezone(cal.UTC());
+            utcStartDate = utcStartDate.getInTimezone(cal.dtz.UTC);
             utcStartDate.isDate = true;
         }
 
         if (aEndDate) {
             utcEndDate = aEndDate.clone();
             utcEndDate.isDate = false;
-            utcEndDate = utcEndDate.getInTimezone(cal.UTC());
+            utcEndDate = utcEndDate.getInTimezone(cal.dtz.UTC);
             utcEndDate.isDate = true;
         }
 
