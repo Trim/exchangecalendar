@@ -51,7 +51,7 @@
         <implementation>
             <constructor>
 <![CDATA[
-                this._calendars = {};
+                this._calendars = [];
                 this._serverCount = 0;
         ]]>
             </constructor>
