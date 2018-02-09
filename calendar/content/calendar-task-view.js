@@ -8,8 +8,6 @@ var Cr = Components.results;
 var components = Components;
 
 Cu.import("resource://exchangecommon/ecFunctions.js");
-Cu.import("resource://gre/modules/gloda/public.js")
-Cu.import("resource://gre/modules/MailUtils.js");
 Cu.import("resource://calendar/modules/calUtils.jsm");
 Cu.import("resource://calendar/modules/calXMLUtils.jsm");
 

@@ -70,8 +70,6 @@ const nsMsgFolderFlags_Archive = 0x00004000;
 const nsMsgFolderFlags_Inbox = 0x00001000;
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm"); // for defineLazyServiceGetter
-Cu.import("resource://gre/modules/gloda/mimemsg.js");
-Cu.import("resource://gre/modules/gloda/utils.js");
 Cu.import("resource:///modules/iteratorUtils.jsm"); // for toXPCOMArray
 Cu.import("resource:///modules/mailServices.js");
 
@@ -342,10 +340,6 @@ aMsgHdr.getStringProperty("junkscore") == Ci.nsIJunkMailPlugin.IS_SPAM_SCORE
 function HeaderHandler(aHeaders) {
     this.headers = aHeaders;
 }
-
-HeaderHandler.prototype = {
-    __proto__: MimeMessage.prototype.__proto__, // == HeaderHandlerBase
-};
 
 /**
  * Creates a stream listener that will call k once done, passing it the string
