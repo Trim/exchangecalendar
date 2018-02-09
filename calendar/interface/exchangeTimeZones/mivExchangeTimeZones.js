@@ -409,7 +409,7 @@ mivExchangeTimeZones.prototype = {
     addExchangeTimeZones: function _addExchangeTimeZones(aTimeZoneDefinitions, aVersion) {
         var rm = xml2json.XPath(aTimeZoneDefinitions, "/s:Envelope/s:Body/m:GetServerTimeZonesResponse/m:ResponseMessages/m:GetServerTimeZonesResponseMessage");
         if (rm.length == 0) return null;
-        this._timeZones[aVersion] = {};
+        this._timeZones[aVersion] = [];
 
         var timeZoneDefinitionArray = xml2json.XPath(rm[0], "/m:TimeZoneDefinitions/t:TimeZoneDefinition");
         for (var index in timeZoneDefinitionArray) {
