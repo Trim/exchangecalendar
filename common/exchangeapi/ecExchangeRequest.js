@@ -1375,7 +1375,7 @@ ExchangeRequest.prototype = {
         var requestServerVersion = xml2json.addTag(header, "RequestServerVersion", "nsTypes", null);
         xml2json.setAttribute(requestServerVersion, "Version", this.version);
 
-        var exchTimeZone = this.timeZones.getExchangeTimeZoneByCalTimeZone(this.globalFunctions.ecDefaultTimeZone(), this.mArgument.serverUrl, cal.now());
+        var exchTimeZone = this.timeZones.getExchangeTimeZoneByCalTimeZone(this.globalFunctions.ecDefaultTimeZone(), this.mArgument.serverUrl, cal.dtz.now());
 
         if (exchTimeZone) {
             let timeZoneContext = xml2json.addTag(header, "TimeZoneContext", "nsTypes", null);
@@ -1412,7 +1412,7 @@ ExchangeRequest.prototype = {
         var header = msg.addChildTag("Header", "nsSoap", null);
         header.addChildTag("RequestServerVersion", "nsTypes", null).setAttribute("Version", this.version);
 
-        var exchTimeZone = this.timeZones.getExchangeTimeZoneByCalTimeZone(this.globalFunctions.ecDefaultTimeZone(), this.mArgument.serverUrl, cal.now());
+        var exchTimeZone = this.timeZones.getExchangeTimeZoneByCalTimeZone(this.globalFunctions.ecDefaultTimeZone(), this.mArgument.serverUrl, cal.dtz.now());
 
         if (exchTimeZone) {
             if (this.version.indexOf("2007") > -1) {

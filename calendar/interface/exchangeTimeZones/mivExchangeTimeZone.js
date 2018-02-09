@@ -128,7 +128,7 @@ mivExchangeTimeZone.prototype = {
             return null;
         }
         if (!aDate) {
-            aDate = cal.now();
+            aDate = cal.dtz.now();
         }
         var indexDateStr = this.dateTimeToStrExchange(aDate);
 
@@ -228,7 +228,7 @@ mivExchangeTimeZone.prototype = {
         }
 
         if (!aDate) {
-            aDate = cal.now();
+            aDate = cal.dtz.now();
         }
         var indexDateStr = this.dateTimeToStrCal(aDate);
 

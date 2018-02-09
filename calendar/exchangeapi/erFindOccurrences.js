@@ -81,14 +81,14 @@ function erFindOccurrencesRequest(aArgument, aCbOk, aCbError, aListener) {
         if (!this.startDate) {
             var monthBeforeDuration = cal.createDuration("-P4W");
 
-            this.startDate = cal.now();
+            this.startDate = cal.dtz.now();
             this.startDate.addDuration(monthBeforeDuration);
         }
         dump("  -------------->>> erFindOccurrences: this.startDate=" + this.startDate + "\n");
         if (!this.endDate) {
             var monthAfterDuration = cal.createDuration("P4W");
 
-            this.endDate = cal.now();
+            this.endDate = cal.dtz.now();
             this.endDate.addDuration(monthAfterDuration);
         }
         dump("  -------------->>> erFindOccurrences: this.endDate=" + this.endDate + "\n");

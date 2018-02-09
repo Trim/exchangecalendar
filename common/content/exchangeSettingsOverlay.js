@@ -506,7 +506,7 @@ exchSettingsOverlay.prototype = {
         this.globalFunctions.LOG("checkUserAvailability");
         var self = this;
 
-        var start = cal.now();
+        var start = cal.dtz.now();
         var offset = cal.createDuration();
         offset.hours = 10;
         var end = start.clone();

@@ -3102,8 +3102,8 @@ mivExchangeBaseItem.prototype = {
                 startDate = startDate.clone();
             }
             else {
-                startDate = cal.now();
-                originalDate = cal.now();
+                startDate = cal.dtz.now();
+                originalDate = cal.dtz.now();
             }
             startDate.isDate = true;
 
