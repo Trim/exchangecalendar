@@ -66,7 +66,7 @@ exchWebService.manageEWSAccounts = {
         let vbox = document.getElementById('exchWebService-account-settings');
         if (vbox) {
             let eList = vbox.getElementsByAttribute('required', 'true');
-            for (let i = 0; i < eList.length && canAdvance; ++i) {
+            for (var i = 0; i < eList.length && canAdvance; ++i) {
 
                 if (!eList[i].hidden) {
                     canAdvance = (eList[i].value != "");

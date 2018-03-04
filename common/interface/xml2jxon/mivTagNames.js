@@ -63,7 +63,7 @@ mivTagNames.prototype = {
         return this.tagNames[aIndex];
     },
     addTagName: function _addTagName(aValue) {
-        for (let index in this.tagNames) {
+        for (var index in this.tagNames) {
             if (this.tagNames[index] == aValue) {
                 return index;
             }

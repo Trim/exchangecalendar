@@ -195,11 +195,11 @@ function aMessageBreakup(aMessage) {
     var retAttribs = []
     retAttribs = aMessage.getAttributes({});
     gConsole.logStringMessage("numAttribs recd: " + retAttribs.length);
-    for (let ctr = 0; ctr < retAttribs.length; ctr++) {
+    for (var ctr = 0; ctr < retAttribs.length; ctr++) {
         gConsole.logStringMessage("Value at pos: " + ctr + " is: " + retAttribs[ctr]);
         retValues = aMessage.getValues(retAttribs[ctr], {});
         gConsole.logStringMessage("numValues: " + retValues.length);
-        for (let ctr2 = 0; ctr2 < retValues.length; ctr2++) {
+        for (var ctr2 = 0; ctr2 < retValues.length; ctr2++) {
             gConsole.logStringMessage("Value at pos: " + ctr2 + " is: " + retValues[ctr2]);
         }
     }
@@ -243,7 +243,7 @@ function kickOffBind() {
 function searchUser(searchString, wantedAttribs) {
     var maxEntriesWanted = 300;
     //ensure the mandatory attribs are in the list of wantedAttribs... this is important!!
-    for (let ctr = 0; ctr < mandatoryAttribs.length; ctr++) {
+    for (var ctr = 0; ctr < mandatoryAttribs.length; ctr++) {
         if (wantedAttribs.indexOf(mandatoryAttribs[ctr]) === -1) {
             //do nothing and return
             return;
@@ -261,10 +261,10 @@ function searchUserByEmail(mailID) {
     //start building a list of attrib to be retrieved.
     //do a slice as we do not want a shallow copy as we will be adding more elements to this
     var wantedAttribs = mandatoryAttribs.slice(0);
-    for (let ctr = 0; ctr < peopleAttribMapping.length; ctr++) {
+    for (var ctr = 0; ctr < peopleAttribMapping.length; ctr++) {
         let len = wantedAttribs.push(peopleAttribMapping[ctr][0]);
     }
-    for (let ctr = 0; ctr < additionalPeopleAttribs.length; ctr++) {
+    for (var ctr = 0; ctr < additionalPeopleAttribs.length; ctr++) {
         let len = wantedAttribs.push(additionalPeopleAttribs[ctr]);
     }
 
@@ -278,10 +278,10 @@ function searchUserBySignum(signum) {
     //start building a list of attrib to be retrieved.
     //do a slice as we do not want a shallow copy as we will be adding more elements to this
     var wantedAttribs = mandatoryAttribs.slice(0);
-    for (let ctr = 0; ctr < otherPeopleDisplayAttribs.length; ctr++) {
+    for (var ctr = 0; ctr < otherPeopleDisplayAttribs.length; ctr++) {
         let len = wantedAttribs.push(otherPeopleDisplayAttribs[ctr]);
     }
-    for (let ctr = 0; ctr < otherPeopleCheckAttribs.length; ctr++) {
+    for (var ctr = 0; ctr < otherPeopleCheckAttribs.length; ctr++) {
         let len = wantedAttribs.push(otherPeopleCheckAttribs[ctr]);
     }
     var searchString = "(&(cn=" + signum + "))";
@@ -310,7 +310,7 @@ function sendRequestForReporteeInfo(aMessage) {
     if (retAttribs.indexOf("directReports") > -1) {
         //direct reports found!!
         let retValues = aMessage.getValues("directReports", {});
-        for (let ctr = 0; ctr < retValues.length; ctr++) {
+        for (var ctr = 0; ctr < retValues.length; ctr++) {
             let empSignum = getSignumFromCNString(retValues[ctr]);
             searchUserBySignum(empSignum);
             //gConsole.logStringMessage("Direct Report: " + empSignum);
@@ -350,7 +350,7 @@ function getPassword() {
         }
     }
     else {
-        for (let i = 0; i < accounts.Count(); i++) {
+        for (var i = 0; i < accounts.Count(); i++) {
             let account = accounts.QueryElementAt(i, Components.interfaces.nsIMsgAccount);
 
             passwd = account.incomingServer.password;

@@ -528,7 +528,7 @@ mivFunctions.prototype = {
         let skip = aSkip || 0;
         let stack = "";
         let frame = components.stack.caller;
-        for (let i = 1; i <= depth + skip && frame; i++) {
+        for (var i = 1; i <= depth + skip && frame; i++) {
             if (i > skip) {
                 stack += i + ": [" + frame.filename + ":"
                     + frame.lineNumber + "] " + frame.name + "\n";
@@ -544,7 +544,7 @@ mivFunctions.prototype = {
         let skip = 1;
         let stack = "";
         let frame = components.stack.caller;
-        for (let i = 1; i <= depth + skip && frame; i++) {
+        for (var i = 1; i <= depth + skip && frame; i++) {
             if (i > skip) {
                 var filename;
                 if (frame.filename) {

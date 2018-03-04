@@ -127,13 +127,13 @@ erResolveNames.prototype = {
         else {
             var resolutionsSets = rm[0].getTags("m:ResolutionSet");
 
-            for (let resolutionsSet of resolutionsSets) {
+            for (var resolutionsSet of resolutionsSets) {
 
                 var totalItemsInView = resolutionsSet.getAttribute("TotalItemsInView", 0);
                 var includesLastItem = resolutionsSet.getAttribute("IncludesLastItemInRange", "false");
 
                 var resList = resolutionsSet.XPath("/t:Resolution");
-                for (let resolution of resList) {
+                for (var resolution of resList) {
                     allResolutions.push(resolution);
                 }
 

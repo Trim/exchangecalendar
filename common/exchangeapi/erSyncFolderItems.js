@@ -146,9 +146,9 @@ erSyncFolderItemsRequest.prototype = {
 
                 if (this.getSyncState === false) {
                     var createItems = xml2json.XPath(rm[0], "/m:Changes/t:Create");
-                    for (let creation of createItems) {
+                    for (var creation of createItems) {
                         var calendarItems = xml2json.XPath(creation, "/t:CalendarItem/t:ItemId");
-                        for (let calendarItem of calendarItems) {
+                        for (var calendarItem of calendarItems) {
                             this.creations.push({
                                 Id: xml2json.getAttribute(calendarItem, "Id").toString(),
                                 ChangeKey: xml2json.getAttribute(calendarItem, "ChangeKey").toString()
@@ -167,7 +167,7 @@ erSyncFolderItemsRequest.prototype = {
                         default:
                         }
 
-                        for (let task of tasks) {
+                        for (var task of tasks) {
                             this.creations.push({
                                 Id: xml2json.getAttribute(task, "Id").toString(),
                                 ChangeKey: xml2json.getAttribute(task, "ChangeKey").toString()
@@ -178,9 +178,9 @@ erSyncFolderItemsRequest.prototype = {
                     createItems = null;
 
                     var updateItems = xml2json.XPath(rm[0], "/m:Changes/t:Update");
-                    for (let update of updateItems) {
+                    for (var update of updateItems) {
                         var calendarItems = xml2json.XPath(update, "/t:CalendarItem/t:ItemId");
-                        for (let calendarItem of calendarItems) {
+                        for (var calendarItem of calendarItems) {
                             this.updates.push({
                                 Id: xml2json.getAttribute(calendarItem, "Id").toString(),
                                 ChangeKey: xml2json.getAttribute(calendarItem, "ChangeKey").toString()
@@ -198,7 +198,7 @@ erSyncFolderItemsRequest.prototype = {
                             break;
                         default:
                         }
-                        for (let task of tasks) {
+                        for (var task of tasks) {
                             this.updates.push({
                                 Id: xml2json.getAttribute(task, "Id").toString(),
                                 ChangeKey: xml2json.getAttribute(task, "ChangeKey").toString()
@@ -209,7 +209,7 @@ erSyncFolderItemsRequest.prototype = {
                     updateItems = null;
 
                     var deleteItems = xml2json.XPath(rm[0], "/m:Changes/t:Delete/t:ItemId");
-                    for (let deleted of deleteItems) {
+                    for (var deleted of deleteItems) {
                         this.deletions.push({
                             Id: xml2json.getAttribute(deleted, "Id").toString(),
                             ChangeKey: xml2json.getAttribute(deleted, "ChangeKey").toString()

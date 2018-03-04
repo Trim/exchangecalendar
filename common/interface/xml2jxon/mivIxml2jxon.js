@@ -326,7 +326,7 @@ mivIxml2jxon.prototype = {
             index = "_default_";
         }
         this.nameSpaces[index] = nameSpaceMgr.addNameSpace(index, b);
-        for (let child of this.tags) {
+        for (var child of this.tags) {
             child.addNameSpace(index, b);
         }
     },
@@ -368,7 +368,7 @@ mivIxml2jxon.prototype = {
         }
         var ri;
         var rt;
-        for (let index in this.tags) {
+        for (var index in this.tags) {
             let childTag = this.tags[index];
             if ((childTag instanceof Ci.mivIxml2jxon) || (childTag instanceof mivIxml2jxon)) {
                 ri = childTag.realTagName(index);
@@ -378,7 +378,7 @@ mivIxml2jxon.prototype = {
                 }
             }
             else {
-                for (let arrayIndex in childTag) {
+                for (var arrayIndex in childTag) {
                     ri = childTag[arrayIndex].realTagName(index);
                     rt = childTag[arrayIndex].realTagName(a);
                     if (ri == rt) {
@@ -424,7 +424,7 @@ mivIxml2jxon.prototype = {
         if (!this.nameSpaces) {
             this.nameSpaces = {};
         }
-        for (let index in a.nameSpaces) {
+        for (var index in a.nameSpaces) {
             if (!this.nameSpaces[index]) {
                 this.nameSpaces[index] = a.nameSpaces[index];
             }
@@ -501,14 +501,14 @@ mivIxml2jxon.prototype = {
     },
     attributesToString: function _attributesToString() {
         var r = "";
-        for (let i in this.attr) {
+        for (var i in this.attr) {
             r += " " + i + '="' + this.attr[i] + '"';
         }
         return r;
     },
     nameSpacesToString: function _nameSpacesToString() {
         var r = "";
-        for (let i in this.nameSpaces) {
+        for (var i in this.nameSpaces) {
             if (i == "_default_") {
                 r += ' xmlns="' + nameSpaceMgr.getNameSpace(this.nameSpaces[i]) + '"';
             }
@@ -525,10 +525,10 @@ mivIxml2jxon.prototype = {
         var nss = this.nameSpacesToString();
         var r = "";
         var cc = 0;
-        for (let index in this.tags) {
+        for (var index in this.tags) {
             cc++;
             if (isArray(this.tags[index])) {
-                for (let tag of this.tags[index]) {
+                for (var tag of this.tags[index]) {
                     r += tag.toString(nss);
                 }
             }
@@ -538,7 +538,7 @@ mivIxml2jxon.prototype = {
 
         }
         if (this.content) {
-            for (let index in this.content) {
+            for (var index in this.content) {
                 cc++;
                 if ((typeof this.content[index] === "string") || (this.content[index] instanceof String)) {
                     r += this.content[index];
@@ -562,7 +562,7 @@ mivIxml2jxon.prototype = {
         else {
             r = "<" + ns + this.tagName + at + nss + ">" + r + "</" + ns + this.tagName + ">";
         }
-        for (let s of this._siblings) {
+        for (var s of this._siblings) {
             r = r + s.toString();
         }
         return r;
@@ -598,7 +598,7 @@ mivIxml2jxon.prototype = {
             if (!allTag) {
                 allTag = tmpPath.substr(1);
             }
-            for (let index in this.tags) {
+            for (var index in this.tags) {
                 result.push(this.tags[index]);
             }
             tmpPath = "/" + tmpPath;
@@ -611,7 +611,7 @@ mivIxml2jxon.prototype = {
             break;
         case "*": // Wildcard. Will parse all children.
             tmpPath = tmpPath.substr(1);
-            for (let index in this.tags) {
+            for (var index in this.tags) {
                 let tmpTagName = "";
                 var tmpIsArray = isArray(this.tags[index]);
                 if (tmpIsArray) {
@@ -623,7 +623,7 @@ mivIxml2jxon.prototype = {
 
                 if (tmpTagName != this.tagName) {
                     if (tmpIsArray) {
-                        for (let index2 in this.tags[index]) {
+                        for (var index2 in this.tags[index]) {
                             result.push(this.tags[index][index2]);
                         }
                     }
@@ -666,23 +666,23 @@ mivIxml2jxon.prototype = {
             tmpPath = tmpPath.substr(splitPos);
             if (tmpPath2 != "") {
                 var equalTags = this.getTags(tmpPath2);
-                for (let index in equalTags) {
+                for (var index in equalTags) {
                     result.push(equalTags[index]);
                 }
             }
         }
         if ((result.length > 0) && (tmpPath != "")) {
             var finalResult = [];
-            for (let index in result) {
+            for (var index in result) {
                 if ((typeof result[index] === "string") || (result[index] instanceof String)) {
                     finalResult.push(result[index]);
                 }
                 else {
                     if (isArray(result[index])) {
-                        for (let index2 in result[index]) {
+                        for (var index2 in result[index]) {
                             let tmpResult = result[index][index2].XPath(tmpPath);
                             if (tmpResult) {
-                                for (let index3 in tmpResult) {
+                                for (var index3 in tmpResult) {
                                     finalResult.push(tmpResult[index3]);
                                     tmpResult[index3] = null;
                                 }
@@ -693,7 +693,7 @@ mivIxml2jxon.prototype = {
                     else {
                         let tmpResult = result[index].XPath(tmpPath);
                         if (tmpResult) {
-                            for (let index2 in tmpResult) {
+                            for (var index2 in tmpResult) {
                                 finalResult.push(tmpResult[index2]);
                                 tmpResult[index2] = null;
                             }
@@ -709,7 +709,7 @@ mivIxml2jxon.prototype = {
                 var finalResult = [];
                 let tmpResult = this.XPath(tmpPath);
                 if (tmpResult) {
-                    for (let index2 in tmpResult) {
+                    for (var index2 in tmpResult) {
                         finalResult.push(tmpResult[index2]);
                         tmpResult[index2] = null;
                     }
@@ -724,7 +724,7 @@ mivIxml2jxon.prototype = {
                 var finalResult = [];
                 let tmpResult = this.XPath(tmpPath);
                 if (tmpResult) {
-                    for (let index2 in tmpResult) {
+                    for (var index2 in tmpResult) {
                         finalResult.push(tmpResult[index2]);
                         tmpResult[index2] = null;
                     }
@@ -1075,7 +1075,7 @@ function ifFunction(aCondition, aXMLObject) {
     }
     var totalResult = true;
     var lastOperator = null;
-    for (let index in compareList) {
+    for (var index in compareList) {
         var tmpResult = false;
         if (compareList[index].subCondition) {
             tmpResult = ifFunction(compareList[index].left, aXMLObject);

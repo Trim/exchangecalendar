@@ -67,7 +67,7 @@ exchDelegateCalendarSettings.prototype = {
             }
         }
         else {
-            for (let i = 0; i < accounts.Count(); i++) {
+            for (var i = 0; i < accounts.Count(); i++) {
                 let account = accounts.QueryElementAt(i, Components.interfaces.nsIMsgAccount);
 
                 let rootFolder = account.incomingServer.rootFolder; // nsIMsgFolder  

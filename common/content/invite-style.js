@@ -75,7 +75,7 @@ showIconsAsInviteColumn.prototype.execute = function () {
 				    			              try {
 				  	    			             let attachments = aMimeMessage.allUserAttachments || aMimeMessage.allAttachments;
 				  	    			             if  ( attachments.length == 1){
-				 	    			                   for (let [index, att] in Iterator(attachments))
+				 	    			                   for (var [index, att] in Iterator(attachments))
 				 	    			                   {
 							 	    			             if ( att.name == "invite.ics" ){
 							 	 	    					 	hdr.setStringProperty("isInviteMail","true");

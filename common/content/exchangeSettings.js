@@ -177,7 +177,7 @@ exchExchangeSettings.prototype = {
         let vbox = this._document.getElementById('exchWebService-exchange-settings');
         if (vbox) {
             let eList = vbox.getElementsByAttribute('required', 'true');
-            for (let i = 0; i < eList.length && canAdvance; ++i) {
+            for (var i = 0; i < eList.length && canAdvance; ++i) {
                 canAdvance = (eList[i].value != "");
             }
 
@@ -194,9 +194,9 @@ exchExchangeSettings.prototype = {
     },
 
     permissionObject: function _permissionObject(aPermission) {
-        for (let item of aPermission.XPath('/*')) {
+        for (var item of aPermission.XPath('/*')) {
             if (item.tagName == "UserId") {
-                for (let userProp of item.XPath('/*')) {
+                for (var userProp of item.XPath('/*')) {
                     if (!this[item.tagName]) {
                         this[item.tagName] = {};
                     }
@@ -240,7 +240,7 @@ exchExchangeSettings.prototype = {
 
         // PermissionSet
         var permissions = new Array;
-        for (let permission of calendarPermissions) {
+        for (var permission of calendarPermissions) {
             permissions.push(new this.permissionObject(permission));
         }
 

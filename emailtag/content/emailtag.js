@@ -1165,11 +1165,11 @@ function getAllAccounts() {
         else {
             let _accounts = [];
 
-            for (let i = 0; i < accounts.length; i++) {
+            for (var i = 0; i < accounts.length; i++) {
 
                 let account = accounts.queryElementAt(i, Components.interfaces.nsIMsgAccount);
                 let identities = account.identities;
-                for (let index = 0; index < identities.length; index++) {
+                for (var index = 0; index < identities.length; index++) {
                     let identity = identities.queryElementAt(index, Ci.nsIMsgIdentity);
                     let calAccount = getCalendarPref(identity.email);
                     let enabled = false;
@@ -1236,7 +1236,7 @@ function findAccountFromFolder(aFolder) {
         }
     }
     else {
-        for (let i = 0; i < accounts.Count(); i++) {
+        for (var i = 0; i < accounts.Count(); i++) {
             let account = accounts.QueryElementAt(i, Components.interfaces.nsIMsgAccount);
 
             let rootFolder = account.incomingServer.rootFolder; // nsIMsgFolder  

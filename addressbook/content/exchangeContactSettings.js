@@ -44,7 +44,7 @@ exchExchangeContactSettings.prototype = {
         let vbox = this._document.getElementById('exchWebService-exchange-settings');
         if (vbox) {
             let eList = vbox.getElementsByAttribute('required', 'true');
-            for (let i = 0; i < eList.length && canAdvance; ++i) {
+            for (var i = 0; i < eList.length && canAdvance; ++i) {
                 canAdvance = (eList[i].value != "");
             }
 
