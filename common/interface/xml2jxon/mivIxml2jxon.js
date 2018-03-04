@@ -326,7 +326,7 @@ mivIxml2jxon.prototype = {
             index = "_default_";
         }
         this.nameSpaces[index] = nameSpaceMgr.addNameSpace(index, b);
-        for each(var child in this.tags) {
+        for (var child of this.tags) {
             child.addNameSpace(index, b);
         }
     },
