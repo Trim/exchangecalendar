@@ -7327,7 +7327,7 @@ else { dump("Occurrence does not exist in cache anymore.\n");}
         // See if this is a delegated task.
         /*		var isNotAccepted = 0;
 
-        		for each (var extendedProperty in aTask.getTagValue("t:ExtendedProperty")) {
+        		for (var extendedProperty of aTask.getTagValue("t:ExtendedProperty")) {
 
         			if (extendedProperty.getAttributeByTag("t:ExtendedFieldURI","PropertyId") == "33032") {
         				item.setProperty("X-exchWebService-PidLidTaskAccepted",extendedProperty.getTagValue("t:Value"));
