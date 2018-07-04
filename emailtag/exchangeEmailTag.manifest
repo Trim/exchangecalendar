@@ -1,7 +1,5 @@
 content exchangeemailtag content/
 
-overlay chrome://messenger/content/messenger.xul chrome://exchangeemailtag/content/emailtag.xul
-
 locale exchangeemailtag en    locale/en/
 
 locale exchangeemailtag cs-CZ locale/cs_CZ/

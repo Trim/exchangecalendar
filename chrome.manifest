@@ -8,31 +8,6 @@ skin exchangecommon-common fugue common/theme/common/
 
 resource exchangecommon common/exchangeapi/
 resource exchangecommoninterfaces common/interface/
-
-
-overlay chrome://messenger/content/messenger.xul chrome://exchangecommon/content/progress_panel.xul
-
-overlay chrome://lightning/content/lightning-standalone.xul chrome://exchangecommon/content/progress_panel.xul
-
-overlay chrome://messenger/content/messenger.xul chrome://exchangecommon/content/sharedCalendarParser.xul application={3550f703-e582-4d05-9a08-453d09bdfdc6}
-overlay chrome://messenger/content/messenger.xul chrome://exchangecommon/content/check4lightning.xul
-overlay chrome://messenger/content/preferences/preferences.xul  chrome://exchangecommon/content/messenger-overlay-preferences.xul
-overlay chrome://messenger/content/preferences/preferences.xul  chrome://exchangecommon/content/manageEWSAccounts.xul
-overlay chrome://messenger/content/preferences/preferences.xul  chrome://exchangecommon/content/debugPreferences.xul
-overlay chrome://messenger/content/preferences/preferences.xul  chrome://exchangecommon/content/cachePreferences.xul
-overlay chrome://messenger/content/preferences/preferences.xul  chrome://exchangecommon/content/otherPreferences.xul
-overlay chrome://communicator/content/pref/preferences.xul chrome://exchangecommon/content/suite-overlay-preferences.xul application={92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}
-overlay chrome://communicator/content/pref/preferences.xul chrome://exchangecommon/content/extra-suite-preferences.xul application={92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}
-
-overlay chrome://messenger/content/messenger.xul chrome://exchangecommon/content/OutOfOfficeMenu.xul
-overlay chrome://messenger/content/messengercompose/messengercompose.xul chrome://exchangecommon/content/addressingWidgetOverlay.xul
-overlay chrome://messenger/content/preferences/preferences.xul  chrome://exchangecommon/content/timezonePreference.xul
-overlay chrome://messenger/content/messenger.xul  chrome://exchangecommon/content/lightningtimezoneOverlay.xul
-overlay	chrome://messenger/content/preferences/preferences.xul	chrome://exchangecommon/content/extra-messenger-preferences.xul
-overlay chrome://messenger/content/messenger.xul  chrome://exchangecommon/content/priority-display.xul
-overlay chrome://messenger/content/messenger.xul  chrome://exchangecommon/content/invite-style.xul
-overlay chrome://messenger/content/folderProps.xul  chrome://exchangecommon/content/folderPropsOverlay.xul
-
 locale exchangecommon en common/locale/en/
 
 locale exchangecommon cs-CZ common/locale/cs_CZ/
