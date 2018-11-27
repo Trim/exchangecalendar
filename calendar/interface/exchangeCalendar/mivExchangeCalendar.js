@@ -46,6 +46,7 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 
 Cu.import("resource://calendar/modules/calUtils.jsm");
+Cu.import("resource://calendar/modules/calItemUtils.jsm");
 
 Cu.import("resource://exchangecommon/ecFunctions.js");
 Cu.import("resource://exchangecommon/soapFunctions.js");
@@ -1069,7 +1070,7 @@ calExchangeCalendar.prototype = {
             }
             var ewsItem = this.convertCalAppointmentToExchangeAppointment(tmpItem, "create", true);
         }
-        if (cal.isToDo(aItem)) {
+        if (cal.item.isTodo(aItem)) {
             var ewsItem = this.convertCalTaskToExchangeTask(aItem, "create");
         }
 
@@ -1784,7 +1785,7 @@ calExchangeCalendar.prototype = {
             }
         }
         else {
-            if (cal.isToDo(aNewItem)) {
+            if (cal.item.isTodo(aNewItem)) {
                 this.logInfo("modifyItem: it is a todo");
 
                 var changesObj = this.makeUpdateOneItem(aNewItem, aOldItem);
@@ -2194,7 +2195,7 @@ calExchangeCalendar.prototype = {
             }
         }
 
-        if (cal.isToDo(aItem)) {
+        if (cal.item.isTodo(aItem)) {
             this.logInfo("deleteItem is calITask");
             var self = this;
             this.addToQueue(erDeleteItemRequest, {
@@ -2307,7 +2308,7 @@ calExchangeCalendar.prototype = {
         var item_iid = null;
         if (cal.item.isEvent(item))
             item_iid = Ci.calIEvent;
-        else if (cal.isToDo(item))
+        else if (cal.item.isTodo(item))
             item_iid = Ci.calITodo;
         else {
             this.notifyOperationComplete(aListener,
@@ -2891,7 +2892,7 @@ calExchangeCalendar.prototype = {
             let wantNotCompletedTodo = aItemFilter & Ci.calICalendar.ITEM_FILTER_COMPLETED_NO;
 
             for (let index in this.itemCacheById) {
-                if (cal.isToDo(this.itemCacheById[index])) {
+                if (cal.item.isTodo(this.itemCacheById[index])) {
                     if (this.deactivateTaskFollowup
                         && this.itemCacheById[index].itemClass == "IPM.Note") {
                         //Do not change order or removing from local or it will throw db error

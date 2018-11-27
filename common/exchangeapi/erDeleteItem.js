@@ -40,6 +40,7 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 
 Cu.import("resource://calendar/modules/calUtils.jsm");
+Cu.import("resource://calendar/modules/calItemUtils.jsm");
 
 Cu.import("resource://exchangecommon/ecFunctions.js");
 Cu.import("resource://exchangecommon/ecExchangeRequest.js");
@@ -106,7 +107,7 @@ erDeleteItemRequest.prototype = {
             itemId.setAttribute("Id", this.id);
             itemId.setAttribute("ChangeKey", this.changeKey);
 
-            if (cal.isToDo(this.argument.item)) {
+            if (cal.item.isToDo(this.argument.item)) {
                 affectedTaskOccurrences = 'AllOccurrences';
             }
             break;
