@@ -106,7 +106,7 @@ erDeleteItemRequest.prototype = {
             itemId.setAttribute("Id", this.id);
             itemId.setAttribute("ChangeKey", this.changeKey);
 
-            if (cal.isToDo(this.argument.item)) {
+            if (cal.item.isToDo(this.argument.item)) {
                 affectedTaskOccurrences = 'AllOccurrences';
             }
             break;

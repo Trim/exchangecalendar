@@ -1069,7 +1069,7 @@ calExchangeCalendar.prototype = {
             }
             var ewsItem = this.convertCalAppointmentToExchangeAppointment(tmpItem, "create", true);
         }
-        if (cal.isToDo(aItem)) {
+        if (cal.item.isToDo(aItem)) {
             var ewsItem = this.convertCalTaskToExchangeTask(aItem, "create");
         }
 
@@ -1784,7 +1784,7 @@ calExchangeCalendar.prototype = {
             }
         }
         else {
-            if (cal.isToDo(aNewItem)) {
+            if (cal.item.isToDo(aNewItem)) {
                 this.logInfo("modifyItem: it is a todo");
 
                 var changesObj = this.makeUpdateOneItem(aNewItem, aOldItem);
@@ -2194,7 +2194,7 @@ calExchangeCalendar.prototype = {
             }
         }
 
-        if (cal.isToDo(aItem)) {
+        if (cal.item.isToDo(aItem)) {
             this.logInfo("deleteItem is calITask");
             var self = this;
             this.addToQueue(erDeleteItemRequest, {
@@ -2307,7 +2307,7 @@ calExchangeCalendar.prototype = {
         var item_iid = null;
         if (cal.item.isEvent(item))
             item_iid = Ci.calIEvent;
-        else if (cal.isToDo(item))
+        else if (cal.item.isToDo(item))
             item_iid = Ci.calITodo;
         else {
             this.notifyOperationComplete(aListener,
@@ -2891,7 +2891,7 @@ calExchangeCalendar.prototype = {
             let wantNotCompletedTodo = aItemFilter & Ci.calICalendar.ITEM_FILTER_COMPLETED_NO;
 
             for (let index in this.itemCacheById) {
-                if (cal.isToDo(this.itemCacheById[index])) {
+                if (cal.item.isToDo(this.itemCacheById[index])) {
                     if (this.deactivateTaskFollowup
                         && this.itemCacheById[index].itemClass == "IPM.Note") {
                         //Do not change order or removing from local or it will throw db error
