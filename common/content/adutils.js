@@ -19,7 +19,7 @@ var managersignum;
 var searchemail;
 var Cc = Components.classes;
 var Ci = Components.interfaces;
-var Cu = Components.utils;
+
 var calWinId = window.arguments[0].calendar.id;
 
 var calPreferences = Cc["@mozilla.org/preferences-service;1"]

@@ -34,7 +34,7 @@
  *
  * ***** BEGIN LICENSE BLOCK *****/
 
-var Cu = Components.utils;
+
 
 ChromeUtils.import("resource://exchangecommon/ecFunctions.js");
 

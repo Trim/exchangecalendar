@@ -1,6 +1,6 @@
 var Cc = Components.classes;
 var Ci = Components.interfaces;
-var Cu = Components.utils;
+
 
 var prefs = Cc["@mozilla.org/preferences-service;1"]
     .getService(Ci.nsIPrefService);

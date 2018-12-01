@@ -7,7 +7,7 @@
  * http://www.gnu.org/licenses/gpl.html
  * ***** BEGIN LICENSE BLOCK *****/
 
-var Cu = Components.utils;
+
 
 ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
 ChromeUtils.import("resource://gre/modules/Services.jsm");

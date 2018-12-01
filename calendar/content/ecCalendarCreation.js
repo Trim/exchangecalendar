@@ -36,7 +36,7 @@
 
 var Cc = Components.classes;
 var Ci = Components.interfaces;
-var Cu = Components.utils;
+
 
 function exchCalendarCreation(aDocument, aWindow) {
     this._document = aDocument;

@@ -24,7 +24,7 @@
 
 var Cc = Components.classes;
 var Ci = Components.interfaces;
-var Cu = Components.utils;
+
 
 function exchExchangeContactSettings(aDocument, aWindow) {
     this._document = aDocument;

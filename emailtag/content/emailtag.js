@@ -8,7 +8,7 @@
 
 var Cc = Components.classes;
 var Ci = Components.interfaces;
-var Cu = Components.utils;
+
 
 ChromeUtils.import("resource://exchangecommoninterfaces/xml2json/xml2json.js");
 ChromeUtils.import("resource://gre/modules/Services.jsm");

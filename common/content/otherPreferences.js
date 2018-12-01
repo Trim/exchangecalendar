@@ -39,7 +39,7 @@
 
 var Cc = Components.classes;
 var Ci = Components.interfaces;
-var Cu = Components.utils;
+
 
 function exchOtherPreferences(aDocument, aWindow) {
     this._document = aDocument;

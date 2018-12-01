@@ -22,7 +22,7 @@
  * ***** BEGIN LICENSE BLOCK *****/
 var Cc = Components.classes;
 var Ci = Components.interfaces;
-var Cu = Components.utils;
+
 
 function exchExchangeCloneSettings(aDocument, aWindow) {
     this._document = aDocument;
