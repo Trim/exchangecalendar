@@ -24,12 +24,12 @@ var Cu = Components.utils;
 var Cr = Components.results;
 var components = Components;
 
-Cu.import("resource://gre/modules/XPCOMUtils.jsm");
-Cu.import("resource://gre/modules/Services.jsm");
+ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
+ChromeUtils.import("resource://gre/modules/Services.jsm");
 
-Cu.import("resource:///modules/mailServices.js");
+ChromeUtils.import("resource:///modules/mailServices.js");
 
-Cu.import("resource://exchangeaddress/exchangeAbFunctions.js");
+ChromeUtils.import("resource://exchangeaddress/exchangeAbFunctions.js");
 
 function mivExchangeAutoCompleteSearch() {
 

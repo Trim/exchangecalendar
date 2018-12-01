@@ -37,18 +37,18 @@ var Cc = Components.classes;
 var Ci = Components.interfaces;
 var Cu = Components.utils;
 
-Cu.import("resource://gre/modules/XPCOMUtils.jsm");
-Cu.import("resource://gre/modules/Services.jsm");
+ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
+ChromeUtils.import("resource://gre/modules/Services.jsm");
 
-Cu.import("resource://exchangecommon/erAutoDiscover.js");
-Cu.import("resource://exchangecommon/erAutoDiscoverySOAP.js");
-Cu.import("resource://exchangecommon/erPrimarySMTPCheck.js");
-Cu.import("resource://exchangecommon/erConvertID.js");
-Cu.import("resource://exchangecommon/erFindFolder.js");
-Cu.import("resource://exchangecommon/erGetFolder.js");
-Cu.import("resource://exchangecommon/erGetUserAvailability.js");
+ChromeUtils.import("resource://exchangecommon/erAutoDiscover.js");
+ChromeUtils.import("resource://exchangecommon/erAutoDiscoverySOAP.js");
+ChromeUtils.import("resource://exchangecommon/erPrimarySMTPCheck.js");
+ChromeUtils.import("resource://exchangecommon/erConvertID.js");
+ChromeUtils.import("resource://exchangecommon/erFindFolder.js");
+ChromeUtils.import("resource://exchangecommon/erGetFolder.js");
+ChromeUtils.import("resource://exchangecommon/erGetUserAvailability.js");
 
-Cu.import("resource://calendar/modules/calUtils.jsm");
+ChromeUtils.import("resource://calendar/modules/calUtils.jsm");
 
 function exchSettingsOverlay(aDocument, aWindow) {
     this._document = aDocument;

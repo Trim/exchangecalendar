@@ -39,16 +39,16 @@ var Ci = Components.interfaces;
 var Cu = Components.utils;
 
 
-Cu.import("resource://calendar/modules/calUtils.jsm");
-Cu.import("resource://exchangecommon/erGetUserOofSettings.js");
-Cu.import("resource://exchangecommon/erSetUserOofSettings.js");
+ChromeUtils.import("resource://calendar/modules/calUtils.jsm");
+ChromeUtils.import("resource://exchangecommon/erGetUserOofSettings.js");
+ChromeUtils.import("resource://exchangecommon/erSetUserOofSettings.js");
 
-//Cu.import("resource://exchangecommon/ecFunctions.js");
+//ChromeUtils.import("resource://exchangecommon/ecFunctions.js");
 
 //if (! exchWebService) var exchWebService = {};
 
 /*if (! this.cal) {
-	Cu.import("resource://calendar/modules/calUtils.jsm", exchWebService);
+	ChromeUtils.import("resource://calendar/modules/calUtils.jsm", exchWebService);
 }
 */
 
@@ -68,7 +68,7 @@ exchOOFSettings.prototype = {
     intOofSettings: {},
 
     onLoad: function _onLoad() {
-        Cu.import("resource://calendar/modules/calUtils.jsm", this);
+        ChromeUtils.import("resource://calendar/modules/calUtils.jsm", this);
         var calId = this._window.arguments[0].calendar.id;
 
         this.calPrefs = Cc["@mozilla.org/preferences-service;1"]

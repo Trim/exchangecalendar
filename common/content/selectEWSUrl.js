@@ -36,7 +36,7 @@
 
 var Cu = Components.utils;
 
-Cu.import("resource://exchangecommon/ecFunctions.js");
+ChromeUtils.import("resource://exchangecommon/ecFunctions.js");
 
 if (!exchWebService) var exchWebService = {};
 

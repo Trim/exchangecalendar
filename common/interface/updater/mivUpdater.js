@@ -24,8 +24,8 @@ var Cu = Components.utils;
 var Cr = Components.results;
 var components = Components;
 
-Cu.import("resource://gre/modules/XPCOMUtils.jsm");
-Cu.import("resource://gre/modules/Services.jsm");
+ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
+ChromeUtils.import("resource://gre/modules/Services.jsm");
 
 Cu.importGlobalProperties(["XMLHttpRequest"]);
 
@@ -209,7 +209,7 @@ mivUpdater.prototype = {
         this._callBack = aCallBack;
         this._extensionID = aExtensionID;
 
-        Cu.import("resource://gre/modules/AddonManager.jsm");
+        ChromeUtils.import("resource://gre/modules/AddonManager.jsm");
         var self = this;
         AddonManager.getAddonByID(aExtensionID, function (aAddon) {
             self.addonByIDCallback(aAddon);

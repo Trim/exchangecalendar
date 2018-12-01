@@ -31,7 +31,7 @@ var Cc = Components.classes;
 var Ci = Components.interfaces;
 var Cu = Components.utils;
 
-Cu.import("resource:///modules/mailServices.js");
+ChromeUtils.import("resource:///modules/mailServices.js");
 
 function exchCheck4Lightning(aDocument, aWindow) {
     this._document = aDocument;
@@ -156,7 +156,7 @@ exchCheck4Lightning.prototype = {
         this.checkingIfLightnigIsInstalled = true;
 
         if (this.lightningIsInstalled == -1) {
-            Cu.import("resource://gre/modules/AddonManager.jsm");
+            ChromeUtils.import("resource://gre/modules/AddonManager.jsm");
         }
         var self = this;
         AddonManager.getAddonByID("{e2fda1a4-762b-4020-b5ad-a41df1933103}", function (aAddon) {

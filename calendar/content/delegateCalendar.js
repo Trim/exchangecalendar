@@ -9,20 +9,20 @@ var Cc = Components.classes;
 var Ci = Components.interfaces;
 var Cu = Components.utils;
 
-Cu.import("resource://gre/modules/Services.jsm");
-Cu.import("resource://gre/modules/XPCOMUtils.jsm");
+ChromeUtils.import("resource://gre/modules/Services.jsm");
+ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
 
-Cu.import("resource://exchangecommon/ecFunctions.js");
-Cu.import("resource://exchangecommon/ecExchangeRequest.js");
-Cu.import("resource://exchangecommon/erFindFolder.js");
+ChromeUtils.import("resource://exchangecommon/ecFunctions.js");
+ChromeUtils.import("resource://exchangecommon/ecExchangeRequest.js");
+ChromeUtils.import("resource://exchangecommon/erFindFolder.js");
 
-Cu.import("resource://exchangecalendar/erGetDelegateRequest.js");
-Cu.import("resource://exchangecalendar/erAddDelegateRequest.js");
-Cu.import("resource://exchangecalendar/erRemoveDelegateRequest.js");
-Cu.import("resource://exchangecalendar/erUpdateDelegateRequest.js");
+ChromeUtils.import("resource://exchangecalendar/erGetDelegateRequest.js");
+ChromeUtils.import("resource://exchangecalendar/erAddDelegateRequest.js");
+ChromeUtils.import("resource://exchangecalendar/erRemoveDelegateRequest.js");
+ChromeUtils.import("resource://exchangecalendar/erUpdateDelegateRequest.js");
 
-Cu.import("resource://calendar/modules/calUtils.jsm");
-Cu.import("resource://exchangecommoninterfaces/xml2json/xml2json.js");
+ChromeUtils.import("resource://calendar/modules/calUtils.jsm");
+ChromeUtils.import("resource://exchangecommoninterfaces/xml2json/xml2json.js");
 
 function exchDelegateCalendarSettings(aDocument, aWindow) {
     this._document = aDocument;

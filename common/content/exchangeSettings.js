@@ -38,7 +38,7 @@ var Cc = Components.classes;
 var Ci = Components.interfaces;
 var Cu = Components.utils;
 
-Cu.import("resource://exchangecommon/ecExchangeRequest.js");
+ChromeUtils.import("resource://exchangecommon/ecExchangeRequest.js");
 
 function exchWebService_permissionsPropertiesView(aProperties) {
 

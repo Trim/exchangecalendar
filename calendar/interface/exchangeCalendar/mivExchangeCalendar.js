@@ -42,46 +42,46 @@ var Cu = Components.utils;
 var Cr = Components.results;
 var components = Components;
 
-Cu.import("resource://gre/modules/XPCOMUtils.jsm");
-Cu.import("resource://gre/modules/Services.jsm");
+ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
+ChromeUtils.import("resource://gre/modules/Services.jsm");
 
-Cu.import("resource://calendar/modules/calUtils.jsm");
+ChromeUtils.import("resource://calendar/modules/calUtils.jsm");
 
-Cu.import("resource://exchangecommon/ecFunctions.js");
-Cu.import("resource://exchangecommon/soapFunctions.js");
-Cu.import("resource://exchangecommon/ecExchangeRequest.js");
+ChromeUtils.import("resource://exchangecommon/ecFunctions.js");
+ChromeUtils.import("resource://exchangecommon/soapFunctions.js");
+ChromeUtils.import("resource://exchangecommon/ecExchangeRequest.js");
 
-Cu.import("resource://exchangecommon/erFindFolder.js");
-Cu.import("resource://exchangecommon/erGetFolder.js");
+ChromeUtils.import("resource://exchangecommon/erFindFolder.js");
+ChromeUtils.import("resource://exchangecommon/erGetFolder.js");
 
-Cu.import("resource://exchangecommon/erGetItems.js");
-Cu.import("resource://exchangecommon/erCreateItem.js");
-Cu.import("resource://exchangecommon/erUpdateItem.js");
-Cu.import("resource://exchangecommon/erDeleteItem.js");
+ChromeUtils.import("resource://exchangecommon/erGetItems.js");
+ChromeUtils.import("resource://exchangecommon/erCreateItem.js");
+ChromeUtils.import("resource://exchangecommon/erUpdateItem.js");
+ChromeUtils.import("resource://exchangecommon/erDeleteItem.js");
 
-Cu.import("resource://exchangecommon/erSyncFolderItems.js");
-Cu.import("resource://exchangecommon/erGetUserAvailability.js");
+ChromeUtils.import("resource://exchangecommon/erSyncFolderItems.js");
+ChromeUtils.import("resource://exchangecommon/erGetUserAvailability.js");
 
-Cu.import("resource://exchangecalendar/erFindCalendarItems.js");
-Cu.import("resource://exchangecalendar/erFindTaskItems.js");
-Cu.import("resource://exchangecalendar/erFindFollowupItems.js");
+ChromeUtils.import("resource://exchangecalendar/erFindCalendarItems.js");
+ChromeUtils.import("resource://exchangecalendar/erFindTaskItems.js");
+ChromeUtils.import("resource://exchangecalendar/erFindFollowupItems.js");
 
-Cu.import("resource://exchangecalendar/erFindMasterOccurrences.js");
-Cu.import("resource://exchangecalendar/erGetMasterOccurrenceId.js");
-Cu.import("resource://exchangecalendar/erGetMeetingRequestByUID.js");
-Cu.import("resource://exchangecalendar/erFindOccurrences.js");
-Cu.import("resource://exchangecalendar/erGetOccurrenceIndex.js");
+ChromeUtils.import("resource://exchangecalendar/erFindMasterOccurrences.js");
+ChromeUtils.import("resource://exchangecalendar/erGetMasterOccurrenceId.js");
+ChromeUtils.import("resource://exchangecalendar/erGetMeetingRequestByUID.js");
+ChromeUtils.import("resource://exchangecalendar/erFindOccurrences.js");
+ChromeUtils.import("resource://exchangecalendar/erGetOccurrenceIndex.js");
 
-Cu.import("resource://exchangecalendar/erSendMeetingRespons.js");
-Cu.import("resource://exchangecalendar/erSyncInbox.js");
+ChromeUtils.import("resource://exchangecalendar/erSendMeetingRespons.js");
+ChromeUtils.import("resource://exchangecalendar/erSyncInbox.js");
 
-Cu.import("resource://exchangecalendar/erCreateAttachment.js");
-Cu.import("resource://exchangecalendar/erDeleteAttachment.js");
+ChromeUtils.import("resource://exchangecalendar/erCreateAttachment.js");
+ChromeUtils.import("resource://exchangecalendar/erDeleteAttachment.js");
 
-Cu.import("resource://exchangecommoninterfaces/xml2json/xml2json.js");
+ChromeUtils.import("resource://exchangecommoninterfaces/xml2json/xml2json.js");
 
-Cu.import("resource://interfacescalendartask/exchangeTodo/mivExchangeTodo.js");
-Cu.import("resource://interfacescalendartask/exchangeEvent/mivExchangeEvent.js");
+ChromeUtils.import("resource://interfacescalendartask/exchangeTodo/mivExchangeTodo.js");
+ChromeUtils.import("resource://interfacescalendartask/exchangeEvent/mivExchangeEvent.js");
 
 var globalStart = new Date().getTime();
 
@@ -9081,7 +9081,7 @@ calExchangeCalendar.prototype = {
 
         try {
             this.logInfo("checkExchCalAddonVerion: ");
-            Cu.import("resource://gre/modules/AddonManager.jsm");
+            ChromeUtils.import("resource://gre/modules/AddonManager.jsm");
             var self = this;
             AddonManager.getAddonByID("exchangecalendar@extensions.1st-setup.nl", function (Addon) {
                 self.removeExchCalDbCache(self, Addon);
@@ -11000,7 +11000,7 @@ exchWebService.check4addon = {
 
         this.alreadyLogged = true;
 
-        Cu.import("resource://gre/modules/AddonManager.jsm");
+        ChromeUtils.import("resource://gre/modules/AddonManager.jsm");
         AddonManager.getAddonByID("exchangecalendar@extensions.1st-setup.nl", exchWebService.check4addon.checkAddOnIsInstalledCallback);
     }
 };

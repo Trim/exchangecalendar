@@ -10,15 +10,15 @@ var Cc = Components.classes;
 var Ci = Components.interfaces;
 var Cu = Components.utils;
 
-Cu.import("resource://exchangecommoninterfaces/xml2json/xml2json.js");
-Cu.import("resource://gre/modules/Services.jsm");
-Cu.import("resource://exchangecommon/erGetItems.js");
-Cu.import("resource://exchangecommon/erFindInboxFolder.js");
-Cu.import("resource://exchangecommon/erSubscribe.js");
-Cu.import("resource://exchangecommon/erGetEvents.js");
-Cu.import("resource://exchangecommon/erFindItems.js");
-Cu.import("resource://exchangecommon/erUpdateItem.js");
-Cu.import("resource://exchangecommon/erUnsubscribe.js");
+ChromeUtils.import("resource://exchangecommoninterfaces/xml2json/xml2json.js");
+ChromeUtils.import("resource://gre/modules/Services.jsm");
+ChromeUtils.import("resource://exchangecommon/erGetItems.js");
+ChromeUtils.import("resource://exchangecommon/erFindInboxFolder.js");
+ChromeUtils.import("resource://exchangecommon/erSubscribe.js");
+ChromeUtils.import("resource://exchangecommon/erGetEvents.js");
+ChromeUtils.import("resource://exchangecommon/erFindItems.js");
+ChromeUtils.import("resource://exchangecommon/erUpdateItem.js");
+ChromeUtils.import("resource://exchangecommon/erUnsubscribe.js");
 
 const eventTypes = ["NewMailEvent", "ModifiedEvent", "MovedEvent", "CopiedEvent", "CreatedEvent"];
 

@@ -28,8 +28,8 @@ var Ci = Components.interfaces;
 var Cu = Components.utils;
 
 
-Cu.import("resource://exchangecommon/ecFunctions.js");
-Cu.import("chrome://exchangecommon/content/msgHdrUtils.js");
+ChromeUtils.import("resource://exchangecommon/ecFunctions.js");
+ChromeUtils.import("chrome://exchangecommon/content/msgHdrUtils.js");
 
 if (!exchWebService) var exchWebService = {};
 

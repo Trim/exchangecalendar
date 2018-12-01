@@ -20,26 +20,24 @@
  *
  *
  * ***** BEGIN LICENSE BLOCK *****/
-var Cc = Components.classes;
 var Ci = Components.interfaces;
 var Cu = Components.utils;
 var Cr = Components.results;
-var components = Components;
 
-Cu.import("resource://gre/modules/XPCOMUtils.jsm");
-Cu.import("resource://gre/modules/Services.jsm");
-Cu.import("resource:///modules/mailServices.js");
-Cu.import("resource:///modules/iteratorUtils.jsm");
+ChromeUtils.import("resource://gre/modules/XPCOMUtils.jsm");
+ChromeUtils.import("resource://gre/modules/Services.jsm");
+ChromeUtils.import("resource:///modules/mailServices.js");
+ChromeUtils.import("resource:///modules/iteratorUtils.jsm");
 
-Cu.import("resource://exchangecommon/ecFunctions.js");
-Cu.import("resource://exchangeaddress/exchangeAbFunctions.js");
+ChromeUtils.import("resource://exchangecommon/ecFunctions.js");
+ChromeUtils.import("resource://exchangeaddress/exchangeAbFunctions.js");
 
 
 function exchangeAbDirFactory() {}
 
 exchangeAbDirFactory.prototype = {
 
-    classID: components.ID("{e6f8074c-0236-4f51-b8e2-9c528727b4ee}"),
+    classID: Components.ID("{e6f8074c-0236-4f51-b8e2-9c528727b4ee}"),
     contractID: "@mozilla.org/addressbook/directory-factory;1?name=exchWebService-contactRoot-directory",
     classDescription: "Exchange 2007/2010 Contacts DirFactory",
 
