@@ -20,7 +20,7 @@
         buttons="cancel"
         ondialogcancel="window.close();"
         onload="tmpDelegateCalendarSettings.onLoad();">
-    <script type="application/x-javascript"
+    <script type="application/javascript"
             src="chrome://exchangecommon/content/adutils.js" />
     <script type="application/javascript"
             src="chrome://exchangecalendar/content/delegateCalendar.js" />
