@@ -38,7 +38,7 @@ function exchangeAbDirFactory() {}
 exchangeAbDirFactory.prototype = {
 
     classID: Components.ID("{e6f8074c-0236-4f51-b8e2-9c528727b4ee}"),
-    contractID: "@mozilla.org/addressbook/directory-factory;1?name=exchWebService-contactRoot-directory",
+    contractID: "@mozilla.org/addressbook/directory-factory;1?name=exchangecalendar-addressbook",
     classDescription: "Exchange 2007/2010 Contacts DirFactory",
 
     QueryInterface: XPCOMUtils.generateQI([Ci.nsIAbDirFactory]),

@@ -73,10 +73,10 @@ exchAddressbookOverlay.prototype = {
             this.prefs.setBoolPref("globalAddressList", input.newAccountObject.addGlobalAddressList);
 
 
-            var theParentDirectory = MailServices.ab.getDirectory("exchWebService-contactRoot-directory://")
+            var theParentDirectory = MailServices.ab.getDirectory("exchangecalendar-addressbook://")
                 .QueryInterface(Ci.nsIAbDirectory);
 
-            var targetURI = "exchWebService-contactRoot-directory://" + newUUID;
+            var targetURI = "exchangecalendar-addressbook://" + newUUID;
             var theChildDirectory = MailServices.ab.getDirectory(targetURI)
                 .QueryInterface(Ci.nsIAbDirectory);
 
@@ -87,7 +87,7 @@ exchAddressbookOverlay.prototype = {
     doDeleteExchangeAccount: function _doDeleteExchangeAccount() {
         exchWebService.commonAbFunctions.logInfo("1. doDeleteExchangeAccount\n");
 
-        var theParentDirectory = MailServices.ab.getDirectory("exchWebService-contactRoot-directory://")
+        var theParentDirectory = MailServices.ab.getDirectory("exchangecalendar-addressbook://")
             .QueryInterface(Ci.nsIAbDirectory);
 
         var theChildDirectory = MailServices.ab.getDirectory(GetSelectedDirectory())
@@ -108,7 +108,7 @@ exchAddressbookOverlay.prototype = {
     onDirTreeSelect: function _onDirTreeSelect() {
         var selectedDir = GetSelectedDirectory();
 
-        if ((selectedDir) && (selectedDir == "exchWebService-contactRoot-directory://")) {
+        if ((selectedDir) && (selectedDir == "exchangecalendar-addressbook://")) {
 
             this._document.getElementById("button-deleteexchangeaccount").hidden = true;
             this._document.getElementById("button-addexchangeaccount").hidden = false;
@@ -167,7 +167,7 @@ exchAddressbookOverlay.prototype = {
     onRightClick: function _onRightClick() {
         var selectedDir = GetSelectedDirectory();
 
-        if ((selectedDir) && (selectedDir == "exchWebService-contactRoot-directory://")) {
+        if ((selectedDir) && (selectedDir == "exchangecalendar-addressbook://")) {
             this._document.getElementById("dirTreeContext-properties").disabled = true;
             this._document.getElementById("dirTreeContext-newcard").hidden = true;
             this._document.getElementById("dirTreeContext-newlist").hidden = true;

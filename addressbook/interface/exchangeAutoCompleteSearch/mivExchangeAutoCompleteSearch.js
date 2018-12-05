@@ -165,7 +165,7 @@ mivExchangeAutoCompleteSearch.prototype = {
         }
 
         this._searches[uuid].autoCompleteResult.setSearchString(searchString);
-        this._searches[uuid]["rootDir"] = MailServices.ab.getDirectory("exchWebService-contactRoot-directory://?" + query);
+        this._searches[uuid]["rootDir"] = MailServices.ab.getDirectory("exchangecalendar-addressbook://?" + query);
 
         /*		if (this._searches[uuid]["rootDir"]) {
         			var childCards = this._searches[uuid]["rootDir"].childCards;

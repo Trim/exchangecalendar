@@ -167,7 +167,7 @@ exchCheck4Lightning.prototype = {
     onLoad: function _onLoad(event) {
 
         // We preload the exchange Address book
-        var rootDir = MailServices.ab.getDirectory("exchWebService-contactRoot-directory://");
+        var rootDir = MailServices.ab.getDirectory("exchangecalendar-addressbook://");
         var folders = rootDir.childNodes;
 
         this.checkLightningIsInstalled();
